@@ -95,7 +95,7 @@ public class RequestView extends MessageView {
 					if (!canPerformClientCall()) {
 						return;
 					}
-					updateControlButtons(true);
+					updateControlButtons(true, null);
 					executeClientCall();
 				} catch (Exception ex) {
 					ex.printStackTrace();
@@ -108,14 +108,14 @@ public class RequestView extends MessageView {
 		itemStop.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				updateControlButtons(false);
+				updateControlButtons(false, null);
 				callerJob.cancel();
 			}
 		});
 		itemStop.setEnabled(false);
 
 		ToolItem itemSeparator = new ToolItem(toolBar, SWT.SEPARATOR);
-		itemSeparator.setWidth(430);
+		itemSeparator.setWidth(450);
 
 		
 		progressBar = new ProgressBar(firstRowControls, SWT.SMOOTH | SWT.INDETERMINATE);
@@ -134,15 +134,19 @@ public class RequestView extends MessageView {
 
 		textAddress = new Text(composite, SWT.BORDER);
 		RowData rdata = new RowData();
-		rdata.width = 405;
+		rdata.width = 425;
 		textAddress.setLayoutData(rdata);
 
+		new Label(partComposite, SWT.NONE).setText(" ");
 	}
 
-	private void updateControlButtons(final boolean status) {
+	private void updateControlButtons(final boolean status, final Job job) {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
+				if (otherJobStarted(job))
+					return;
+				
 				itemSend.setEnabled(!status);
 				itemStop.setEnabled(status);
 				progressBar.setVisible(status);
@@ -159,7 +163,7 @@ public class RequestView extends MessageView {
 				if (event.getResult().isOK() && !callerJob.isCancelStatus()) {
 					showMessageInResponseView(callerJob.getResponse());
 				}
-				updateControlButtons(false);
+				updateControlButtons(false, event.getJob());
 			}
 		});
 		
@@ -233,6 +237,11 @@ public class RequestView extends MessageView {
 				}
 			}
 		});
+	}
+
+
+	private boolean otherJobStarted(final Job job) {
+		return job != null && callerJob != null && job != callerJob;
 	}
 
 }

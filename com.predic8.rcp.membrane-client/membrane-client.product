@@ -28,7 +28,7 @@
 
    <splash
       location="com.predic8.rcp.membrane_client" />
-   <launcher name="Membrane Client">
+   <launcher name="membrane-client">
       <solaris/>
       <win useIco="true">
          <ico path="/com.predic8.rcp.membrane-client/icons/alt_launcher.ico"/>
@@ -39,6 +39,7 @@
 
    <vm>
    </vm>
+
 
    <plugins>
       <plugin id="com.ibm.icu"/>

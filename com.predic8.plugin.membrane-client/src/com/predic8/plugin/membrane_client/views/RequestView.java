@@ -11,11 +11,13 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.RowData;
 import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
@@ -39,15 +41,17 @@ public class RequestView extends MessageView {
 
 	public static final String VIEW_ID = "com.predic8.plugin.membrane_client.views.RequestView";
 
-	private Button btSend;
-
-	private Button btStop;
-
 	private Text textAddress;
 
 	private BindingOperation bindingOperation;
 
 	private ClientCallerJob callerJob;
+	
+	private ProgressBar progressBar;
+	
+	private ToolItem itemSend;
+	
+	private ToolItem itemStop;
 	
 	@Override
 	public void createPartControl(Composite parent) {
@@ -79,8 +83,12 @@ public class RequestView extends MessageView {
 		Composite firstRowControls = new Composite(partComposite, SWT.NONE);
 		firstRowControls.setLayout(new RowLayout());
 
-		btSend = new Button(firstRowControls, SWT.PUSH);
-		btSend.addSelectionListener(new SelectionAdapter() {
+		
+		ToolBar toolBar = new ToolBar(firstRowControls, SWT.NONE);
+				
+		itemSend = new ToolItem(toolBar, SWT.PUSH);
+		itemSend.setImage(MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CONTROL_PLAY).createImage());
+		itemSend.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
@@ -94,44 +102,39 @@ public class RequestView extends MessageView {
 				}
 			}
 		});
-		btSend.setImage(MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CONTROL_PLAY).createImage());
 		
-		
-		new Label(firstRowControls, SWT.NONE).setText("  ");
-
-		btStop = new Button(firstRowControls, SWT.PUSH);
-		btStop.addSelectionListener(new SelectionAdapter() {
+		itemStop = new ToolItem(toolBar, SWT.PUSH);
+		itemStop.setImage(MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CONTROL_STOP).createImage());
+		itemStop.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if(!callerJob.cancel()) {
-					try {
-						callerJob.join();
-					} catch (InterruptedException e1) {
-						e1.printStackTrace();
-					}
-				}
 				updateControlButtons(false);
+				callerJob.cancel();
 			}
 		});
-		btStop.setImage(MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CONTROL_STOP).createImage());
-		btStop.setEnabled(false);
+		itemStop.setEnabled(false);
 
-		RowData btRowdata = new RowData();
-		btRowdata.width = 20;
-		btRowdata.height = 20;
+		ToolItem itemSeparator = new ToolItem(toolBar, SWT.SEPARATOR);
+		itemSeparator.setWidth(430);
 
-		btSend.setLayoutData(btRowdata);
-		btStop.setLayoutData(btRowdata);
-
+		
+		progressBar = new ProgressBar(firstRowControls, SWT.SMOOTH | SWT.INDETERMINATE);
+		progressBar.setVisible(false);
+		
+		RowData pbRowdata = new RowData();
+		pbRowdata.width = 32;
+		pbRowdata.height = 20;
+		progressBar.setLayoutData(pbRowdata);
+		
+		
 		Composite composite = new Composite(partComposite, SWT.NONE);
 		composite.setLayout(new RowLayout());
 
-		Label lbDestination = new Label(composite, SWT.NONE);
-		lbDestination.setText("Endpoint Address: ");
+		new Label(composite, SWT.NONE).setText("Endpoint Address: ");
 
 		textAddress = new Text(composite, SWT.BORDER);
 		RowData rdata = new RowData();
-		rdata.width = 360;
+		rdata.width = 405;
 		textAddress.setLayoutData(rdata);
 
 	}
@@ -140,8 +143,9 @@ public class RequestView extends MessageView {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				btSend.setEnabled(!status);
-				btStop.setEnabled(status);
+				itemSend.setEnabled(!status);
+				itemStop.setEnabled(status);
+				progressBar.setVisible(status);
 			}
 		});
 	}
@@ -154,14 +158,13 @@ public class RequestView extends MessageView {
 			public void done(IJobChangeEvent event) {
 				if (event.getResult().isOK() && !callerJob.isCancelStatus()) {
 					showMessageInResponseView(callerJob.getResponse());
-				} else {
-					System.err.println("Job did not complete successfully");
 				}
 				updateControlButtons(false);
 			}
 		});
 		
 		callerJob.schedule();
+		
 	}
 
 	private Request getRequest(String content) {

@@ -31,9 +31,9 @@ public abstract class MessageView extends ViewPart implements IBaseCompositeHost
 		partComposite = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.marginTop = 20;
-		layout.marginLeft = 20;
-		layout.marginBottom = 20;
-		layout.marginRight = 20;
+		layout.marginLeft = 5;
+		layout.marginBottom = 5;
+		layout.marginRight = 5;
 		partComposite.setLayout(layout);
 	}
 	

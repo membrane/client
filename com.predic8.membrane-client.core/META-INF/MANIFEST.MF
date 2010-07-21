@@ -5,7 +5,7 @@ Bundle-SymbolicName: com.predic8.membrane_client.core
 Bundle-Version: 1.1.0
 Bundle-Activator: com.predic8.membrane.client.core.CoreActivator
 Bundle-Vendor: predic8 GmbH
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime;visibility:=reexport
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/soa-model-1.8.1.jar,

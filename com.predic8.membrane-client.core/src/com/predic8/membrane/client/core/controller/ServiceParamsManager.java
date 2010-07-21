@@ -2,7 +2,6 @@ package com.predic8.membrane.client.core.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import com.predic8.membrane.client.core.configuration.Config;
 import com.predic8.membrane.client.core.configuration.URL;
@@ -32,7 +31,7 @@ public class ServiceParamsManager {
 	public void init() {
 		try {
 			config = configStore.read(getDefaultConfigurationFile());
-			Set<WSDL> wsdls = config.getWsdls().getWSDLSet();
+			List<WSDL> wsdls = config.getWsdls().getWSDLList();
 			for (WSDL wsdl : wsdls) {
 				addNewServiceParams(new ServiceParams(wsdl.getUrl().getValue(), SOAModelUtil.getDefinitions(wsdl.getUrl().getValue())), false);
 			}
@@ -54,6 +53,17 @@ public class ServiceParamsManager {
 		
 		serviceParams.remove(params);
 		notifyListenersOnChange();
+		
+		removeUrlAndAaveConfig(params.getLocation());
+	}
+
+	private void removeUrlAndAaveConfig(String url) {
+		config.getWsdls().removeWSDLWith(url);
+		try {
+			configStore.write(config, getDefaultConfigurationFile());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void addNewServiceParams(ServiceParams params, boolean save) {
@@ -64,11 +74,11 @@ public class ServiceParamsManager {
 		notifyListenersOnChange();
 		
 		if (save) {
-			updateAndSaveConfig(params.getLocation());
+			addUrlAndSaveConfig(params.getLocation());
 		}
 	}
 
-	private void updateAndSaveConfig(String location) {
+	private void addUrlAndSaveConfig(String location) {
 		URL url = new URL();
 		url.setValue(location);
 		

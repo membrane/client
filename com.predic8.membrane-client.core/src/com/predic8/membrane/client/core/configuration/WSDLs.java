@@ -1,7 +1,7 @@
 package com.predic8.membrane.client.core.configuration;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -13,7 +13,7 @@ public class WSDLs extends AbstractXMLElement {
 
 	public static final String ELEMENT_NAME = "wsdls";
 	
-	private Set<WSDL> wsdls = new HashSet<WSDL>();
+	private List<WSDL> wsdls = new ArrayList<WSDL>();
 	
 	@Override
 	protected String getElementName() {
@@ -41,6 +41,9 @@ public class WSDLs extends AbstractXMLElement {
 		if (wsdl == null)
 			return;
 		
+		if (wsdls.contains(wsdl))
+			return;
+		
 		wsdls.add(wsdl); 
 	}
 
@@ -52,7 +55,22 @@ public class WSDLs extends AbstractXMLElement {
 		wsdls.remove(wsdl);
 	}
 	
-	public Set<WSDL> getWSDLSet() {
+	public void removeWSDLWith(String url) {
+		if (url == null)
+			return;
+		
+		WSDL candidate = null;
+		for (WSDL wsdl : wsdls) {
+			if (url.equals(wsdl.getUrl().getValue())) {
+				candidate = wsdl;
+				break;
+			}
+		}
+		if (candidate!= null)
+			wsdls.remove(candidate);
+	}
+	
+	public List<WSDL> getWSDLList() {
 		return wsdls;
 	}
 	

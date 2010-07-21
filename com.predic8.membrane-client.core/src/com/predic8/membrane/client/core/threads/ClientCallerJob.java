@@ -34,6 +34,7 @@ public class ClientCallerJob extends Job {
 
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
+		long start = System.currentTimeMillis();
 		HttpClient client = new HttpClient();
 		client.setRouter(null);
 
@@ -42,10 +43,14 @@ public class ClientCallerJob extends Job {
 		exc.getDestinations().add(address);
 
 		try {
+			
 			response = client.call(exc);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return Status.CANCEL_STATUS;
 		}
+		monitor.done();
+		System.out.println("Client call lasted for " + (System.currentTimeMillis() - start) + " miliseconds");
 		return Status.OK_STATUS;
 	}
 

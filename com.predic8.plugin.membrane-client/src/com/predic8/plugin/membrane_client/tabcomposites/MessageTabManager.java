@@ -160,7 +160,7 @@ public class MessageTabManager {
 		folder.setSelection(headerTabComposite.getTabItem());
 		folder.notifyListeners(SWT.Selection, null);
 		hideAllBodyTabs();
-		if (msg.getHeader().getContentType() == null) {
+		if (msg.getHeader().getContentType() == null || msg.getBody() == null) {
 			return;
 		}
 
@@ -174,13 +174,13 @@ public class MessageTabManager {
 
 	private BodyTabComposite getCurrentBodyTab(Message msg) {
 		if (msg instanceof Response) {
-			if (((Response) msg).isRedirect() || ((Response) msg).hasNoContent())
+			if (((Response) msg).isRedirect() || ((Response) msg).hasNoContent() )
 				return nullBodyTabComposite;
 		}
 
 		try {
 			if (msg.isBodyEmpty())
-				return bodyTabs.get(2);
+				return nullBodyTabComposite;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return bodyTabs.get(2);

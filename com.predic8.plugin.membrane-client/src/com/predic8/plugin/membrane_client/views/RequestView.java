@@ -214,6 +214,9 @@ public class RequestView extends MessageView {
 	}
 
 	private void showMessageInResponseView(final Response response) {
+		if (response == null)
+			return;
+		
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {

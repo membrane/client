@@ -24,8 +24,8 @@ public class MembraneClientPerspective implements IPerspectiveFactory {
 		IFolderLayout eastLayoutFolder = layout.createFolder("east folder", IPageLayout.RIGHT, 0.6f, IPageLayout.ID_EDITOR_AREA);
 	
 		
-		eastLayoutFolder.addView(RequestView.VIEW_ID);		
-		eastLayoutFolder.addView(ResponseView.VIEW_ID);
+		eastLayoutFolder.addPlaceholder(RequestView.VIEW_ID);		
+		eastLayoutFolder.addPlaceholder(ResponseView.VIEW_ID);
 		
 		layout.setFixed(true);
 	}

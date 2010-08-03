@@ -30,19 +30,4 @@ public class PluginUtil {
 		return text;
 	}
 
-	
-	public static String getHost(String url) {
-		if ("".equals(url))
-			return url;
-		
-		if (url.startsWith("http://"))
-			url = url.substring(7);
-		else if (url.startsWith("https://"))
-			url = url.substring(8);
-		
-		String[] tiles = url.split("/");
-		
-		return tiles[0];
-	}
-	
 }

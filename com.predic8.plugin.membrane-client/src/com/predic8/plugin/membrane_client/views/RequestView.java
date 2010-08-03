@@ -1,5 +1,6 @@
 package com.predic8.plugin.membrane_client.views;
 
+import java.net.MalformedURLException;
 import java.util.List;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -30,7 +31,6 @@ import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.plugin.membrane_client.message.composite.RequestComposite;
-import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.wsdl.Binding;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Definitions;
@@ -177,7 +177,13 @@ public class RequestView extends MessageView {
 
 		req.setMethod(Request.METHOD_POST);
 		req.setVersion(Constants.HTTP_VERSION_11);
-
+		
+		try {
+			req.setUri(SOAModelUtil.getPathAndQueryString(textAddress.getText()));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
 		req.setBodyContent(content.getBytes());
 		return req;
 	}
@@ -187,7 +193,7 @@ public class RequestView extends MessageView {
 		header.add(Header.CONTENT_TYPE, "text/xml");
 		header.add(Header.CONTENT_ENCODING, "UTF-8");
 		header.add("SOAPAction", getSoapAction(bindingOperation));
-		header.add("Host", PluginUtil.getHost(textAddress.getText()));
+		header.add("Host", SOAModelUtil.getHost(textAddress.getText()));
 
 		return header;
 	}
@@ -211,8 +217,12 @@ public class RequestView extends MessageView {
 	}
 
 	private String getSoapAction(BindingOperation bindOp) {
-		SOAPOperation sOp = (SOAPOperation) bindOp.getOperation();
-		return sOp.getSoapAction().toString();
+		Object sOp = bindOp.getOperation();
+		if (sOp instanceof SOAPOperation) {
+			return ((SOAPOperation)sOp).getSoapAction().toString();
+		} 
+		
+		return ((com.predic8.wsdl.soap12.SOAPOperation)sOp).getSoapAction().toString();
 	}
 
 	@Override

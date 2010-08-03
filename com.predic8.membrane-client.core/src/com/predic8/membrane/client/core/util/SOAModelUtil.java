@@ -4,6 +4,8 @@ import groovy.xml.MarkupBuilder;
 
 import java.io.File;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import com.predic8.wsdl.Binding;
 import com.predic8.wsdl.BindingOperation;
@@ -61,6 +63,16 @@ public class SOAModelUtil {
 		String[] tiles = url.split("/");
 		
 		return tiles[0];
+	}
+	
+	public static String getPathAndQueryString(String dest) throws MalformedURLException {
+		URL url = new URL(dest);
+		
+		String uri = url.getPath();
+		if (url.getQuery() != null) {
+			return uri + "?" + url.getQuery();
+		}
+		return uri;
 	}
 	
 }

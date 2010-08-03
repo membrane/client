@@ -1,5 +1,7 @@
 package com.predic8.membrane.client.core.threads;
 
+import java.net.MalformedURLException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -55,10 +57,16 @@ public class ClientCallerJob extends Job {
 	private Request getRequest() {
 		Request req = new Request();
 		req.setHeader(getHeader());
-
+		
 		req.setMethod(Request.METHOD_POST);
 		req.setVersion(Constants.HTTP_VERSION_11);
 
+		try {
+			req.setUri(SOAModelUtil.getPathAndQueryString(address));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
 		req.setBodyContent(content.getBytes());
 		return req;
 	}

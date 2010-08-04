@@ -55,7 +55,6 @@ public class ServiceTreeLabelProvider extends LabelProvider {
 	@Override
 	public String getText(Object element) {
 		
-	
 		if (element instanceof Port) {
 			return ((Port)element).getName();
 		}

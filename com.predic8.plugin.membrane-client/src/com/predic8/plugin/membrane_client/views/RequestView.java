@@ -1,6 +1,5 @@
 package com.predic8.plugin.membrane_client.views;
 
-import java.net.MalformedURLException;
 import java.util.List;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -23,19 +22,14 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
 import com.predic8.membrane.client.core.threads.ClientCallerJob;
-import com.predic8.membrane.client.core.util.SOAModelUtil;
-import com.predic8.membrane.core.Constants;
-import com.predic8.membrane.core.http.Header;
+import com.predic8.membrane.client.core.util.HttpUtil;
 import com.predic8.membrane.core.http.Request;
 import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.plugin.membrane_client.message.composite.RequestComposite;
-import com.predic8.wsdl.Binding;
 import com.predic8.wsdl.BindingOperation;
-import com.predic8.wsdl.Definitions;
 import com.predic8.wsdl.Port;
-import com.predic8.wsdl.soap11.SOAPOperation;
 
 public class RequestView extends MessageView {
 
@@ -52,6 +46,8 @@ public class RequestView extends MessageView {
 	private ToolItem itemSend;
 	
 	private ToolItem itemStop;
+	
+	private Request request;
 	
 	@Override
 	public void createPartControl(Composite parent) {
@@ -80,12 +76,65 @@ public class RequestView extends MessageView {
 	@Override
 	protected void addTopWidgets() {
 
-		Composite firstRowControls = new Composite(partComposite, SWT.NONE);
-		firstRowControls.setLayout(new RowLayout());
+		Composite controls = new Composite(partComposite, SWT.NONE);
+		controls.setLayout(new RowLayout());
 
-		
-		ToolBar toolBar = new ToolBar(firstRowControls, SWT.NONE);
+		ToolBar toolBar = new ToolBar(controls, SWT.NONE);
 				
+		createSendItem(toolBar);
+		
+		createStopItem(toolBar);
+
+		new ToolItem(toolBar, SWT.SEPARATOR).setWidth(450);
+
+		createProgressBar(controls);
+		
+		
+		Composite composite = new Composite(partComposite, SWT.NONE);
+		composite.setLayout(new RowLayout());
+
+		new Label(composite, SWT.NONE).setText("Endpoint Address: ");
+
+		createAddressTextField(composite);
+
+		new Label(partComposite, SWT.NONE).setText(" ");
+	}
+
+
+	private void createAddressTextField(Composite composite) {
+		textAddress = new Text(composite, SWT.BORDER);
+		RowData rd = new RowData();
+		rd.width = 425;
+		textAddress.setLayoutData(rd);
+	}
+
+
+	private void createProgressBar(Composite firstRowControls) {
+		progressBar = new ProgressBar(firstRowControls, SWT.SMOOTH | SWT.INDETERMINATE);
+		progressBar.setVisible(false);
+		
+		RowData rd = new RowData();
+		rd.width = 32;
+		rd.height = 20;
+		progressBar.setLayoutData(rd);
+	}
+
+
+	private void createStopItem(ToolBar toolBar) {
+		itemStop = new ToolItem(toolBar, SWT.PUSH);
+		itemStop.setImage(MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CONTROL_STOP).createImage());
+		itemStop.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateControlButtons(false, null);
+				callerJob.cancel();
+			}
+		});
+		itemStop.setEnabled(false);
+	}
+
+
+	private void createSendItem(ToolBar toolBar) {
 		itemSend = new ToolItem(toolBar, SWT.PUSH);
 		itemSend.setImage(MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CONTROL_PLAY).createImage());
 		itemSend.addSelectionListener(new SelectionAdapter() {
@@ -102,42 +151,6 @@ public class RequestView extends MessageView {
 				}
 			}
 		});
-		
-		itemStop = new ToolItem(toolBar, SWT.PUSH);
-		itemStop.setImage(MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CONTROL_STOP).createImage());
-		itemStop.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				updateControlButtons(false, null);
-				callerJob.cancel();
-			}
-		});
-		itemStop.setEnabled(false);
-
-		ToolItem itemSeparator = new ToolItem(toolBar, SWT.SEPARATOR);
-		itemSeparator.setWidth(450);
-
-		
-		progressBar = new ProgressBar(firstRowControls, SWT.SMOOTH | SWT.INDETERMINATE);
-		progressBar.setVisible(false);
-		
-		RowData pbRowdata = new RowData();
-		pbRowdata.width = 32;
-		pbRowdata.height = 20;
-		progressBar.setLayoutData(pbRowdata);
-		
-		
-		Composite composite = new Composite(partComposite, SWT.NONE);
-		composite.setLayout(new RowLayout());
-
-		new Label(composite, SWT.NONE).setText("Endpoint Address: ");
-
-		textAddress = new Text(composite, SWT.BORDER);
-		RowData rdata = new RowData();
-		rdata.width = 425;
-		textAddress.setLayoutData(rdata);
-
-		new Label(partComposite, SWT.NONE).setText(" ");
 	}
 
 	private void updateControlButtons(final boolean status, final Job job) {
@@ -155,7 +168,13 @@ public class RequestView extends MessageView {
 	}
 	
 	private void executeClientCall() throws Exception {
-		callerJob = new ClientCallerJob(textAddress.getText().trim(), baseComp.getBodyText(), getSoapAction(bindingOperation));
+		if (request == null)
+			return;
+		
+		request.setBodyContent(baseComp.getBodyText().getBytes());
+		setMessage(request);
+		
+		callerJob = new ClientCallerJob(textAddress.getText().trim(), request);
 		callerJob.setPriority(Job.SHORT);
 		
 		callerJob.addJobChangeListener(new JobChangeAdapter() {
@@ -168,61 +187,22 @@ public class RequestView extends MessageView {
 		});
 		
 		callerJob.schedule();
-		
-	}
-
-	private Request getRequest(String content) {
-		Request req = new Request();
-		req.setHeader(getHeader());
-
-		req.setMethod(Request.METHOD_POST);
-		req.setVersion(Constants.HTTP_VERSION_11);
-		
-		try {
-			req.setUri(SOAModelUtil.getPathAndQueryString(textAddress.getText()));
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		
-		req.setBodyContent(content.getBytes());
-		return req;
-	}
-
-	private Header getHeader() {
-		Header header = new Header();
-		header.add(Header.CONTENT_TYPE, "text/xml");
-		header.add(Header.CONTENT_ENCODING, "UTF-8");
-		header.add("SOAPAction", getSoapAction(bindingOperation));
-		header.add("Host", SOAModelUtil.getHost(textAddress.getText()));
-
-		return header;
 	}
 
 	public void setOperation(BindingOperation bindOp) {
 		this.bindingOperation = bindOp;
 		textAddress.setText(getEndpointAddress(bindOp));
-		setMessage(getRequest(SOAModelUtil.getRequestTemplate(bindingOperation)));
+		request = HttpUtil.getRequest(bindingOperation, textAddress.getText());
+		setMessage(request);
 	}
 
 	private String getEndpointAddress(BindingOperation bindOp) {
-		Definitions defs = (Definitions) bindOp.getDefinitions();
-
-		List<Port> ports = defs.getServices().get(0).getPorts();
+		List<Port> ports = bindOp.getDefinitions().getServices().get(0).getPorts();
 		for (Port port : ports) {
-			Binding portBinding = (Binding) port.getBinding();
-			if (portBinding.getName().equals(((Binding) bindOp.getBinding()).getName()))
+			if (port.getBinding().getName().equals(bindOp.getBinding().getName()))
 				return port.getLocation();
 		}
 		throw new RuntimeException("No corresponding endpoint address found.");
-	}
-
-	private String getSoapAction(BindingOperation bindOp) {
-		Object sOp = bindOp.getOperation();
-		if (sOp instanceof SOAPOperation) {
-			return ((SOAPOperation)sOp).getSoapAction().toString();
-		} 
-		
-		return ((com.predic8.wsdl.soap12.SOAPOperation)sOp).getSoapAction().toString();
 	}
 
 	@Override
@@ -253,5 +233,5 @@ public class RequestView extends MessageView {
 	private boolean otherJobStarted(final Job job) {
 		return job != null && callerJob != null && job != callerJob;
 	}
-
+	
 }

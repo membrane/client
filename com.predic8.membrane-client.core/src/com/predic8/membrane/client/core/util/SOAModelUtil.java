@@ -7,12 +7,13 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import com.predic8.wsdl.Binding;
+import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Definitions;
-import com.predic8.wsdl.PortType;
 import com.predic8.wsdl.WSDLParser;
 import com.predic8.wsdl.WSDLParserContext;
+import com.predic8.wsdl.soap11.SOAPBinding;
+import com.predic8.wsdl.soap11.SOAPOperation;
 import com.predic8.wstool.creator.RequestTemplateCreator;
 import com.predic8.wstool.creator.SOARequestCreator;
 
@@ -27,7 +28,7 @@ public class SOAModelUtil {
 		creator.setCreator(new RequestTemplateCreator());
 		
 		try {
-			creator.createRequest(getPortTypeName(bOperation), bOperation.getName(), ((Binding)bOperation.getBinding()).getName());
+			creator.createRequest(getPortTypeName(bOperation), bOperation.getName(), bOperation.getBinding().getName());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -36,19 +37,19 @@ public class SOAModelUtil {
 	}
 
 	private static String getPortTypeName(BindingOperation bOperation) {
-		return ((PortType)((Binding)bOperation.getBinding()).getPortType()).getName();
+		return bOperation.getBinding().getPortType().getName();
 	}
 
 	public static Definitions getDefinitions(String url) {
 		WSDLParserContext ctx = new WSDLParserContext();
 		ctx.setInput(url);
-		return (Definitions) new WSDLParser().parse(ctx);
+		return new WSDLParser().parse(ctx);
 	}
 	
 	public static Definitions getDefinitions(File file) {
 		WSDLParserContext ctx = new WSDLParserContext();
 		ctx.setInput(file);
-		return (Definitions) new WSDLParser().parse(ctx);
+		return new WSDLParser().parse(ctx);
 	}
 
 	public static String getHost(String url) {
@@ -73,6 +74,42 @@ public class SOAModelUtil {
 			return uri + "?" + url.getQuery();
 		}
 		return uri;
+	}
+	
+	public static String getContentTypeFor(String soapVersion) {
+		if (SOAPConstants.SOAP_VERSION_11.equals(soapVersion))
+			return "text/xml";
+		if (SOAPConstants.SOAP_VERSION_12.equals(soapVersion))
+			return "application/soap+xml";
+		throw new RuntimeException("Unsupported Soap Version: " + soapVersion);
+	}
+
+	public static String getContentTypeFor(BindingOperation bindOp) {
+		String soapVersion = getSOAPVersion(bindOp);
+		if (SOAPConstants.SOAP_VERSION_11.equals(soapVersion))
+			return "text/xml";
+		if (SOAPConstants.SOAP_VERSION_12.equals(soapVersion))
+			return "application/soap+xml";
+		throw new RuntimeException("Unsupported Soap Version: " + soapVersion);
+	}
+	
+	public static String getSOAPVersion(BindingOperation bindOp) {
+		Object o = bindOp.getBinding().getBinding();
+		if (o instanceof  SOAPBinding) {
+			return SOAPConstants.SOAP_VERSION_11;
+		} else if (o instanceof  com.predic8.wsdl.soap12.SOAPBinding) {
+			return SOAPConstants.SOAP_VERSION_12;
+		}
+		throw new RuntimeException("Unsupported SOAP version.");
+	}
+	
+	public static String getSoapAction(BindingOperation bindOp) {
+		Object sOp = bindOp.getOperation();
+		if (sOp instanceof SOAPOperation) {
+			return ((SOAPOperation)sOp).getSoapAction().toString();
+		} 
+		
+		return ((com.predic8.wsdl.soap12.SOAPOperation)sOp).getSoapAction().toString();
 	}
 	
 }

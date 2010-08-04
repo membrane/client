@@ -6,12 +6,12 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 import com.predic8.membrane.client.core.model.ServiceParams;
-import com.predic8.wsdl.Binding;
 import com.predic8.wsdl.Port;
 import com.predic8.wsdl.Service;
 
 public class ServiceTreeContentProvider implements ITreeContentProvider {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object[] getChildren(Object parentElement) {
 		
@@ -28,7 +28,7 @@ public class ServiceTreeContentProvider implements ITreeContentProvider {
 		}
 		
 		if (parentElement instanceof Port) {
-			return ((List)((Binding)((Port)parentElement).getBinding()).getOperations()).toArray();
+			return ((List)(((Port)parentElement).getBinding()).getOperations()).toArray();
 			
 		}
 		
@@ -41,6 +41,7 @@ public class ServiceTreeContentProvider implements ITreeContentProvider {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean hasChildren(Object element) {
 		if (element instanceof List)

@@ -1,5 +1,6 @@
 package com.predic8.plugin.membrane_client.views;
 
+import java.net.URL;
 import java.util.List;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -37,8 +38,6 @@ public class RequestView extends MessageView {
 
 	private Text textAddress;
 
-	private BindingOperation bindingOperation;
-
 	private ClientCallerJob callerJob;
 	
 	private ProgressBar progressBar;
@@ -54,10 +53,9 @@ public class RequestView extends MessageView {
 		super.createPartControl(parent);
 	}
 
-	
 	private boolean canPerformClientCall() {
-		if ("".equals(textAddress.getText().trim()) && bindingOperation == null) {
-			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Client Call Error", "Binding operation and destination address is missing.");
+		if ("".equals(textAddress.getText().trim()) && request == null) {
+			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Client Call Error", "Request and destination address is missing.");
 			return false;
 		} 
 		
@@ -66,8 +64,15 @@ public class RequestView extends MessageView {
 			return false;
 		}
 		
-		if (bindingOperation == null) {
-			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Client Call Error", "Binding operation is missing.");
+		try {
+			new URL(textAddress.getText().trim());
+		} catch (Exception ex) {
+			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Client Call Error", "Destination address is not valid URL.");
+			return false;
+		}
+		
+		if (request == null) {
+			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Client Call Error", "Request is missing.");
 			return false;
 		} 
 		return true;
@@ -190,9 +195,8 @@ public class RequestView extends MessageView {
 	}
 
 	public void setOperation(BindingOperation bindOp) {
-		this.bindingOperation = bindOp;
 		textAddress.setText(getEndpointAddress(bindOp));
-		request = HttpUtil.getRequest(bindingOperation, textAddress.getText());
+		request = HttpUtil.getRequest(bindOp, textAddress.getText());
 		setMessage(request);
 	}
 
@@ -228,7 +232,6 @@ public class RequestView extends MessageView {
 			}
 		});
 	}
-
 
 	private boolean otherJobStarted(final Job job) {
 		return job != null && callerJob != null && job != callerJob;

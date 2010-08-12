@@ -10,6 +10,7 @@ import com.predic8.membrane.core.exchange.Exchange;
 import com.predic8.membrane.core.http.Message;
 import com.predic8.plugin.membrane_client.message.composite.MessageComposite;
 import com.predic8.plugin.membrane_client.message.composite.IBaseCompositeHost;
+import com.predic8.wsdl.BindingOperation;
 
 public abstract class MessageView extends ViewPart implements IBaseCompositeHost {
 
@@ -48,8 +49,8 @@ public abstract class MessageView extends ViewPart implements IBaseCompositeHost
 		baseComp.setFocus();
 	}
 	
-	public void setMessage(Message msg) {
-		baseComp.setMsg(msg);
+	public void setMessage(Message msg, BindingOperation operation) {
+		baseComp.setMsg(msg, operation);
 	}
 	
 	@Override

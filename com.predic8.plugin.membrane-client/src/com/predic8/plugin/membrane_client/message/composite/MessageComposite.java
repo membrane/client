@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 import com.predic8.membrane.core.exchange.Exchange;
 import com.predic8.membrane.core.http.Message;
 import com.predic8.plugin.membrane_client.tabcomposites.MessageTabManager;
+import com.predic8.wsdl.BindingOperation;
 
 public abstract class MessageComposite extends Composite {
 
@@ -73,9 +74,9 @@ public abstract class MessageComposite extends Composite {
 		return true;
 	}
 
-	public void setMsg(Message msg) {
+	public void setMsg(Message msg, BindingOperation operation) {
 		this.msg = msg;
-		tabManager.doUpdate(msg);
+		tabManager.doUpdate(msg, operation);
 	}
 
 	public void setMessageEditable(boolean bool) {
@@ -96,7 +97,7 @@ public abstract class MessageComposite extends Composite {
 	
 	public void handleError(String errorMessage) {
 		msg.setErrorMessage(errorMessage);
-		tabManager.doUpdate(msg);
+		tabManager.doUpdate(msg, null);
 	}
 
 	public abstract String getTabCompositeName();
@@ -109,10 +110,6 @@ public abstract class MessageComposite extends Composite {
 		tabManager.beautify(msg);
 	}
 
-	public void doUpdate() {
-		tabManager.doUpdate(msg);
-	}
-	
 	public abstract void updateUIStatus(Exchange exchange, boolean canShowBody);
 
 	public IBaseCompositeHost getCompositeHost() {

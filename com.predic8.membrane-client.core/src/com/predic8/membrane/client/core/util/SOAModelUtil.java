@@ -36,7 +36,7 @@ public class SOAModelUtil {
 		return stringWriter.toString();
 	}
 
-	private static String getPortTypeName(BindingOperation bOperation) {
+	public static String getPortTypeName(BindingOperation bOperation) {
 		return bOperation.getBinding().getPortType().getName();
 	}
 

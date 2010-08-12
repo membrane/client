@@ -48,6 +48,8 @@ public class RequestView extends MessageView {
 	
 	private Request request;
 	
+	private BindingOperation bindingOperation;
+	
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
@@ -177,7 +179,7 @@ public class RequestView extends MessageView {
 			return;
 		
 		request.setBodyContent(baseComp.getBodyText().getBytes());
-		setMessage(request);
+		setMessage(request, bindingOperation);
 		
 		callerJob = new ClientCallerJob(textAddress.getText().trim(), request);
 		callerJob.setPriority(Job.SHORT);
@@ -195,9 +197,10 @@ public class RequestView extends MessageView {
 	}
 
 	public void setOperation(BindingOperation bindOp) {
+		this.bindingOperation = bindOp;
 		textAddress.setText(getEndpointAddress(bindOp));
 		request = HttpUtil.getRequest(bindOp, textAddress.getText());
-		setMessage(request);
+		setMessage(request, bindOp);
 	}
 
 	private String getEndpointAddress(BindingOperation bindOp) {
@@ -225,7 +228,7 @@ public class RequestView extends MessageView {
 					IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 					page.showView(ResponseView.VIEW_ID);
 					ResponseView view = (ResponseView) page.findView(ResponseView.VIEW_ID);
-					view.setMessage(response);
+					view.setMessage(response, bindingOperation);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

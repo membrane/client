@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.TabItem;
 import com.predic8.membrane.core.http.Message;
 import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.message.composite.MessageComposite;
+import com.predic8.wsdl.BindingOperation;
 
 public class MessageTabManager {
 
@@ -52,6 +53,8 @@ public class MessageTabManager {
 
 	private NullBodyTabComposite nullBodyTabComposite;
 
+	private TemplateTabComposite templateTabComposite; 
+	
 	public MessageTabManager(final MessageComposite baseComp) {
 		this.baseComp = baseComp;
 		folder = createTabFolder(baseComp);
@@ -61,13 +64,15 @@ public class MessageTabManager {
 		headerTabComposite = new HeaderTabComposite(folder);
 		nullBodyTabComposite = new NullBodyTabComposite(folder);
 
+		templateTabComposite = new TemplateTabComposite(folder);
+		
 		createBodyTabs();
 
 		currentBodyTab = new NullBodyTabComposite(folder);
 
 		addSelectionListenerToFolder(baseComp);
 
-		doUpdate(null);
+		doUpdate(null, null);
 
 	}
 
@@ -126,7 +131,7 @@ public class MessageTabManager {
 		currentBodyTab.setBodyModified(b);
 	}
 
-	public void doUpdate(Message msg) {
+	public void doUpdate(Message msg, BindingOperation operation) {
 		if (msg == null) {
 			hideAllContentTabs();
 			errorTabComposite.hide();
@@ -169,6 +174,12 @@ public class MessageTabManager {
 		
 		currentBodyTab.show();
 
+		if (operation != null) {
+			templateTabComposite.setBindingOperation(operation);
+			templateTabComposite.show();
+		}
+		
+		
 		baseComp.setFormatEnabled(currentBodyTab.isFormatSupported());
 	}
 

@@ -28,11 +28,16 @@ public class TemplateTabComposite extends AbstractTabComposite {
 	
 	public TemplateTabComposite(TabFolder parent) {
 		super(parent, TAB_TITLE);
-		creator = new CompositeCreator(this);
 	}
 	
 	
 	public void setBindingOperation(BindingOperation operation) {
+		
+		if (creator != null) {
+			creator.dispose();
+			creator = null;
+		}
+		creator = new CompositeCreator(this);
 		
 		creator.setDefinitions(operation.getDefinitions());
 		

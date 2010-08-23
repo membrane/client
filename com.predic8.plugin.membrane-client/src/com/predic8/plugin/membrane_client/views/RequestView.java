@@ -154,7 +154,7 @@ public class RequestView extends MessageView {
 					}
 					
 					updateControlButtons(true, null);
-					executeClientCall(SOAModelUtil.getSOARequest(bindingOperation, baseComp.generateOutput()));
+					executeClientCall(SOAModelUtil.getSOARequestBody(bindingOperation, baseComp.getFormParams()));
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}

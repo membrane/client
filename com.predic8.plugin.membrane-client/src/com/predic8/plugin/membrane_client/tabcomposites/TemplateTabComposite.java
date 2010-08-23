@@ -53,7 +53,7 @@ public class TemplateTabComposite extends AbstractTabComposite {
 		
 	}
 	
-	public Map<String, String> generateOutput() {
+	public Map<String, String> getFormParams() {
 		if (creator == null)
 			return null;
 		

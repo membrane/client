@@ -7,9 +7,9 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
-import java.util.Set;
 
 import com.predic8.membrane.client.core.SOAPConstants;
+import com.predic8.schema.creator.AbstractSchemaCreator;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Definitions;
 import com.predic8.wsdl.WSDLParser;
@@ -22,45 +22,13 @@ import com.predic8.wstool.creator.SOARequestCreator;
 
 public class SOAModelUtil {
 
-	public static String getRequestTemplate(BindingOperation bOperation) {
-		SOARequestCreator creator = new SOARequestCreator();
-		
-		StringWriter stringWriter = new StringWriter();
-		creator.setBuilder(new MarkupBuilder(stringWriter));
-		creator.setDefinitions(bOperation.getDefinitions());
-		creator.setCreator(new RequestTemplateCreator());
-		
-		try {
-			creator.createRequest(getPortTypeName(bOperation), bOperation.getName(), bOperation.getBinding().getName());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return stringWriter.toString();
+	public static String getRequestTemplateBody(BindingOperation bOperation) {
+		return createRequestBody(bOperation, new RequestTemplateCreator(), null);
 	}
 
-	public static String getSOARequest(BindingOperation bOperation, Map<String, String> result) {
-		Set<String> keys = result.keySet();
-		for (String key : keys) {
-			System.out.println(key + ": " + result.get(key));
-		}
-		
-		SOARequestCreator creator = new SOARequestCreator();
-		StringWriter stringWriter = new StringWriter();
-		creator.setBuilder(new MarkupBuilder(stringWriter));
-		creator.setDefinitions(bOperation.getDefinitions());
-		creator.setFormParams(result);
-		creator.setCreator(new RequestCreator());
-		
-		try {
-			creator.createRequest(SOAModelUtil.getPortTypeName(bOperation), bOperation.getName(), bOperation.getBinding().getName());
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-		return stringWriter.toString();
+	public static String getSOARequestBody(BindingOperation bOperation, Map<String, String> result) {
+		return createRequestBody(bOperation, new RequestCreator(), result);
 	}
-	
 	
 	public static String getPortTypeName(BindingOperation bOperation) {
 		return bOperation.getBinding().getPortType().getName();
@@ -139,6 +107,26 @@ public class SOAModelUtil {
 		} 
 		
 		return ((com.predic8.wsdl.soap12.SOAPOperation)sOp).getSoapAction().toString();
+	}
+	
+	private static String createRequestBody(BindingOperation bOperation, AbstractSchemaCreator schemaCreator, Map<String, String> formParams) {
+		StringWriter stringWriter = new StringWriter();
+		
+		SOARequestCreator creator = new SOARequestCreator();
+		creator.setBuilder(new MarkupBuilder(stringWriter));
+		creator.setDefinitions(bOperation.getDefinitions());
+		creator.setCreator(schemaCreator);
+		
+		if (formParams != null)
+			creator.setFormParams(formParams);
+		
+		try {
+			creator.createRequest(getPortTypeName(bOperation), bOperation.getName(), bOperation.getBinding().getName());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return stringWriter.toString();
 	}
 	
 }

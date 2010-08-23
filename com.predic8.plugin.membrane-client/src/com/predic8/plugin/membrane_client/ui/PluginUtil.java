@@ -6,6 +6,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
+import com.predic8.plugin.membrane_client.creator.CompositeCreatorContext;
+
 public class PluginUtil {
 
 	public static Composite createComposite(Composite parent, int col) {
@@ -30,4 +32,39 @@ public class PluginUtil {
 		return text;
 	}
 
+	public static GridLayout createGridlayout(int col, int margin) {
+		GridLayout layout = new GridLayout();
+		layout.numColumns = col;
+		layout.marginTop = margin;
+		layout.marginLeft = margin;
+		layout.marginBottom = margin;
+		layout.marginRight = margin;
+		return layout;
+	}
+	
+	public static GridData createGridDataBoth() {
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL, GridData.FILL_VERTICAL);
+		gd.grabExcessHorizontalSpace = true;
+		gd.grabExcessVerticalSpace = true;
+		return gd;
+	}
+	
+	public static GridData createGridDataVertical() {
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.grabExcessHorizontalSpace = true;
+		return gd;
+	}
+
+	public static String getComplexTypeCaption(CompositeCreatorContext ctx) {
+		StringBuffer buf = new StringBuffer();
+		buf.append(ctx.getElement().getName().toString());
+		buf.append(" (");
+		buf.append(ctx.getElement().getMinOccurs());
+		buf.append("..");
+		buf.append(ctx.getElement().getMaxOccurs());
+		buf.append(")");
+
+		return buf.toString();
+	}
+	
 }

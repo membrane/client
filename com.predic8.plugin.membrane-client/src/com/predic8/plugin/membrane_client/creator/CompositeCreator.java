@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.predic8.membrane.client.core.SOAPConstants;
+import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.schema.Attribute;
 import com.predic8.schema.ComplexType;
 import com.predic8.schema.Declaration;
@@ -48,7 +49,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private GridData gridData;
 
-	private GridData gridData2;
+	private GridData gridDataV;
 
 	private Composite current;
 
@@ -64,27 +65,17 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		scrollComposite.setExpandVertical(true);
 		scrollComposite.setLayout(new GridLayout());
 
-		gridLayout = createGridlayout(1);
+		gridLayout = PluginUtil.createGridlayout(1, 5);
 		root = new Composite(scrollComposite, SWT.NONE);
 		root.setLayout(gridLayout);
 
 		root.setParent(scrollComposite);
 
-		createGridData();
-		createGridData2();
+		gridData = PluginUtil.createGridDataBoth();
+		gridDataV = PluginUtil.createGridDataVertical();
 
 		current = root;
 
-	}
-
-	private GridLayout createGridlayout(int columns) {
-		GridLayout layout = new GridLayout();
-		layout.numColumns = columns;
-		layout.marginTop = 5;
-		layout.marginLeft = 5;
-		layout.marginBottom = 5;
-		layout.marginRight = 5;
-		return layout;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -174,15 +165,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		child.setData(SOAPConstants.PATH, ctx.getPath());
 
-		StringBuffer buf = new StringBuffer();
-		buf.append(ctx.getElement().getName().toString());
-		buf.append(" (");
-		buf.append(ctx.getElement().getMinOccurs());
-		buf.append("..");
-		buf.append(ctx.getElement().getMaxOccurs());
-		buf.append(")");
-
-		new Label(child, SWT.NONE).setText(buf.toString());
+		new Label(child, SWT.NONE).setText(PluginUtil.getComplexTypeCaption(ctx));
 
 		this.current = child;
 	}
@@ -236,8 +219,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			return;
 
 		Composite descendent = new Composite(current, SWT.NONE);
-		descendent.setLayout(createGridlayout(2));
-		descendent.setLayoutData(gridData2);
+		descendent.setLayout(PluginUtil.createGridlayout(2, 5));
+		descendent.setLayoutData(gridDataV);
 
 		GridData gd = new GridData();
 		gd.widthHint = 120;
@@ -250,8 +233,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		String localPart = item.getType().getLocalPart();
 		if ("string".equals(localPart)) {
 
-			Label lb = new Label(descendent, SWT.NONE);
-			lb.setText(item.getName().toString());
+			new Label(descendent, SWT.NONE).setText(item.getName().toString());
 
 			Text text = new Text(descendent, SWT.BORDER);
 			text.setLayoutData(gd);
@@ -264,8 +246,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			bt.setData(SOAPConstants.PATH, path + "/" + name);
 			
 		} else if ("int".equals(localPart)) {
-			Label lb = new Label(descendent, SWT.NONE);
-			lb.setText(item.getName().toString());
+			new Label(descendent, SWT.NONE).setText(item.getName().toString());
 
 			Text text = new Text(descendent, SWT.BORDER);
 			text.setLayoutData(gd);
@@ -295,17 +276,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 				}
 			});
 		}
-	}
-
-	private void createGridData() {
-		gridData = new GridData(GridData.FILL_HORIZONTAL, GridData.FILL_VERTICAL);
-		gridData.grabExcessHorizontalSpace = true;
-		gridData.grabExcessVerticalSpace = true;
-	}
-
-	private void createGridData2() {
-		gridData2 = new GridData(GridData.FILL_HORIZONTAL);
-		gridData2.grabExcessHorizontalSpace = true;
 	}
 
 	@Override
@@ -355,7 +325,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			}
 			return;
 		}
-		
 		
 		if (control instanceof Text) {
 			map.put(control.getData(SOAPConstants.PATH).toString(), ((Text) control).getText());

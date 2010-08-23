@@ -121,8 +121,8 @@ public abstract class MessageComposite extends Composite {
 		this.compositeHost = compositeHost;
 	}
 
-	public Map<String, String> generateOutput() {
-		return tabManager.getTemplateTabComposite().generateOutput();
+	public Map<String, String> getFormParams() {
+		return tabManager.getTemplateTabComposite().getFormParams();
 	}
 	
 	

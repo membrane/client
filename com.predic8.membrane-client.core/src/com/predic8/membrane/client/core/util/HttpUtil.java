@@ -22,7 +22,7 @@ public class HttpUtil {
 			e.printStackTrace();
 		}
 		
-		req.setBodyContent(SOAModelUtil.getRequestTemplate(bindingOperation).getBytes());
+		req.setBodyContent(SOAModelUtil.getRequestTemplateBody(bindingOperation).getBytes());
 		return req;
 	}
 	

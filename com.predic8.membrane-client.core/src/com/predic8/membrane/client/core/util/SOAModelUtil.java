@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
+import java.util.Set;
 
 import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.wsdl.BindingOperation;
@@ -14,6 +16,7 @@ import com.predic8.wsdl.WSDLParser;
 import com.predic8.wsdl.WSDLParserContext;
 import com.predic8.wsdl.soap11.SOAPBinding;
 import com.predic8.wsdl.soap11.SOAPOperation;
+import com.predic8.wstool.creator.RequestCreator;
 import com.predic8.wstool.creator.RequestTemplateCreator;
 import com.predic8.wstool.creator.SOARequestCreator;
 
@@ -36,6 +39,29 @@ public class SOAModelUtil {
 		return stringWriter.toString();
 	}
 
+	public static String getSOARequest(BindingOperation bOperation, Map<String, String> result) {
+		Set<String> keys = result.keySet();
+		for (String key : keys) {
+			System.out.println(key + ": " + result.get(key));
+		}
+		
+		SOARequestCreator creator = new SOARequestCreator();
+		StringWriter stringWriter = new StringWriter();
+		creator.setBuilder(new MarkupBuilder(stringWriter));
+		creator.setDefinitions(bOperation.getDefinitions());
+		creator.setFormParams(result);
+		creator.setCreator(new RequestCreator());
+		
+		try {
+			creator.createRequest(SOAModelUtil.getPortTypeName(bOperation), bOperation.getName(), bOperation.getBinding().getName());
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+		return stringWriter.toString();
+	}
+	
+	
 	public static String getPortTypeName(BindingOperation bOperation) {
 		return bOperation.getBinding().getPortType().getName();
 	}
@@ -106,6 +132,9 @@ public class SOAModelUtil {
 	public static String getSoapAction(BindingOperation bindOp) {
 		Object sOp = bindOp.getOperation();
 		if (sOp instanceof SOAPOperation) {
+			if (((SOAPOperation)sOp).getSoapAction() == null)
+				return "";
+			
 			return ((SOAPOperation)sOp).getSoapAction().toString();
 		} 
 		

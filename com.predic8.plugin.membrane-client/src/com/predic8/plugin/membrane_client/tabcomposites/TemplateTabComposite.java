@@ -14,6 +14,8 @@
 
 package com.predic8.plugin.membrane_client.tabcomposites;
 
+import java.util.Map;
+
 import org.eclipse.swt.widgets.TabFolder;
 
 import com.predic8.membrane.client.core.util.SOAModelUtil;
@@ -22,7 +24,7 @@ import com.predic8.wsdl.BindingOperation;
 
 public class TemplateTabComposite extends AbstractTabComposite {
 
-	public static final String TAB_TITLE = "Template";
+	public static final String TAB_TITLE = "Form";
 
 	private CompositeCreator creator;
 	
@@ -37,11 +39,25 @@ public class TemplateTabComposite extends AbstractTabComposite {
 			creator.dispose();
 			creator = null;
 		}
+		
 		creator = new CompositeCreator(this);
 		
 		creator.setDefinitions(operation.getDefinitions());
 		
-		creator.createComposite(SOAModelUtil.getPortTypeName(operation), operation.getName(), operation.getBinding().getName());	
+		creator.createComposite(SOAModelUtil.getPortTypeName(operation), operation.getName(), operation.getBinding().getName());
+		
+		this.checkWidget();
+		
+		this.layout();
+		this.redraw();
+		
+	}
+	
+	public Map<String, String> generateOutput() {
+		if (creator == null)
+			return null;
+		
+		return creator.generateOutput();
 	}
 	
 }

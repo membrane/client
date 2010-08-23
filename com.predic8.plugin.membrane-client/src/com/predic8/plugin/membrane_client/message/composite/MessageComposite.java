@@ -15,6 +15,7 @@
 package com.predic8.plugin.membrane_client.message.composite;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -118,6 +119,10 @@ public abstract class MessageComposite extends Composite {
 
 	public void setCompositeHost(IBaseCompositeHost compositeHost) {
 		this.compositeHost = compositeHost;
+	}
+
+	public Map<String, String> generateOutput() {
+		return tabManager.getTemplateTabComposite().generateOutput();
 	}
 	
 	

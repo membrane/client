@@ -273,4 +273,8 @@ public class MessageTabManager {
 		return currentBodyTab != null && !currentBodyTab.isDisposed() && currentBodyTab.getTabItem() != null && !currentBodyTab.getTabItem().isDisposed();
 	}
 
+	public TemplateTabComposite getTemplateTabComposite() {
+		return templateTabComposite;
+	}
+	
 }

@@ -24,6 +24,7 @@ import org.eclipse.ui.PlatformUI;
 
 import com.predic8.membrane.client.core.threads.ClientCallerJob;
 import com.predic8.membrane.client.core.util.HttpUtil;
+import com.predic8.membrane.client.core.util.SOAModelUtil;
 import com.predic8.membrane.core.http.Request;
 import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.ImageKeys;
@@ -151,8 +152,9 @@ public class RequestView extends MessageView {
 					if (!canPerformClientCall()) {
 						return;
 					}
+					
 					updateControlButtons(true, null);
-					executeClientCall();
+					executeClientCall(SOAModelUtil.getSOARequest(bindingOperation, baseComp.generateOutput()));
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -174,11 +176,11 @@ public class RequestView extends MessageView {
 		});
 	}
 	
-	private void executeClientCall() throws Exception {
+	private void executeClientCall(String body) throws Exception {
 		if (request == null)
 			return;
 		
-		request.setBodyContent(baseComp.getBodyText().getBytes());
+		request.setBodyContent(body.getBytes());
 		setMessage(request, bindingOperation);
 		
 		callerJob = new ClientCallerJob(textAddress.getText().trim(), request);

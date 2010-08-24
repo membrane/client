@@ -8,6 +8,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -15,13 +16,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.predic8.membrane.client.core.SOAPConstants;
+import com.predic8.plugin.membrane_client.ImageKeys;
+import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.schema.Attribute;
 import com.predic8.schema.ComplexType;
@@ -57,10 +58,18 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private Composite root;
 
+	private final int WIDGET_HEIGHT = 12;
+	
+	private final int WIDGET_WIDTH = 120;
+	
+	private Image removeImage = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CROSS_REMOVE).createImage();
+	
+	private Image addImage = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_ADD_ELEMENT).createImage();
+	
 	public CompositeCreator(Composite parent) {
 		parent.setLayout(new FillLayout());
 
-		scrollComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+		scrollComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.DOUBLE_BUFFERED);
 		scrollComposite.setExpandHorizontal(true);
 		scrollComposite.setExpandVertical(true);
 		scrollComposite.setLayout(new GridLayout());
@@ -110,6 +119,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		scrollComposite.layout();
 		root.layout();
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -136,9 +146,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			ModelGroup model = (ModelGroup) cType.getModel();
 
 			if (cType.getQname() != null) {
-
 				createChildComposite(ctx);
-
+				
 				writeattributes(cType, newCtx);
 				if (model != null) {
 					model.create(this, newCtx);
@@ -158,7 +167,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private void createChildComposite(CompositeCreatorContext ctx) {
 
-		Composite child = new Composite(current, SWT.NONE);
+		Composite child = new Composite(current, SWT.BORDER);
 		child.setLayout(gridLayout);
 		child.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
 		child.setLayoutData(gridData);
@@ -219,11 +228,12 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			return;
 
 		Composite descendent = new Composite(current, SWT.NONE);
-		descendent.setLayout(PluginUtil.createGridlayout(2, 5));
+		descendent.setLayout(PluginUtil.createGridlayout(3, 5));
 		descendent.setLayoutData(gridDataV);
 
 		GridData gd = new GridData();
-		gd.widthHint = 120;
+		gd.widthHint = WIDGET_WIDTH;
+		gd.heightHint = WIDGET_HEIGHT;
 
 		String path = ((CompositeCreatorContext) ctx).getPath();
 
@@ -231,51 +241,61 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		
 		
 		String localPart = item.getType().getLocalPart();
+		Label label = new Label(descendent, SWT.NONE);
+		label.setLayoutData(gd);
+		label.setText(item.getName().toString());
+		
+		Control control = null;
+		
 		if ("string".equals(localPart)) {
-
-			new Label(descendent, SWT.NONE).setText(item.getName().toString());
-
-			Text text = new Text(descendent, SWT.BORDER);
-			text.setLayoutData(gd);
-			text.setData(SOAPConstants.PATH, path + "/" + name);	
+			control = PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
+			control.setData(SOAPConstants.PATH, path + "/" + name);	
 			
 		} else if ("boolean".equals(localPart)) {
-			Button bt = new Button(descendent, SWT.CHECK);
-			bt.setText(item.getName().toString());
-			bt.setLayoutData(gd);
-			bt.setData(SOAPConstants.PATH, path + "/" + name);
+			control = new Button(descendent, SWT.CHECK);
+			GridData chk = new GridData();
+			chk.widthHint = 12;
+			chk.heightHint = 12;
+			control.setLayoutData(chk);
+			control.setData(SOAPConstants.PATH, path + "/" + name);
 			
 		} else if ("int".equals(localPart)) {
-			new Label(descendent, SWT.NONE).setText(item.getName().toString());
-
-			Text text = new Text(descendent, SWT.BORDER);
-			text.setLayoutData(gd);
-			text.setData(SOAPConstants.PATH, path + "/" + name);		
+			control = PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
+			control.setData(SOAPConstants.PATH, path + "/" + name);		
 		} else if ("dateTime".equals(localPart)) {
-			Text text = new Text(descendent, SWT.BORDER);
-			text.setLayoutData(gd);
-			text.setData(SOAPConstants.PATH, path + "/" + name);	
-			
-			final Shell dialog = new Shell (descendent.getShell(), SWT.DIALOG_TRIM);
-			dialog.setLayout (new GridLayout (3, false));
-			
-			Button ok = new Button (dialog, SWT.PUSH);
-			ok.setText ("OK");
-			ok.setLayoutData(new GridData (SWT.FILL, SWT.CENTER, false, false));
-			ok.addSelectionListener (new SelectionAdapter () {
-				public void widgetSelected (SelectionEvent e) {
-					
-					dialog.close ();
-				}
-			});
-			
-			DateTime calendar = new DateTime(dialog, SWT.CALENDAR);
-			calendar.addSelectionListener(new SelectionAdapter() {
-				public void widgetSelected(SelectionEvent e) {
-
-				}
-			});
+			control = PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
+			control.setData(SOAPConstants.PATH, path + "/" + name);	
 		}
+		
+		createAddRemoveButton(descendent, control);
+	
+	}
+
+	private void createAddRemoveButton(Composite descendent, final Control control) {
+		Button bt = new Button(descendent, SWT.PUSH);
+		bt.setImage(removeImage);
+		GridData gdBt = new GridData();
+		gdBt.widthHint = 10;
+		gdBt.heightHint = 10;
+		gdBt.horizontalIndent = 30;
+		bt.setLayoutData(gdBt);
+		bt.addSelectionListener(new SelectionAdapter() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Button source = (Button)e.getSource();
+				if (source.getImage().equals(removeImage)) {
+					source.setImage(addImage);
+					if (control != null)
+						control.setEnabled(false);
+				} else {
+					source.setImage(removeImage);
+					if (control != null)
+						control.setEnabled(true);
+				}
+				
+			}
+		});
 	}
 
 	@Override

@@ -64,6 +64,8 @@ public class MembraneClientUIPlugin extends AbstractUIPlugin {
 		
 		reg.put(ImageKeys.IMAGE_CONTROL_PLAY, imageDescriptorFromPlugin(PLUGIN_ID, "icons/control_play_blue.png"));
 		reg.put(ImageKeys.IMAGE_CONTROL_STOP, imageDescriptorFromPlugin(PLUGIN_ID, "icons/control_stop_blue.png"));
+		
+		reg.put(ImageKeys.IMAGE_CROSS_REMOVE, imageDescriptorFromPlugin(PLUGIN_ID, "icons/cross.png"));
 	}
 	
 }

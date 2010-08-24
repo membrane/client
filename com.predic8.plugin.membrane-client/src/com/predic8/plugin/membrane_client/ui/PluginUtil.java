@@ -32,6 +32,15 @@ public class PluginUtil {
 		return text;
 	}
 
+	public static Text createText(Composite comp, int width, int height) {
+		Text text = new Text(comp, SWT.BORDER);
+		GridData gData = new GridData();
+		gData.heightHint = height;
+		gData.widthHint = width;
+		text.setLayoutData(gData);
+		return text;
+	}
+	
 	public static GridLayout createGridlayout(int col, int margin) {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = col;

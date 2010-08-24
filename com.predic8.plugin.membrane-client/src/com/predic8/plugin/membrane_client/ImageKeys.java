@@ -18,4 +18,6 @@ public class ImageKeys {
 	
 	public static final String IMAGE_CONTROL_STOP = "image control stop";
 	
+	public static final String IMAGE_CROSS_REMOVE = "image cross remove";
+	
 }

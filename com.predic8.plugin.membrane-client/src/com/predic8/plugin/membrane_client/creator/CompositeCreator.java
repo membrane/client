@@ -3,6 +3,7 @@ package com.predic8.plugin.membrane_client.creator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -50,10 +51,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private GridData gridData;
 
-	private GridData gridDataV;
-
-	private Composite current;
-
 	private GridLayout gridLayout;
 
 	private Composite root;
@@ -66,30 +63,36 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	
 	private Image addImage = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_ADD_ELEMENT).createImage();
 	
+	private Stack<Composite> stack = new Stack<Composite>();
+	
 	public CompositeCreator(Composite parent) {
-		parent.setLayout(new FillLayout());
+		parent.setLayout(new FillLayout(SWT.VERTICAL));
 
+		gridData = PluginUtil.createGridDataVertical();
+		gridLayout = PluginUtil.createGridlayout(1, 5);
+		
 		scrollComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.DOUBLE_BUFFERED);
 		scrollComposite.setExpandHorizontal(true);
 		scrollComposite.setExpandVertical(true);
 		scrollComposite.setLayout(new GridLayout());
-
-		gridLayout = PluginUtil.createGridlayout(1, 5);
+		
 		root = new Composite(scrollComposite, SWT.NONE);
+		root.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
 		root.setLayout(gridLayout);
-
+		
 		root.setParent(scrollComposite);
 
-		gridData = PluginUtil.createGridDataBoth();
-		gridDataV = PluginUtil.createGridDataVertical();
-
-		current = root;
+		root.setLayoutData(PluginUtil.createGridDataBoth());
+		stack.push(root);
 
 	}
 
 	@SuppressWarnings("unchecked")
 	public void createComposite(String portTypeName, String operationName, String bindingName) {
 
+		stack.clear();
+		stack.push(root);
+		
 		Operation operation = (Operation) definitions.getOperation(operationName, portTypeName);
 		BindingOperation bindingOperation = (BindingOperation) ((Binding) definitions.getBinding(bindingName)).getOperation(operationName);
 
@@ -112,9 +115,11 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			}
 		}
 
+		root.layout();
 		Point point = root.computeSize(SWT.DEFAULT, SWT.DEFAULT);
 		scrollComposite.setMinSize(point);
 		root.setSize(point);
+		
 		scrollComposite.setContent(root);
 
 		scrollComposite.layout();
@@ -146,6 +151,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			ModelGroup model = (ModelGroup) cType.getModel();
 
 			if (cType.getQname() != null) {
+				
 				createChildComposite(ctx);
 				
 				writeattributes(cType, newCtx);
@@ -158,6 +164,9 @@ public class CompositeCreator extends AbstractSchemaCreator {
 					model.create(this, newCtx);
 				}
 			}
+			
+			stack.pop();
+			
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
@@ -167,16 +176,26 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private void createChildComposite(CompositeCreatorContext ctx) {
 
-		Composite child = new Composite(current, SWT.BORDER);
+		Composite composite = new Composite(stack.peek(), SWT.BORDER);
+		composite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_YELLOW));
+		composite.setLayout(gridLayout);
+		
+		
+		Composite header = new Composite(composite, SWT.NONE);
+		header.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
+		header.setLayout(PluginUtil.createGridlayout(2, 0));
+		new Label(header, SWT.NONE).setText(PluginUtil.getComplexTypeCaption(ctx));
+
+		Composite child = new Composite(composite, SWT.NONE);
 		child.setLayout(gridLayout);
 		child.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
 		child.setLayoutData(gridData);
-
 		child.setData(SOAPConstants.PATH, ctx.getPath());
-
-		new Label(child, SWT.NONE).setText(PluginUtil.getComplexTypeCaption(ctx));
-
-		this.current = child;
+		
+		if ("0".equals(ctx.getElement().getMinOccurs()))
+			createAddRemoveButton(header, child, true);
+		
+		stack.push(child);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -227,9 +246,9 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		if (item.getType() == null || !item.getType().getNamespaceURI().equals(SOAPConstants.SCHEMA_NS))
 			return;
 
-		Composite descendent = new Composite(current, SWT.NONE);
+		Composite descendent = new Composite(stack.peek(), SWT.NONE);
 		descendent.setLayout(PluginUtil.createGridlayout(3, 5));
-		descendent.setLayoutData(gridDataV);
+		descendent.setLayoutData(gridData);
 
 		GridData gd = new GridData();
 		gd.widthHint = WIDGET_WIDTH;
@@ -249,29 +268,22 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		
 		if ("string".equals(localPart)) {
 			control = PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-			control.setData(SOAPConstants.PATH, path + "/" + name);	
-			
 		} else if ("boolean".equals(localPart)) {
-			control = new Button(descendent, SWT.CHECK);
-			GridData chk = new GridData();
-			chk.widthHint = 12;
-			chk.heightHint = 12;
-			control.setLayoutData(chk);
-			control.setData(SOAPConstants.PATH, path + "/" + name);
-			
+			control = PluginUtil.createCheckButton(descendent, 12, 12);
 		} else if ("int".equals(localPart)) {
 			control = PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-			control.setData(SOAPConstants.PATH, path + "/" + name);		
 		} else if ("dateTime".equals(localPart)) {
 			control = PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-			control.setData(SOAPConstants.PATH, path + "/" + name);	
 		}
 		
-		createAddRemoveButton(descendent, control);
+		if (control != null) {
+			control.setData(SOAPConstants.PATH, path + "/" + name);	
+			createAddRemoveButton(descendent, control, false);
+		}
 	
 	}
 
-	private void createAddRemoveButton(Composite descendent, final Control control) {
+	private void createAddRemoveButton(Composite descendent, final Control control, final boolean visible) {
 		Button bt = new Button(descendent, SWT.PUSH);
 		bt.setImage(removeImage);
 		GridData gdBt = new GridData();
@@ -283,17 +295,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Button source = (Button)e.getSource();
-				if (source.getImage().equals(removeImage)) {
-					source.setImage(addImage);
-					if (control != null)
-						control.setEnabled(false);
-				} else {
-					source.setImage(removeImage);
-					if (control != null)
-						control.setEnabled(true);
-				}
-				
+				updateButtonControlEnable(control, (Button)e.getSource(), visible);	
 			}
 		});
 	}
@@ -362,5 +364,28 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		generateOutput(root, result);
 		return result;
 	}
+
+	private void updateButtonControlEnable(final Control control, Button source, boolean visible) {
+		if (control == null)
+			return;
+		
+		if (source.getImage().equals(removeImage)) {
+			source.setImage(addImage);
+			updateControl(control, false, visible);
+		} else {
+			source.setImage(removeImage);
+			updateControl(control, true, visible);
+		}
+	}
  	
+	private void updateControl(Control control, boolean status, boolean visible) {
+		if (control == null)
+			return;
+		if (visible)
+			control.setVisible(status);
+		else
+			control.setEnabled(status);
+	
+	}
+	
 }

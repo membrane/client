@@ -3,6 +3,7 @@ package com.predic8.plugin.membrane_client.ui;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
@@ -61,9 +62,26 @@ public class PluginUtil {
 	public static GridData createGridDataVertical() {
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.grabExcessHorizontalSpace = true;
+		gd.grabExcessVerticalSpace = false;
 		return gd;
 	}
 
+	public static GridData createGridDataFillH() {
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.grabExcessHorizontalSpace = false;
+		gd.grabExcessVerticalSpace = false;
+		return gd;
+	}
+	
+	public static Button createCheckButton(Composite parent, int w, int h) {
+		Button bt = new Button(parent, SWT.CHECK);
+		GridData chk = new GridData();
+		chk.widthHint = w;
+		chk.heightHint = h;
+		bt.setLayoutData(chk);
+		return bt;
+	}
+	
 	public static String getComplexTypeCaption(CompositeCreatorContext ctx) {
 		StringBuffer buf = new StringBuffer();
 		buf.append(ctx.getElement().getName().toString());

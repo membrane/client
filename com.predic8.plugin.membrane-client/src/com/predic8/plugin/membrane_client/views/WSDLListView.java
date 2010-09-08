@@ -86,7 +86,7 @@ public class WSDLListView extends ViewPart implements ServiceParamsChangeListene
 
 				if (selection.getFirstElement() instanceof ServiceParams) {
 					ServiceParams params = (ServiceParams) selection.getFirstElement();
-					List<Operation> ops = (List<Operation>) params.getDefinitions().getOperations();
+					List<Operation> ops = params.getDefinitions().getOperations();
 
 					if (ops != null && !ops.isEmpty()) {
 						for (Operation operation : ops) {

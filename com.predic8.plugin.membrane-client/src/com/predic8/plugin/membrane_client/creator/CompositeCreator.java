@@ -1,5 +1,6 @@
 package com.predic8.plugin.membrane_client.creator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,9 @@ import com.predic8.schema.ModelGroup;
 import com.predic8.schema.Schema;
 import com.predic8.schema.TypeDefinition;
 import com.predic8.schema.creator.AbstractSchemaCreator;
+import com.predic8.schema.restriction.facet.EnumerationFacet;
 import com.predic8.wsdl.Binding;
+import com.predic8.wsdl.BindingElement;
 import com.predic8.wsdl.BindingInput;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Definitions;
@@ -87,7 +90,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public void createComposite(String portTypeName, String operationName, String bindingName) {
 
 		stack.clear();
@@ -103,7 +105,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		BindingInput bInput = (BindingInput) bindingOperation.getInput();
 
-		List list = (List) bInput.getBindingElements();
+		List<BindingElement> list = bInput.getBindingElements();
 
 		for (Object object : list) {
 			if (object instanceof SOAPBody) {
@@ -127,12 +129,13 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		
 	}
 
-	@SuppressWarnings("unchecked")
+	
+	@SuppressWarnings("rawtypes")
 	private void handleMsgParts(List msgParts) {
 		for (Object object2 : msgParts) {
 			Part part = (Part) object2;
 
-			Element element = (Element) definitions.getElement(part.getElement());
+			Element element = definitions.getElement(part.getElement());
 			CompositeCreatorContext ctx = new CompositeCreatorContext();
 			ctx.setPath("xpath:");
 			element.create(this, ctx);
@@ -154,12 +157,12 @@ public class CompositeCreator extends AbstractSchemaCreator {
 				
 				createChildComposite(ctx);
 				
-				writeattributes(cType, newCtx);
+				writeAttributes(cType, newCtx);
 				if (model != null) {
 					model.create(this, newCtx);
 				}
 			} else {
-				writeattributes(cType, newCtx);
+				writeAttributes(cType, newCtx);
 				if (model != null) {
 					model.create(this, newCtx);
 				}
@@ -198,9 +201,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		stack.push(child);
 	}
 
-	@SuppressWarnings("unchecked")
-	private void writeattributes(ComplexType cType, Object ctx) {
-		List<Attribute> attributes = (List) cType.getAttributes();
+	private void writeAttributes(ComplexType cType, Object ctx) {
+		List<Attribute> attributes = cType.getAttributes();
 		for (Attribute attribute : attributes) {
 			writeInputForBuildInType(attribute, ctx);
 		}
@@ -274,12 +276,14 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			control = PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
 		} else if ("dateTime".equals(localPart)) {
 			control = PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
+		} else {
+			System.out.println("local part is: " + localPart);
 		}
 		
 		if (control != null) {
 			control.setData(SOAPConstants.PATH, path + "/" + name);	
 			createAddRemoveButton(descendent, control, false);
-		}
+		} 
 	
 	}
 
@@ -301,8 +305,38 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	}
 
 	@Override
-	public Object createEnumerationFacet(Object arg0, Object arg1) {
-		System.out.println(arg0.getClass().getName());
+	public Object createEnumerationFacet(Object object, Object ctx) {
+		
+		try {
+			EnumerationFacet facet = (EnumerationFacet)object; 
+			ArrayList list = (ArrayList)facet.getValues();
+			
+			Composite descendent = new Composite(stack.peek(), SWT.NONE);
+			descendent.setLayout(PluginUtil.createGridlayout(3, 5));
+			descendent.setLayoutData(gridData);
+
+			GridData gd = new GridData();
+			gd.widthHint = WIDGET_WIDTH;
+			gd.heightHint = WIDGET_HEIGHT;
+			
+			for (Object object2 : list) {
+				Label label = new Label(descendent, SWT.NONE);
+				label.setLayoutData(gd);
+				label.setText(object2.toString());
+				
+				Control control = PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
+				createAddRemoveButton(descendent, control, false);
+			}
+			
+			CompositeCreatorContext newCtx = ((CompositeCreatorContext) ctx).clone();
+			
+			
+//			facet.create(this, newCtx);
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(object.getClass().getName());
 		return null;
 	}
 
@@ -315,7 +349,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	@Override
 	public Object createMaxLengthFacet(Object arg0, Object arg1) {
-		System.out.println(arg0.getClass().getName());
+		System.out.println("Max length facet: " +  arg0.getClass().getName());
 		return null;
 	}
 

@@ -44,6 +44,7 @@ import com.predic8.schema.creator.AbstractSchemaCreator;
 import com.predic8.schema.restriction.BaseRestriction;
 import com.predic8.schema.restriction.StringRestriction;
 import com.predic8.schema.restriction.facet.EnumerationFacet;
+import com.predic8.schema.restriction.facet.Facet;
 import com.predic8.schema.restriction.facet.LengthFacet;
 import com.predic8.schema.restriction.facet.MaxLengthFacet;
 import com.predic8.schema.restriction.facet.MinLengthFacet;
@@ -111,9 +112,9 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		Operation operation = definitions.getOperation(operationName, portTypeName);
 		BindingOperation bindingOperation = definitions.getBinding(bindingName).getOperation(operationName);
 
-		Input input = (Input) operation.getInput();
+		Input input = operation.getInput();
 
-		Message msg = (Message) input.getMessage();
+		Message msg = input.getMessage();
 
 		List<SOAPHeader> bodies = SOAModelUtil.getHeaderElements(bindingOperation);
 		CompositeCreatorContext ctx = new CompositeCreatorContext();
@@ -127,7 +128,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		List<BindingElement> list = bInput.getBindingElements();
 
-		for (Object object : list) {
+		for (BindingElement object : list) {
 			if (object instanceof SOAPBody) {
 				SOAPBody body = (SOAPBody) object;
 				handleMsgParts((List) body.getMessageParts());
@@ -155,8 +156,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	@SuppressWarnings("rawtypes")
 	private void handleMsgParts(List msgParts) {
-		for (Object object2 : msgParts) {
-			Element element = definitions.getElement(((Part) object2).getElement());
+		for (Object part : msgParts) {
+			Element element = definitions.getElement(((Part) part).getElement());
 			CompositeCreatorContext ctx = new CompositeCreatorContext();
 			ctx.setPath("xpath:");
 			element.create(this, ctx);
@@ -550,7 +551,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		SchemaComponent model = (SchemaComponent)ext.getModel();
 		model.create(this, ctx);
 		
-		List<Attribute> attributes = (List<Attribute>)ext.getAttributes();
+		List<Attribute> attributes = ext.getAttributes();
 		for (Attribute attribute : attributes) {
 			writeInputForBuildInType(attribute, ctx, null);
 		}
@@ -565,7 +566,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		restriction.getAttributes();
 
-		List<Attribute> attrs = (List<Attribute>) restriction.getAttributes();
+		List<Attribute> attrs = restriction.getAttributes();
 		for (Attribute attribute : attrs) {
 			writeInputForBuildInType(attribute, ctx, null);
 		}
@@ -578,9 +579,9 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 			StringRestriction strRest = (StringRestriction) restriction;
 
-			List list = (List) strRest.getFacets();
+			List<Facet> list = strRest.getFacets();
 			if (list != null && !list.isEmpty()) {
-				for (Object object : list) {
+				for (Facet object : list) {
 					if (object instanceof EnumerationFacet) {
 						super.createSimpleRestriction(restriction, ctx);
 						return;

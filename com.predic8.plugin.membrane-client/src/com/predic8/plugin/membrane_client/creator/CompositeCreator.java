@@ -44,6 +44,10 @@ import com.predic8.schema.creator.AbstractSchemaCreator;
 import com.predic8.schema.restriction.BaseRestriction;
 import com.predic8.schema.restriction.StringRestriction;
 import com.predic8.schema.restriction.facet.EnumerationFacet;
+import com.predic8.schema.restriction.facet.LengthFacet;
+import com.predic8.schema.restriction.facet.MaxLengthFacet;
+import com.predic8.schema.restriction.facet.MinLengthFacet;
+import com.predic8.schema.restriction.facet.PatternFacet;
 import com.predic8.wsdl.BindingElement;
 import com.predic8.wsdl.BindingInput;
 import com.predic8.wsdl.BindingOperation;
@@ -160,8 +164,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	}
 
 	@Override
-	public Object createComplexType(Object object, Object oldContext) {
-		ComplexType cType = (ComplexType) object;
+	public void createComplexType(ComplexType cType, Object oldContext) {
+		
 		CompositeCreatorContext ctx = (CompositeCreatorContext) oldContext;
 
 		try {
@@ -191,7 +195,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			e.printStackTrace();
 		}
 
-		return null;
 	}
 
 	private void createChildComposite(CompositeCreatorContext ctx) {
@@ -229,9 +232,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	}
 
 	@Override
-	public Object createElement(Object object, Object ctx) {
-
-		Element element = (Element) object;
+	public void createElement(Element element, Object ctx) {
 
 		if (element.getEmbeddedType() != null) {
 			try {
@@ -242,7 +243,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
-			return null;
+			return;
 		}
 
 		Schema schema = element.getSchema();
@@ -256,12 +257,10 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			} catch (CloneNotSupportedException e) {
 				e.printStackTrace();
 			}
-			return null;
+			return;
 		}
 
 		writeInputForBuildInType(element, ctx, null);
-
-		return null;
 	}
 
 	private void writeInputForBuildInType(Declaration item, Object ctx, BaseRestriction restr) {
@@ -440,9 +439,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	
 	
 	@Override
-	public Object createEnumerationFacet(Object object, Object context) {
+	public void createEnumerationFacet(EnumerationFacet facet, Object context) {
 
-		EnumerationFacet facet = (EnumerationFacet) object;
 		ArrayList values = (ArrayList) facet.getValues();
 
 		Composite descendent = createDescendent();
@@ -468,34 +466,9 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		}
 		
 		createAddRemoveButton(descendent, combo, false);
-
-		return null;
 	}
 
-	@Override
-	public Object createLengthFacet(Object arg0, Object arg1) {
-		
-		return null;
-	}
-
-	@Override
-	public Object createMaxLengthFacet(Object arg0, Object arg1) {
-		
-		return null;
-	}
-
-	@Override
-	public Object createMinLengthFacet(Object arg0, Object arg1) {
-		
-		return null;
-	}
-
-	@Override
-	public Object createPatternFacet(Object arg0, Object arg1) {
-		
-		return null;
-	}
-
+	
 	public void setDefinitions(Definitions definitions) {
 		this.definitions = definitions;
 	}
@@ -563,8 +536,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	}
 
 	@Override
-	public Object createExtension(Object extension, Object ctx) {
-		Extension ext = (Extension) extension;
+	public void createExtension(Extension ext, Object ctx) {
 		if (ext.getBase() != null) {
 			TypeDefinition def = ext.getSchema().getType(ext.getBase());
 			if (def instanceof ComplexType) {
@@ -582,12 +554,10 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		for (Attribute attribute : attributes) {
 			writeInputForBuildInType(attribute, ctx, null);
 		}
-		return null;
 	}
 
 	@Override
-	public Object createComplexContentRestriction(Object object, Object ctx) {
-		Restriction restriction = (Restriction) object;
+	public void createComplexContentRestriction(Restriction restriction, Object ctx) {
 		if (restriction.getModel() != null) {
 			SchemaComponent component = (SchemaComponent) restriction.getModel();
 			component.create(this, ctx);
@@ -599,19 +569,10 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		for (Attribute attribute : attrs) {
 			writeInputForBuildInType(attribute, ctx, null);
 		}
-		return null;
 	}
 
 	@Override
-	public Object createSimpleType(Object object, Object ctx) {
-		SimpleType type = (SimpleType) object;
-
-		return super.createSimpleType(type, ctx);
-	}
-
-	@Override
-	public Object createSimpleRestriction(Object param1, Object ctx) {
-		BaseRestriction restriction = (BaseRestriction) param1;
+	public void createSimpleRestriction(BaseRestriction restriction, Object ctx) {
 		
 		if (restriction instanceof StringRestriction) {
 
@@ -621,7 +582,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			if (list != null && !list.isEmpty()) {
 				for (Object object : list) {
 					if (object instanceof EnumerationFacet) {
-						return super.createSimpleRestriction(restriction, ctx);
+						super.createSimpleRestriction(restriction, ctx);
+						return;
 					}
 				}
 			}
@@ -633,11 +595,34 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 				writeInputForBuildInType(element, ctx, strRest);
 			}
-
-			return null;
+			return;
 		}
 
-		return super.createSimpleRestriction(restriction, ctx);
+		super.createSimpleRestriction(restriction, ctx);
+	}
+
+	@Override
+	public void createLengthFacet(LengthFacet arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void createMaxLengthFacet(MaxLengthFacet arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void createMinLengthFacet(MinLengthFacet arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void createPatternFacet(PatternFacet arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

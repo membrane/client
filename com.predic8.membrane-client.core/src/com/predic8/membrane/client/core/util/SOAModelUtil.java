@@ -15,11 +15,11 @@ import com.predic8.schema.creator.AbstractSchemaCreator;
 import com.predic8.wsdl.BindingElement;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Definitions;
+import com.predic8.wsdl.ExtensibilityOperation;
 import com.predic8.wsdl.WSDLParser;
 import com.predic8.wsdl.WSDLParserContext;
 import com.predic8.wsdl.soap11.SOAPBinding;
 import com.predic8.wsdl.soap11.SOAPHeader;
-import com.predic8.wsdl.soap11.SOAPOperation;
 import com.predic8.wstool.creator.RequestCreator;
 import com.predic8.wstool.creator.RequestTemplateCreator;
 import com.predic8.wstool.creator.SOARequestCreator;
@@ -100,18 +100,15 @@ public class SOAModelUtil {
 		}
 		throw new RuntimeException("Unsupported SOAP version.");
 	}
-	
-	public static String getSoapAction(BindingOperation bindOp) {
-		Object sOp = bindOp.getOperation();
-		if (sOp instanceof SOAPOperation) {
-			if (((SOAPOperation)sOp).getSoapAction() == null)
-				return "";
-			
-			return ((SOAPOperation)sOp).getSoapAction().toString();
-		} 
 		
-		return ((com.predic8.wsdl.soap12.SOAPOperation)sOp).getSoapAction().toString();
+	public static String getSoapAction(BindingOperation bindOp) {
+		ExtensibilityOperation sOp = bindOp.getOperation();
+		if (sOp.getSoapAction() == null)
+			return "";
+			
+		return sOp.getSoapAction().toString();
 	}
+	
 	
 	private static String createRequestBody(BindingOperation bOperation, AbstractSchemaCreator schemaCreator, Map<String, String> formParams) {
 		StringWriter stringWriter = new StringWriter();

@@ -2,7 +2,6 @@ package com.predic8.plugin.membrane_client.creator;
 
 import groovy.xml.QName;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +130,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		for (BindingElement object : list) {
 			if (object instanceof SOAPBody) {
 				SOAPBody body = (SOAPBody) object;
-				handleMsgParts((List) body.getMessageParts());
+				handleMsgParts(body.getMessageParts());
 			} else if (object instanceof com.predic8.wsdl.soap12.SOAPBody) {
 				com.predic8.wsdl.soap12.SOAPBody body = (com.predic8.wsdl.soap12.SOAPBody) object;
 				handleMsgParts((List) body.getMessageParts());
@@ -442,7 +441,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	@Override
 	public void createEnumerationFacet(EnumerationFacet facet, Object context) {
 
-		ArrayList values = (ArrayList) facet.getValues();
+		List<String> values = facet.getValues();
 
 		Composite descendent = createDescendent();
 
@@ -458,8 +457,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		Combo combo = PluginUtil.createCombo(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
 		combo.setData(SOAPConstants.PATH, ctx.getPath() + "/" + ctx.getElement().getName());
-		for (Object object2 : values) {
-			combo.add(object2.toString());
+		for (String str : values) {
+			combo.add(str);
 		}
 
 		if (values.size() > 0) {

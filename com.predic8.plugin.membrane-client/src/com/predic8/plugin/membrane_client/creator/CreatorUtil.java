@@ -4,14 +4,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -170,5 +173,21 @@ public class CreatorUtil {
 		return bt;
 	}
 	
+	public static ScrolledComposite createScrollComposite(Composite parent) {
+		ScrolledComposite sC = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.DOUBLE_BUFFERED);
+		sC.setExpandHorizontal(true);
+		sC.setExpandVertical(true);
+		sC.setLayout(new GridLayout());
+		return sC;
+	}
 	
+	public static Composite createRootComposite(Composite parent) {
+		Composite root = new Composite(parent, SWT.NONE);
+		root.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+		root.setLayout(PluginUtil.createGridlayout(1, 5));
+		root.setParent(parent);
+		root.setLayoutData(PluginUtil.createGridData(GridData.FILL_HORIZONTAL, GridData.FILL_VERTICAL, true, true));
+		return root;
+	}
+
 }

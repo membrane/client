@@ -11,7 +11,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
@@ -68,29 +67,15 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		gridLayout = PluginUtil.createGridlayout(1, 5);
 
-		createScrollComposite(parent);
+		scrollComposite = CreatorUtil.createScrollComposite(parent);
 
-		createRootComposite();
+		root = CreatorUtil.createRootComposite(scrollComposite);
 		
 		stack.push(root);
 
 	}
 
-	private void createScrollComposite(Composite parent) {
-		scrollComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.DOUBLE_BUFFERED);
-		scrollComposite.setExpandHorizontal(true);
-		scrollComposite.setExpandVertical(true);
-		scrollComposite.setLayout(new GridLayout());
-	}
-
-	private void createRootComposite() {
-		root = new Composite(scrollComposite, SWT.NONE);
-		root.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
-		root.setLayout(gridLayout);
-		root.setParent(scrollComposite);
-		root.setLayoutData(PluginUtil.createGridData(GridData.FILL_HORIZONTAL, GridData.FILL_VERTICAL, true, true));
-	}
-
+	@SuppressWarnings("rawtypes")
 	public void buildComposite(String portTypeName, String operationName, String bindingName) {
 
 		stack.clear();

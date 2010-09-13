@@ -6,6 +6,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import com.predic8.plugin.membrane_client.creator.CompositeCreatorContext;
@@ -62,24 +64,24 @@ public class PluginUtil {
 		return layout;
 	}
 	
-	public static GridData createGridDataBoth() {
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL, GridData.FILL_VERTICAL);
-		gd.grabExcessHorizontalSpace = true;
-		gd.grabExcessVerticalSpace = true;
+	public static GridData createGridData(int h, int v, boolean gH, boolean gV) {
+		GridData gd = new GridData(h, v);
+		gd.grabExcessHorizontalSpace = gH;
+		gd.grabExcessVerticalSpace = gV;
 		return gd;
 	}
 	
-	public static GridData createGridDataVertical() {
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.grabExcessHorizontalSpace = true;
-		gd.grabExcessVerticalSpace = false;
+	public static GridData createGridData(int h, boolean gH, boolean gV) {
+		GridData gd = new GridData(h);
+		gd.grabExcessHorizontalSpace = gH;
+		gd.grabExcessVerticalSpace = gV;
 		return gd;
 	}
 
-	public static GridData createGridDataFillH() {
-		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		gd.grabExcessHorizontalSpace = false;
-		gd.grabExcessVerticalSpace = false;
+	public static GridData createGridData(boolean gH, boolean gV) {
+		GridData gd = new GridData();
+		gd.grabExcessHorizontalSpace = gH;
+		gd.grabExcessVerticalSpace = gV;
 		return gd;
 	}
 	
@@ -102,6 +104,51 @@ public class PluginUtil {
 		buf.append(")");
 
 		return buf.toString();
+	}
+	
+	public static void cloneControl(Control control, Composite parent) {
+		
+		if (control instanceof Composite) {
+			Composite comp = (Composite) control;
+			Composite clone = new Composite(parent, SWT.NONE);
+			clone.setLayout(comp.getLayout());
+			clone.setBackground(comp.getBackground());
+			clone.setLayoutData(comp.getLayoutData());
+			Control[] children = comp.getChildren();
+			for (Control child : children) {
+				cloneControl(child, clone);
+			}
+			return;
+		}
+
+		if (control instanceof Label) {
+			Label lb = (Label)control;
+			Label label = new Label(parent, SWT.BORDER);
+			label.setText(lb.getText());
+			label.setLayoutData(lb.getLayoutData());
+			return;
+		}
+		
+		if (control instanceof Text) {
+			Text txt = (Text)control;
+			Text text = new Text(parent, SWT.BORDER);
+			text.setText(txt.getText());
+			text.setLayoutData(txt.getLayoutData());
+			return;
+		}
+
+		if (control instanceof Button) {
+			Button but = (Button)control;
+			Button button = new Button(parent, but.getStyle());
+			button.setLayoutData(but.getLayoutData());
+			return;
+		}
+
+		if (control instanceof Combo) {
+			
+			return;
+		}
+
 	}
 	
 }

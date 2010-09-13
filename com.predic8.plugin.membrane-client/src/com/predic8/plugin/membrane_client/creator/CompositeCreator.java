@@ -84,7 +84,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	public CompositeCreator(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.VERTICAL));
 
-		gridData = PluginUtil.createGridDataVertical();
+		gridData = PluginUtil.createGridData(GridData.FILL_HORIZONTAL, true, false);
 		gridLayout = PluginUtil.createGridlayout(1, 5);
 
 		scrollComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.DOUBLE_BUFFERED);
@@ -98,7 +98,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		root.setParent(scrollComposite);
 
-		root.setLayoutData(PluginUtil.createGridDataBoth());
+		root.setLayoutData(PluginUtil.createGridData(GridData.FILL_HORIZONTAL, GridData.FILL_VERTICAL, true, true));
 		stack.push(root);
 
 	}
@@ -202,7 +202,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		Composite composite = new Composite(stack.peek(), SWT.BORDER);
 		composite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_YELLOW));
 		composite.setLayout(gridLayout);
-
+        composite.setLayoutData(PluginUtil.createGridData(false, false));
+		
 		Composite header = new Composite(composite, SWT.NONE);
 		header.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
 		header.setLayout(PluginUtil.createGridlayout(3, 0));
@@ -211,7 +212,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		Composite child = new Composite(composite, SWT.NONE);
 		child.setLayout(gridLayout);
 		child.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
-		child.setLayoutData(gridData);
+		child.setLayoutData(PluginUtil.createGridData(false, false));
 		child.setData(SOAPConstants.PATH, ctx.getPath());
 
 		if ("0".equals(ctx.getElement().getMinOccurs()))
@@ -281,7 +282,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	private Composite createDescendent() {
 		Composite descendent = new Composite(stack.peek(), SWT.NONE);
 		descendent.setLayout(PluginUtil.createGridlayout(3, 5));
-		descendent.setLayoutData(gridData);
+		descendent.setLayoutData(PluginUtil.createGridData(false, false));
 		return descendent;
 	}
 
@@ -379,7 +380,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		
 		Control[] children = child.getChildren();
 		for (Control control : children) {
-			cloneControl(control, composite);
+			PluginUtil.cloneControl(control, composite);
 		}
 		
 		parent.layout();
@@ -388,55 +389,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		layoutScrollComposite();
 	    
 	}
-	
-	private void cloneControl(Control control, Composite parent) {
-		
-		if (control instanceof Composite) {
-			Composite comp = (Composite) control;
-			Composite clone = new Composite(parent, SWT.NONE);
-			clone.setLayout(comp.getLayout());
-			clone.setBackground(comp.getBackground());
-			clone.setLayoutData(comp.getLayoutData());
-			
-			Control[] children = comp.getChildren();
-			for (Control child : children) {
-				cloneControl(child, clone);
-			}
-			return;
-		}
-
-		if (control instanceof Label) {
-			Label lb = (Label)control;
-			Label label = new Label(parent, SWT.BORDER);
-			label.setText(lb.getText());
-			label.setLayoutData(lb.getLayoutData());
-			return;
-		}
-		
-		if (control instanceof Text) {
-			Text txt = (Text)control;
-			Text text = new Text(parent, SWT.BORDER);
-			text.setText(txt.getText());
-			text.setLayoutData(txt.getLayoutData());
-			return;
-		}
-
-		if (control instanceof Button) {
-			Button but = (Button)control;
-			Button button = new Button(parent, but.getStyle());
-			button.setLayoutData(but.getLayoutData());
-			
-			return;
-		}
-
-		if (control instanceof Combo) {
-			
-			return;
-		}
-
-	}
-	
-	
 	
 	@Override
 	public void createEnumerationFacet(EnumerationFacet facet, Object context) {

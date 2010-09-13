@@ -120,10 +120,10 @@ public class CreatorUtil {
 
 		if (source.getImage().equals(removeImage)) {
 			source.setImage(ADD_IMAGE);
-			CreatorUtil.updateControl(control, false, visible);
+			updateControl(control, false, visible);
 		} else {
 			source.setImage(removeImage);
-			CreatorUtil.updateControl(control, true, visible);
+			updateControl(control, true, visible);
 		}
 	}
 	
@@ -138,7 +138,7 @@ public class CreatorUtil {
 		bt.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				CreatorUtil.updateButtonControlEnable(control, (Button) e.getSource(), visible);
+				updateButtonControlEnable(control, (Button) e.getSource(), visible);
 			}
 		});
 	}

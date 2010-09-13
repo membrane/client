@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.TabFolder;
 
 import com.predic8.membrane.client.core.util.SOAModelUtil;
 import com.predic8.plugin.membrane_client.creator.CompositeCreator;
-import com.predic8.plugin.membrane_client.creator.CompositeCreatorUtil;
+import com.predic8.plugin.membrane_client.creator.CreatorUtil;
 import com.predic8.wsdl.BindingOperation;
 
 public class TemplateTabComposite extends AbstractTabComposite {
@@ -46,7 +46,7 @@ public class TemplateTabComposite extends AbstractTabComposite {
 		
 		creator.setDefinitions(operation.getDefinitions());
 		
-		creator.createComposite(SOAModelUtil.getPortTypeName(operation), operation.getName(), operation.getBinding().getName());
+		creator.buildComposite(SOAModelUtil.getPortTypeName(operation), operation.getName(), operation.getBinding().getName());
 		
 		this.checkWidget();
 		
@@ -60,7 +60,7 @@ public class TemplateTabComposite extends AbstractTabComposite {
 			return null;
 		
 		Map<String, String> result = new HashMap<String, String>();
-		CompositeCreatorUtil.generateOutput(creator.getRoot(), result);
+		CreatorUtil.generateOutput(creator.getRoot(), result);
 		return result;
 	}
 	

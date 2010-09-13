@@ -9,7 +9,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -23,8 +22,6 @@ import org.eclipse.swt.widgets.Label;
 
 import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
-import com.predic8.plugin.membrane_client.ImageKeys;
-import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.schema.Attribute;
 import com.predic8.schema.ComplexType;
@@ -64,10 +61,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private Composite root;
 
-	private Image removeImage = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CROSS_REMOVE).createImage();
-
-	private Image addImage = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_ADD_ELEMENT).createImage();
-
 	private Stack<Composite> stack = new Stack<Composite>();
 
 	public CompositeCreator(Composite parent) {
@@ -98,7 +91,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		root.setLayoutData(PluginUtil.createGridData(GridData.FILL_HORIZONTAL, GridData.FILL_VERTICAL, true, true));
 	}
 
-	public void createComposite(String portTypeName, String operationName, String bindingName) {
+	public void buildComposite(String portTypeName, String operationName, String bindingName) {
 
 		stack.clear();
 		stack.push(root);
@@ -209,7 +202,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		child.setData(SOAPConstants.PATH, ctx.getPath());
 
 		if ("0".equals(ctx.getElement().getMinOccurs()))
-			createAddRemoveButton(header, child, true);
+			CreatorUtil.createAddRemoveButton(header, child, true);
 
 		if ("unbounded".equals(ctx.getElement().getMaxOccurs())) {
 			createAddButton(header, child);
@@ -260,15 +253,14 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		Composite descendent = createDescendent();
 
-		CompositeCreatorUtil.createLabel(item.getName().toString(), descendent);
+		CreatorUtil.createLabel(item.getName().toString(), descendent);
 
-		Control control = CompositeCreatorUtil.createControl(descendent, getBuildInTypeName(item), restr);
+		Control control = CreatorUtil.createControl(descendent, getBuildInTypeName(item), restr);
 
 		if (control != null) {
 			control.setData(SOAPConstants.PATH, ((CompositeCreatorContext) ctx).getPath() + "/" + getItemName(item));
-			createAddRemoveButton(descendent, control, false);
+			CreatorUtil.createAddRemoveButton(descendent, control, false);
 		}
-
 	}
 
 	private Composite createDescendent() {
@@ -301,57 +293,17 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	private String getItemName(String str, boolean attr) {
 		return attr ? ("@" + str) : str;
 	}
-
-	private void createAddRemoveButton(Composite descendent, final Control control, final boolean visible) {
-		Button bt = new Button(descendent, SWT.PUSH);
-		bt.setImage(removeImage);
-		GridData gdBt = new GridData();
-		gdBt.widthHint = 10;
-		gdBt.heightHint = 10;
-		gdBt.horizontalIndent = 30;
-		bt.setLayoutData(gdBt);
-		bt.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				updateButtonControlEnable(control, (Button) e.getSource(), visible);
-			}
-		});
-	}
-
+	
 	private void createAddButton(Composite parent, final Composite child) {
-		Button bt = new Button(parent, SWT.PUSH);
-		bt.setImage(addImage);
-		GridData gdBt = new GridData();
-		gdBt.widthHint = 10;
-		gdBt.heightHint = 10;
-		gdBt.horizontalIndent = 30;
-		bt.setLayoutData(gdBt);
+		Button bt = CreatorUtil.createAddButton(parent);
 		bt.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Button b = (Button)e.getSource();
-				cloneAndAddChildComposite(b.getParent().getParent(), child); 
+				CreatorUtil.cloneAndAddChildComposite(b.getParent().getParent(), child); 
+				layoutScrollComposite();
 			}
 		});
-	}
-	
-	private void cloneAndAddChildComposite(Composite parent, Composite child) {
-		
-		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(child.getLayout());
-		composite.setBackground(child.getBackground());
-		composite.setLayoutData(child.getLayoutData());
-		
-		Control[] children = child.getChildren();
-		for (Control control : children) {
-			PluginUtil.cloneControl(control, composite);
-		}
-		
-		parent.layout();
-		parent.redraw();
-		
-		layoutScrollComposite();
-	    
 	}
 	
 	@Override
@@ -363,11 +315,11 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		CompositeCreatorContext ctx = (CompositeCreatorContext) context;
 
-		CompositeCreatorUtil.createLabel(ctx.getElement().getName().toString(), descendent);
+		CreatorUtil.createLabel(ctx.getElement().getName().toString(), descendent);
 		
-		Combo combo = CompositeCreatorUtil.createCombo(values, descendent, ctx);
+		Combo combo = CreatorUtil.createCombo(values, descendent, ctx);
 		
-		createAddRemoveButton(descendent, combo, false);
+		CreatorUtil.createAddRemoveButton(descendent, combo, false);
 	}
 	
 	public void setDefinitions(Definitions definitions) {
@@ -376,29 +328,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	public void dispose() {
 		scrollComposite.dispose();
-	}
-
-	private void updateButtonControlEnable(final Control control, Button source, boolean visible) {
-		if (control == null)
-			return;
-
-		if (source.getImage().equals(removeImage)) {
-			source.setImage(addImage);
-			updateControl(control, false, visible);
-		} else {
-			source.setImage(removeImage);
-			updateControl(control, true, visible);
-		}
-	}
-
-	private void updateControl(Control control, boolean status, boolean visible) {
-		if (control == null)
-			return;
-		if (visible)
-			control.setVisible(status);
-		else
-			control.setEnabled(status);
-
 	}
 
 	@Override
@@ -424,8 +353,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	@Override
 	public void createComplexContentRestriction(Restriction restriction, Object ctx) {
 		if (restriction.getModel() != null) {
-			SchemaComponent component = (SchemaComponent) restriction.getModel();
-			component.create(this, ctx);
+			((SchemaComponent) restriction.getModel()).create(this, ctx);
 		}
 
 		restriction.getAttributes();

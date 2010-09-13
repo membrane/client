@@ -65,8 +65,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private Definitions definitions;
 
-	private GridData gridData;
-
 	private GridLayout gridLayout;
 
 	private Composite root;
@@ -84,7 +82,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	public CompositeCreator(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.VERTICAL));
 
-		gridData = PluginUtil.createGridData(GridData.FILL_HORIZONTAL, true, false);
 		gridLayout = PluginUtil.createGridlayout(1, 5);
 
 		scrollComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.DOUBLE_BUFFERED);
@@ -556,25 +553,21 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	@Override
 	public void createLengthFacet(LengthFacet arg0, Object arg1) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void createMaxLengthFacet(MaxLengthFacet arg0, Object arg1) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void createMinLengthFacet(MinLengthFacet arg0, Object arg1) {
 		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void createPatternFacet(PatternFacet arg0, Object arg1) {
 		// TODO Auto-generated method stub
-		
 	}
 
 }

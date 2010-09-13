@@ -2,9 +2,7 @@ package com.predic8.plugin.membrane_client.creator;
 
 import groovy.xml.QName;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.swt.SWT;
@@ -22,7 +20,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
 import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
@@ -66,10 +63,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	private GridLayout gridLayout;
 
 	private Composite root;
-
-	private final int WIDGET_HEIGHT = 12;
-
-	private final int WIDGET_WIDTH = 120;
 
 	private Image removeImage = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CROSS_REMOVE).createImage();
 
@@ -267,9 +260,9 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		Composite descendent = createDescendent();
 
-		createLabel(item.getName().toString(), descendent);
+		CompositeCreatorUtil.createLabel(item.getName().toString(), descendent);
 
-		Control control = createControl(descendent, getBuildInTypeName(item), restr);
+		Control control = CompositeCreatorUtil.createControl(descendent, getBuildInTypeName(item), restr);
 
 		if (control != null) {
 			control.setData(SOAPConstants.PATH, ((CompositeCreatorContext) ctx).getPath() + "/" + getItemName(item));
@@ -299,34 +292,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		}
 
 		throw new RuntimeException("Can not get build in type name for item: " + item);
-	}
-
-	private Control createControl(Composite descendent, String localPart, BaseRestriction restriction) {
-		if ("string".equals(localPart)) {
-			if (restriction != null) {
-				
-			}
-			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		} else if ("boolean".equals(localPart)) {
-			return PluginUtil.createCheckButton(descendent, 12, 12);
-		} else if ("int".equals(localPart)) {
-			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		} else if ("dateTime".equals(localPart)) {
-			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		}
-
-		System.err.println("Type is not supported yet: " + localPart);
-
-		return null;
-	}
-
-	private void createLabel(String text, Composite descendent) {
-		GridData gd = new GridData();
-		gd.widthHint = WIDGET_WIDTH;
-		gd.heightHint = WIDGET_HEIGHT;
-		Label label = new Label(descendent, SWT.NONE);
-		label.setLayoutData(gd);
-		label.setText(text);
 	}
 
 	private String getItemName(Declaration item) {
@@ -398,21 +363,12 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		CompositeCreatorContext ctx = (CompositeCreatorContext) context;
 
-		createLabel(ctx.getElement().getName().toString(), descendent);
+		CompositeCreatorUtil.createLabel(ctx.getElement().getName().toString(), descendent);
 		
-		Combo combo = PluginUtil.createCombo(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		combo.setData(SOAPConstants.PATH, ctx.getPath() + "/" + ctx.getElement().getName());
-		for (String str : values) {
-			combo.add(str);
-		}
-
-		if (values.size() > 0) {
-			combo.select(0);
-		}
+		Combo combo = CompositeCreatorUtil.createCombo(values, descendent, ctx);
 		
 		createAddRemoveButton(descendent, combo, false);
 	}
-
 	
 	public void setDefinitions(Definitions definitions) {
 		this.definitions = definitions;
@@ -420,41 +376,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	public void dispose() {
 		scrollComposite.dispose();
-	}
-
-	private void generateOutput(Control control, Map<String, String> map) {
-		if (control instanceof Composite) {
-			Control[] children = ((Composite) control).getChildren();
-			for (Control child : children) {
-				generateOutput(child, map);
-			}
-			return;
-		}
-
-		if (control instanceof Text) {
-			map.put(control.getData(SOAPConstants.PATH).toString(), ((Text) control).getText());
-			return;
-		}
-
-		if (control instanceof Button) {
-			map.put(control.getData(SOAPConstants.PATH).toString(), Boolean.toString(((Button) control).getSelection()));
-			return;
-		}
-
-		if (control instanceof Combo) {
-			Combo combo = (Combo)control;
-			map.put(control.getData(SOAPConstants.PATH).toString(), combo.getItem(combo.getSelectionIndex()));
-			return;
-		}
-
-	}
-
-	
-	
-	public Map<String, String> generateOutput() {
-		Map<String, String> result = new HashMap<String, String>();
-		generateOutput(root, result);
-		return result;
 	}
 
 	private void updateButtonControlEnable(final Control control, Button source, boolean visible) {
@@ -492,8 +413,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			}
 		}
 		
-		SchemaComponent model = (SchemaComponent)ext.getModel();
-		model.create(this, ctx);
+		((SchemaComponent)ext.getModel()).create(this, ctx);
 		
 		List<Attribute> attributes = ext.getAttributes();
 		for (Attribute attribute : attributes) {
@@ -566,4 +486,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		// TODO Auto-generated method stub
 	}
 
+	public Composite getRoot() {
+		return root;
+	}
+	
 }

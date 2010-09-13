@@ -14,12 +14,14 @@
 
 package com.predic8.plugin.membrane_client.tabcomposites;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.widgets.TabFolder;
 
 import com.predic8.membrane.client.core.util.SOAModelUtil;
 import com.predic8.plugin.membrane_client.creator.CompositeCreator;
+import com.predic8.plugin.membrane_client.creator.CompositeCreatorUtil;
 import com.predic8.wsdl.BindingOperation;
 
 public class TemplateTabComposite extends AbstractTabComposite {
@@ -57,7 +59,9 @@ public class TemplateTabComposite extends AbstractTabComposite {
 		if (creator == null)
 			return null;
 		
-		return creator.generateOutput();
+		Map<String, String> result = new HashMap<String, String>();
+		CompositeCreatorUtil.generateOutput(creator.getRoot(), result);
+		return result;
 	}
 	
 }

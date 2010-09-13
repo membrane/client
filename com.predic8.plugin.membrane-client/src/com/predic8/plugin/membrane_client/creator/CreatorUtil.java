@@ -8,6 +8,7 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -190,4 +191,16 @@ public class CreatorUtil {
 		return root;
 	}
 
+	public static void layoutScrolledComposites(ScrolledComposite scrollComposite, Composite root) {
+		root.layout();
+		Point point = root.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+		scrollComposite.setMinSize(point);
+		root.setSize(point);
+
+		scrollComposite.setContent(root);
+
+		scrollComposite.layout();
+		root.layout();
+	}
+	
 }

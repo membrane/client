@@ -9,7 +9,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -64,15 +63,10 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	public CompositeCreator(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.VERTICAL));
-
 		gridLayout = PluginUtil.createGridlayout(1, 5);
-
 		scrollComposite = CreatorUtil.createScrollComposite(parent);
-
 		root = CreatorUtil.createRootComposite(scrollComposite);
-		
 		stack.push(root);
-
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -108,29 +102,15 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			}
 		}
 
-		layoutScrollComposite();
-
-	}
-
-	private void layoutScrollComposite() {
-		root.layout();
-		Point point = root.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-		scrollComposite.setMinSize(point);
-		root.setSize(point);
-
-		scrollComposite.setContent(root);
-
-		scrollComposite.layout();
-		root.layout();
+		CreatorUtil.layoutScrolledComposites(scrollComposite, root);
 	}
 
 	@SuppressWarnings("rawtypes")
 	private void handleMsgParts(List msgParts) {
 		for (Object part : msgParts) {
-			Element element = definitions.getElement(((Part) part).getElement());
 			CompositeCreatorContext ctx = new CompositeCreatorContext();
 			ctx.setPath("xpath:");
-			element.create(this, ctx);
+			definitions.getElement(((Part) part).getElement()).create(this, ctx);
 		}
 	}
 
@@ -286,7 +266,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			public void widgetSelected(SelectionEvent e) {
 				Button b = (Button)e.getSource();
 				CreatorUtil.cloneAndAddChildComposite(b.getParent().getParent(), child); 
-				layoutScrollComposite();
+				CreatorUtil.layoutScrolledComposites(scrollComposite, root);
 			}
 		});
 	}

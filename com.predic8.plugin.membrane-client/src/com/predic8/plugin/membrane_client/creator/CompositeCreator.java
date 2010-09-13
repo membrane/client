@@ -35,7 +35,6 @@ import com.predic8.schema.Declaration;
 import com.predic8.schema.Element;
 import com.predic8.schema.Extension;
 import com.predic8.schema.Restriction;
-import com.predic8.schema.Schema;
 import com.predic8.schema.SchemaComponent;
 import com.predic8.schema.SimpleType;
 import com.predic8.schema.TypeDefinition;
@@ -52,7 +51,6 @@ import com.predic8.wsdl.BindingElement;
 import com.predic8.wsdl.BindingInput;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Definitions;
-import com.predic8.wsdl.Input;
 import com.predic8.wsdl.Message;
 import com.predic8.wsdl.Operation;
 import com.predic8.wsdl.Part;
@@ -84,20 +82,27 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		gridLayout = PluginUtil.createGridlayout(1, 5);
 
+		createScrollComposite(parent);
+
+		createRootComposite();
+		
+		stack.push(root);
+
+	}
+
+	private void createScrollComposite(Composite parent) {
 		scrollComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.DOUBLE_BUFFERED);
 		scrollComposite.setExpandHorizontal(true);
 		scrollComposite.setExpandVertical(true);
 		scrollComposite.setLayout(new GridLayout());
+	}
 
+	private void createRootComposite() {
 		root = new Composite(scrollComposite, SWT.NONE);
 		root.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
 		root.setLayout(gridLayout);
-
 		root.setParent(scrollComposite);
-
 		root.setLayoutData(PluginUtil.createGridData(GridData.FILL_HORIZONTAL, GridData.FILL_VERTICAL, true, true));
-		stack.push(root);
-
 	}
 
 	public void createComposite(String portTypeName, String operationName, String bindingName) {
@@ -108,9 +113,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		Operation operation = definitions.getOperation(operationName, portTypeName);
 		BindingOperation bindingOperation = definitions.getBinding(bindingName).getOperation(operationName);
 
-		Input input = operation.getInput();
-
-		Message msg = input.getMessage();
+		Message msg = operation.getInput().getMessage();
 
 		List<SOAPHeader> bodies = SOAModelUtil.getHeaderElements(bindingOperation);
 		CompositeCreatorContext ctx = new CompositeCreatorContext();
@@ -244,8 +247,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			return;
 		}
 
-		Schema schema = element.getSchema();
-		TypeDefinition refType = schema.getType(element.getType());
+		TypeDefinition refType = element.getSchema().getType(element.getType());
 
 		if (refType != null) {
 			try {
@@ -394,16 +396,10 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		Composite descendent = createDescendent();
 
-		GridData gd = new GridData();
-		gd.widthHint = WIDGET_WIDTH;
-		gd.heightHint = WIDGET_HEIGHT;
-
 		CompositeCreatorContext ctx = (CompositeCreatorContext) context;
 
-		Label label = new Label(descendent, SWT.NONE);
-		label.setText(ctx.getElement().getName().toString());
-		label.setLayoutData(gd);
-
+		createLabel(ctx.getElement().getName().toString(), descendent);
+		
 		Combo combo = PluginUtil.createCombo(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
 		combo.setData(SOAPConstants.PATH, ctx.getPath() + "/" + ctx.getElement().getName());
 		for (String str : values) {

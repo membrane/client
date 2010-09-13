@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import com.predic8.membrane.client.core.SOAPConstants;
+import com.predic8.membrane.client.core.SchemaConstants;
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
@@ -68,19 +69,28 @@ public class CreatorUtil {
 	}
 	
 	public static Control createControl(Composite descendent, String localPart, BaseRestriction restriction) {
-		if ("string".equals(localPart)) {
+		if (SchemaConstants.TYPE_NAME_STRING.equals(localPart)) {
 			if (restriction != null) {
 				
 			}
 			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		} else if ("boolean".equals(localPart)) {
+		} else if (SchemaConstants.TYPE_NAME_BOOLEAN.equals(localPart)) {
 			return PluginUtil.createCheckButton(descendent, 12, 12);
-		} else if ("int".equals(localPart)) {
+		} else if (SchemaConstants.TYPE_NAME_INT.equals(localPart)) {
 			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		} else if ("dateTime".equals(localPart)) {
+		} 
+		
+		else if (SchemaConstants.TYPE_NAME_POSITIVE_INTEGER.equals(localPart)) {
+			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
+		} 
+		else if (SchemaConstants.TYPE_NAME_DATE_TIME.equals(localPart)) {
 			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
 		}
-
+		else if (SchemaConstants.TYPE_NAME_FLOAT.equals(localPart)) {
+			//generate web front end prints suggestions (e.g. 0.5)
+			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
+		}
+		
 		System.err.println("Type is not supported yet: " + localPart);
 
 		return null;

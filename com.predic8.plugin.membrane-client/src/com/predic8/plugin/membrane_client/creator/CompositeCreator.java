@@ -245,9 +245,16 @@ public class CompositeCreator extends AbstractSchemaCreator {
 				BaseRestriction restriction = (BaseRestriction) ((SimpleType) element.getEmbeddedType()).getRestriction();
 				QName qname = (QName) restriction.getBase();
 				return qname.getLocalPart();
+			} else {
+				//TODO here we have to adjust, getEmbededType() was null
 			}
 		}
 
+		if (item instanceof Attribute) {
+			Attribute attribute = (Attribute)item;
+			//TODO Can not get build in type name for item: com.predic8.schema.Attribute@a2da07
+		}
+		
 		throw new RuntimeException("Can not get build in type name for item: " + item);
 	}
 

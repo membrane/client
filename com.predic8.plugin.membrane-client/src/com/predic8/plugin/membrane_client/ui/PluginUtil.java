@@ -109,6 +109,18 @@ public class PluginUtil {
 	
 	public static void cloneControl(Control control, Composite parent) {
 		
+		if (control instanceof Combo) {
+			Combo cb = (Combo)control;
+			Combo combo = new Combo(parent, cb.getStyle());
+			combo.setItems(cb.getItems());
+			
+			if (cb.getSelectionIndex() >= 0)
+				combo.select(cb.getSelectionIndex());
+			combo.setLayoutData(cb.getLayoutData());
+			return;
+		}
+		
+		
 		if (control instanceof Composite) {
 			Composite comp = (Composite) control;
 			Composite clone = new Composite(parent, SWT.NONE);
@@ -152,15 +164,7 @@ public class PluginUtil {
 			return;
 		}
 
-		if (control instanceof Combo) {
-			Combo cb = (Combo)control;
-			Combo combo = new Combo(parent, cb.getStyle());
-			combo.setItems(cb.getItems());
-			if (cb.getSelection() != null)
-				combo.setSelection(cb.getSelection());
-			combo.setLayoutData(cb.getLayoutData());
-			return;
-		}
+		
 
 	}
 	

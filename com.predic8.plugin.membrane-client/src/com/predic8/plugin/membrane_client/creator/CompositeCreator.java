@@ -41,7 +41,6 @@ import com.predic8.schema.restriction.facet.MaxLengthFacet;
 import com.predic8.schema.restriction.facet.MinLengthFacet;
 import com.predic8.schema.restriction.facet.PatternFacet;
 import com.predic8.wsdl.BindingElement;
-import com.predic8.wsdl.BindingInput;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Definitions;
 import com.predic8.wsdl.Message;
@@ -81,9 +80,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		createHeaders(bindingOperation, operation.getInput().getMessage());
 
-		BindingInput bInput = bindingOperation.getInput();
-
-		List<BindingElement> list = bInput.getBindingElements();
+		List<BindingElement> list = bindingOperation.getInput().getBindingElements();
 
 		for (BindingElement object : list) {
 			if (object instanceof SOAPBody) {
@@ -161,14 +158,19 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		Composite header = new Composite(composite, SWT.NONE);
 		header.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
 		header.setLayout(PluginUtil.createGridlayout(3, 0));
+		
+		
 		new Label(header, SWT.NONE).setText(PluginUtil.getComplexTypeCaption(ctx));
-
+		
+		
 		Composite child = new Composite(composite, SWT.NONE);
 		child.setLayout(gridLayout);
 		child.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
 		child.setLayoutData(PluginUtil.createGridData(false, false));
 		child.setData(SOAPConstants.PATH, ctx.getPath());
 
+		
+		//here we got a problem, what happens by [0,unbounded) ? 
 		if ("0".equals(ctx.getElement().getMinOccurs()))
 			CreatorUtil.createAddRemoveButton(header, child, true);
 
@@ -341,8 +343,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		if (restriction.getModel() != null) {
 			((SchemaComponent) restriction.getModel()).create(this, ctx);
 		}
-
-		restriction.getAttributes();
 
 		List<Attribute> attrs = restriction.getAttributes();
 		for (Attribute attribute : attrs) {

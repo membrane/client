@@ -8,9 +8,9 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
+import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.plugin.membrane_client.creator.CompositeCreatorContext;
 
 public class PluginUtil {
@@ -110,24 +110,24 @@ public class PluginUtil {
 	public static void cloneControl(Control control, Composite parent) {
 		
 		if (control instanceof Combo) {
-			Combo cb = (Combo)control;
-			Combo combo = new Combo(parent, cb.getStyle());
-			combo.setItems(cb.getItems());
+			Combo obj = (Combo)control;
+			Combo clone = new Combo(parent, obj.getStyle());
+			clone.setItems(obj.getItems());
 			
-			if (cb.getSelectionIndex() >= 0)
-				combo.select(cb.getSelectionIndex());
-			combo.setLayoutData(cb.getLayoutData());
+			if (obj.getSelectionIndex() >= 0)
+				clone.select(obj.getSelectionIndex());
+			copyDataAndProperties(obj, clone);
 			return;
 		}
 		
 		
 		if (control instanceof Composite) {
-			Composite comp = (Composite) control;
+			Composite obj = (Composite) control;
 			Composite clone = new Composite(parent, SWT.NONE);
-			clone.setLayout(comp.getLayout());
-			clone.setBackground(comp.getBackground());
-			clone.setLayoutData(comp.getLayoutData());
-			Control[] children = comp.getChildren();
+			clone.setLayout(obj.getLayout());
+			clone.setBackground(obj.getBackground());
+			copyDataAndProperties(obj, clone);
+			Control[] children = obj.getChildren();
 			for (Control child : children) {
 				cloneControl(child, clone);
 			}
@@ -135,37 +135,34 @@ public class PluginUtil {
 		}
 
 		if (control instanceof Label) {
-			Label lb = (Label)control;
-			Label label = new Label(parent, lb.getStyle());
-			label.setText(lb.getText());
-			label.setLayoutData(lb.getLayoutData());
+			Label obj = (Label)control;
+			Label clone = new Label(parent, obj.getStyle());
+			clone.setText(obj.getText());
+			copyDataAndProperties(obj, clone);
 			return;
 		}
 		
 		if (control instanceof Text) {
-			Text txt = (Text)control;
-			Text text = new Text(parent, txt.getStyle());
-			text.setLayoutData(txt.getLayoutData());
+			Text obj = (Text)control;
+			Text clone = new Text(parent, obj.getStyle());
+			copyDataAndProperties(obj, clone);
 			return;
 		}
 
 		if (control instanceof Button) {
-			Button but = (Button)control;
-			Button button = new Button(parent, but.getStyle());
-			button.setImage(but.getImage());
-			Listener[] listeners = but.getListeners(SWT.Selection);
-
-			if (listeners != null && listeners.length > 0) {
-				for(int i = 0; i < listeners.length; i ++) {
-					button.addListener(SWT.Selection, listeners[i]);
-				}
-			}
-			button.setLayoutData(but.getLayoutData());
+			Button obj = (Button)control;
+			Button clone = new Button(parent, obj.getStyle());
+			clone.setImage(obj.getImage());
+			copyDataAndProperties(obj, clone);
 			return;
 		}
-
-		
-
+	}
+	
+	private static void copyDataAndProperties(Control obj, Control clone) {
+		clone.setLayoutData(obj.getLayoutData());
+		clone.setData(obj.getData());
+		clone.setData(SOAPConstants.PATH, obj.getData(SOAPConstants.PATH));
+		clone.setEnabled(obj.getEnabled());
 	}
 	
 }

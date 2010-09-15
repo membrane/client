@@ -79,15 +79,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		Operation operation = definitions.getOperation(operationName, portTypeName);
 		BindingOperation bindingOperation = definitions.getBinding(bindingName).getOperation(operationName);
 
-		Message msg = operation.getInput().getMessage();
-
-		List<SOAPHeader> bodies = SOAModelUtil.getHeaderElements(bindingOperation);
-		CompositeCreatorContext ctx = new CompositeCreatorContext();
-		ctx.setPath("xpath:");
-		for (SOAPHeader header : bodies) {
-			Part part = (Part) msg.getPart(header.getPart());
-			definitions.getElement(part.getElement()).create(this, ctx);
-		}
+		createHeaders(bindingOperation, operation.getInput().getMessage());
 
 		BindingInput bInput = bindingOperation.getInput();
 
@@ -104,6 +96,16 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		}
 
 		CreatorUtil.layoutScrolledComposites(scrollComposite, root);
+	}
+
+	private void createHeaders(BindingOperation bindingOperation, Message msg) {
+		List<SOAPHeader> bodies = SOAModelUtil.getHeaderElements(bindingOperation);
+		CompositeCreatorContext ctx = new CompositeCreatorContext();
+		ctx.setPath("xpath:");
+		for (SOAPHeader header : bodies) {
+			Part part = (Part) msg.getPart(header.getPart());
+			definitions.getElement(part.getElement()).create(this, ctx);
+		}
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -295,15 +297,13 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	@Override
 	public void createEnumerationFacet(EnumerationFacet facet, Object context) {
 
-		List<String> values = facet.getValues();
-
 		Composite descendent = createDescendent();
 
 		CompositeCreatorContext ctx = (CompositeCreatorContext) context;
 
 		CreatorUtil.createLabel(ctx.getElement().getName().toString(), descendent);
 		
-		Combo combo = CreatorUtil.createCombo(values, descendent, ctx);
+		Combo combo = CreatorUtil.createCombo(facet.getValues(), descendent, ctx);
 		
 		CreatorUtil.createAddRemoveButton(descendent, combo, false);
 	}

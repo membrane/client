@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 
 import com.predic8.plugin.membrane_client.creator.CompositeCreatorContext;
@@ -123,7 +124,7 @@ public class PluginUtil {
 
 		if (control instanceof Label) {
 			Label lb = (Label)control;
-			Label label = new Label(parent, SWT.BORDER);
+			Label label = new Label(parent, lb.getStyle());
 			label.setText(lb.getText());
 			label.setLayoutData(lb.getLayoutData());
 			return;
@@ -131,8 +132,7 @@ public class PluginUtil {
 		
 		if (control instanceof Text) {
 			Text txt = (Text)control;
-			Text text = new Text(parent, SWT.BORDER);
-			text.setText(txt.getText());
+			Text text = new Text(parent, txt.getStyle());
 			text.setLayoutData(txt.getLayoutData());
 			return;
 		}
@@ -140,12 +140,25 @@ public class PluginUtil {
 		if (control instanceof Button) {
 			Button but = (Button)control;
 			Button button = new Button(parent, but.getStyle());
+			button.setImage(but.getImage());
+			Listener[] listeners = but.getListeners(SWT.Selection);
+
+			if (listeners != null && listeners.length > 0) {
+				for(int i = 0; i < listeners.length; i ++) {
+					button.addListener(SWT.Selection, listeners[i]);
+				}
+			}
 			button.setLayoutData(but.getLayoutData());
 			return;
 		}
 
 		if (control instanceof Combo) {
-			
+			Combo cb = (Combo)control;
+			Combo combo = new Combo(parent, cb.getStyle());
+			combo.setItems(cb.getItems());
+			if (cb.getSelection() != null)
+				combo.setSelection(cb.getSelection());
+			combo.setLayoutData(cb.getLayoutData());
 			return;
 		}
 

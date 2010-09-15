@@ -80,6 +80,13 @@ public class CreatorUtil {
 			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
 		} 
 		
+		else if (SchemaConstants.TYPE_NAME_INTEGER.equals(localPart)) {
+			if (restriction != null) {
+				
+			}
+			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
+		} 
+		
 		else if (SchemaConstants.TYPE_NAME_POSITIVE_INTEGER.equals(localPart)) {
 			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
 		} 
@@ -90,6 +97,13 @@ public class CreatorUtil {
 			//generate web front end prints suggestions (e.g. 0.5)
 			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
 		}
+		
+		else if (SchemaConstants.TYPE_NAME_DOUBLE.equals(localPart)) {
+			//generate web front end prints suggestions (e.g. 0.5)
+			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
+		}
+		
+		
 		
 		System.err.println("Type is not supported yet: " + localPart);
 

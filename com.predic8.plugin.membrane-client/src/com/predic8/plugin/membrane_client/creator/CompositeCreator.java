@@ -28,6 +28,7 @@ import com.predic8.schema.Element;
 import com.predic8.schema.Extension;
 import com.predic8.schema.Restriction;
 import com.predic8.schema.SchemaComponent;
+import com.predic8.schema.Sequence;
 import com.predic8.schema.SimpleType;
 import com.predic8.schema.TypeDefinition;
 import com.predic8.schema.creator.AbstractSchemaCreator;
@@ -127,7 +128,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 			if (cType.getQname() != null) {
 
-				createChildComposite(ctx);
+				createChildComposite(newCtx); //???????? hier war old ctx
 
 				writeAttributes(cType, newCtx);
 				if (model != null) {
@@ -245,14 +246,27 @@ public class CompositeCreator extends AbstractSchemaCreator {
 				BaseRestriction restriction = (BaseRestriction) ((SimpleType) element.getEmbeddedType()).getRestriction();
 				QName qname = (QName) restriction.getBase();
 				return qname.getLocalPart();
-			} else {
+			} else if (element.getEmbeddedType() instanceof ComplexType) {
+				
+				ComplexType ctp = (ComplexType)element.getEmbeddedType();
+				Sequence sequence = (Sequence)ctp.getSequence();
+				List<Element> elements = (List<Element>)sequence.getElements();
+				for (Element element2 : elements) {
+					System.out.println("take care of it: "  +  element2);
+				}
 				//TODO here we have to adjust, getEmbededType() was null
+			} else {
+				System.err.println("case description:  getType()==null  getEmbededType()==null ");
+				return "";
 			}
 		}
 
 		if (item instanceof Attribute) {
 			Attribute attribute = (Attribute)item;
-			//TODO Can not get build in type name for item: com.predic8.schema.Attribute@a2da07
+			SimpleType stp = (SimpleType)attribute.getSimpleType();
+			BaseRestriction restriction = (BaseRestriction)stp.getRestriction();
+			QName qname = (QName) restriction.getBase();
+			return qname.getLocalPart();
 		}
 		
 		throw new RuntimeException("Can not get build in type name for item: " + item);

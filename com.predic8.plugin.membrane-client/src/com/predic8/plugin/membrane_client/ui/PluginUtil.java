@@ -108,54 +108,72 @@ public class PluginUtil {
 	}
 	
 	public static void cloneControl(Control control, Composite parent) {
-		
 		if (control instanceof Combo) {
-			Combo obj = (Combo)control;
-			Combo clone = new Combo(parent, obj.getStyle());
-			clone.setItems(obj.getItems());
-			
-			if (obj.getSelectionIndex() >= 0)
-				clone.select(obj.getSelectionIndex());
-			copyDataAndProperties(obj, clone);
+			cloneCombo(control, parent);
 			return;
 		}
 		
-		
 		if (control instanceof Composite) {
-			Composite obj = (Composite) control;
-			Composite clone = new Composite(parent, SWT.NONE);
-			clone.setLayout(obj.getLayout());
-			clone.setBackground(obj.getBackground());
-			copyDataAndProperties(obj, clone);
-			Control[] children = obj.getChildren();
-			for (Control child : children) {
-				cloneControl(child, clone);
-			}
+			cloneComposite(control, parent);
 			return;
 		}
 
 		if (control instanceof Label) {
-			Label obj = (Label)control;
-			Label clone = new Label(parent, obj.getStyle());
-			clone.setText(obj.getText());
-			copyDataAndProperties(obj, clone);
+			cloneLabel(control, parent);
 			return;
 		}
 		
 		if (control instanceof Text) {
-			Text obj = (Text)control;
-			Text clone = new Text(parent, obj.getStyle());
-			copyDataAndProperties(obj, clone);
+			cloneText(control, parent);
 			return;
 		}
 
 		if (control instanceof Button) {
-			Button obj = (Button)control;
-			Button clone = new Button(parent, obj.getStyle());
-			clone.setImage(obj.getImage());
-			copyDataAndProperties(obj, clone);
+			cloneButton(control, parent);
 			return;
 		}
+	}
+
+	private static void cloneCombo(Control control, Composite parent) {
+		Combo obj = (Combo)control;
+		Combo clone = new Combo(parent, obj.getStyle());
+		clone.setItems(obj.getItems());
+		
+		if (obj.getSelectionIndex() >= 0)
+			clone.select(obj.getSelectionIndex());
+		copyDataAndProperties(obj, clone);
+	}
+
+	private static void cloneComposite(Control control, Composite parent) {
+		Composite obj = (Composite) control;
+		Composite clone = new Composite(parent, SWT.NONE);
+		clone.setLayout(obj.getLayout());
+		clone.setBackground(obj.getBackground());
+		copyDataAndProperties(obj, clone);
+		Control[] children = obj.getChildren();
+		for (Control child : children) {
+			cloneControl(child, clone);
+		}
+	}
+
+	private static void cloneLabel(Control control, Composite parent) {
+		Label obj = (Label)control;
+		Label clone = new Label(parent, obj.getStyle());
+		clone.setText(obj.getText());
+		copyDataAndProperties(obj, clone);
+	}
+
+	private static void cloneText(Control control, Composite parent) {
+		Text obj = (Text)control;
+		Text clone = new Text(parent, obj.getStyle());
+		copyDataAndProperties(obj, clone);
+	}
+
+	private static void cloneButton(Control control, Composite parent) {
+		Button obj = (Button)control;
+		Button clone = new Button(parent, obj.getStyle());
+		clone.setImage(obj.getImage());
+		copyDataAndProperties(obj, clone);
 	}
 	
 	private static void copyDataAndProperties(Control obj, Control clone) {

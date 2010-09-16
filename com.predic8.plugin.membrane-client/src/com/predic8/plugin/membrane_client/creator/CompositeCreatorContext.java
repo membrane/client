@@ -59,7 +59,7 @@ public class CompositeCreatorContext extends CreatorContext {
 		return "0".equals(getElement().getMinOccurs());
 	}
 	
-	public boolean isUnbounded() {
+	public boolean isElementUnbounded() {
 		if (getElement() == null)
 			return false;
 		return "unbounded".equals(getElement().getMaxOccurs());

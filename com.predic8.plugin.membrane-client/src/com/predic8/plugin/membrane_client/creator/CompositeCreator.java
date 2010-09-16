@@ -176,7 +176,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		if (ctx.isElementOptional())
 			CreatorUtil.createAddRemoveButton(header, child, true);
 
-		if (ctx.isUnbounded()) {
+		if (ctx.isElementUnbounded()) {
 			createAddButton(header, child);
 		}
 		
@@ -312,7 +312,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		
 		Combo combo = CreatorUtil.createCombo(facet.getValues(), descendent, ctx);
 		
-		CreatorUtil.createAddRemoveButton(descendent, combo, false);
+		if (((CompositeCreatorContext)ctx).isElementOptional())
+			CreatorUtil.createAddRemoveButton(descendent, combo, false);
 	}
 	
 	public void setDefinitions(Definitions definitions) {

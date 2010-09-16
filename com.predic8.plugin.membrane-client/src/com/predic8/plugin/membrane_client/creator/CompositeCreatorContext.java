@@ -53,4 +53,16 @@ public class CompositeCreatorContext extends CreatorContext {
 		this.path = path;
 	}
 	
+	public boolean isElementOptional() {
+		if (getElement() == null)
+			return false;
+		return "0".equals(getElement().getMinOccurs());
+	}
+	
+	public boolean isUnbounded() {
+		if (getElement() == null)
+			return false;
+		return "unbounded".equals(getElement().getMaxOccurs());
+	}
+	
 }

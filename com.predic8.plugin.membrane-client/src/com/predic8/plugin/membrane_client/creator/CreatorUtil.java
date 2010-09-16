@@ -104,6 +104,11 @@ public class CreatorUtil {
 		}
 		
 		
+		else if (SchemaConstants.TYPE_NAME_DECIMAL.equals(localPart)) {
+			//generate web front end prints suggestions (e.g. 0.5)
+			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
+		}
+		
 		
 		System.err.println("Type is not supported yet: " + localPart);
 

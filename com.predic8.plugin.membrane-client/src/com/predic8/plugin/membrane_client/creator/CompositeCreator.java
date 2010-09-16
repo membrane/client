@@ -33,6 +33,8 @@ import com.predic8.schema.SimpleType;
 import com.predic8.schema.TypeDefinition;
 import com.predic8.schema.creator.AbstractSchemaCreator;
 import com.predic8.schema.restriction.BaseRestriction;
+import com.predic8.schema.restriction.DecimalRestriction;
+import com.predic8.schema.restriction.PositiveIntegerRestriction;
 import com.predic8.schema.restriction.StringRestriction;
 import com.predic8.schema.restriction.facet.EnumerationFacet;
 import com.predic8.schema.restriction.facet.Facet;
@@ -171,10 +173,10 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		
 		//here we got a problem, what happens by [0,unbounded) ? 
-		if ("0".equals(ctx.getElement().getMinOccurs()))
+		if (ctx.isElementOptional())
 			CreatorUtil.createAddRemoveButton(header, child, true);
 
-		if ("unbounded".equals(ctx.getElement().getMaxOccurs())) {
+		if (ctx.isUnbounded()) {
 			createAddButton(header, child);
 		}
 		
@@ -227,10 +229,13 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		Control control = CreatorUtil.createControl(descendent, getBuildInTypeName(item), restr);
 
-		if (control != null) {
-			control.setData(SOAPConstants.PATH, ((CompositeCreatorContext) ctx).getPath() + "/" + getItemName(item));
+		if (control == null) 
+			return;
+		
+		control.setData(SOAPConstants.PATH, ((CompositeCreatorContext) ctx).getPath() + "/" + getItemName(item));
+		if (((CompositeCreatorContext)ctx).isElementOptional())
 			CreatorUtil.createAddRemoveButton(descendent, control, false);
-		}
+		
 	}
 
 	private Composite createDescendent() {
@@ -350,33 +355,45 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		}
 	}
 
+	private void createSimpleRestr(BaseRestriction restriction, Object ctx) {
+		List<Facet> list = restriction.getFacets();
+		if (list != null && !list.isEmpty()) {
+			for (Facet object : list) {
+				if (object instanceof EnumerationFacet) {
+					super.createSimpleRestriction(restriction, ctx);
+					return;
+				}
+			}
+		}
+
+		TypeDefinition type = (TypeDefinition) restriction.getParent();
+		
+		if (type.getParent() instanceof Element) {
+			Element element = (Element) type.getParent();
+			writeInputForBuildInType(element, ctx, restriction);
+		}
+	}
+	
 	@Override
 	public void createSimpleRestriction(BaseRestriction restriction, Object ctx) {
 		
 		if (restriction instanceof StringRestriction) {
-
-			StringRestriction strRest = (StringRestriction) restriction;
-
-			List<Facet> list = strRest.getFacets();
-			if (list != null && !list.isEmpty()) {
-				for (Facet object : list) {
-					if (object instanceof EnumerationFacet) {
-						super.createSimpleRestriction(restriction, ctx);
-						return;
-					}
-				}
-			}
-
-			TypeDefinition type = (TypeDefinition) strRest.getParent();
-
-			if (type.getParent() instanceof Element) {
-				Element element = (Element) type.getParent();
-
-				writeInputForBuildInType(element, ctx, strRest);
-			}
+			createSimpleRestr(restriction, ctx); 
 			return;
 		}
 
+		else if ( restriction instanceof PositiveIntegerRestriction ) {
+			createSimpleRestr(restriction, ctx); 
+			return;	
+		}
+		
+		else if ( restriction instanceof DecimalRestriction ) {
+			createSimpleRestr(restriction, ctx); 
+			return;
+		}
+		
+		System.err.println("base restriction has type: " + restriction.getClass().getName());
+		
 		super.createSimpleRestriction(restriction, ctx);
 	}
 

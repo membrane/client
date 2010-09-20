@@ -23,6 +23,14 @@ import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.membrane.client.core.SchemaConstants;
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
+import com.predic8.plugin.membrane_client.creator.typecreators.BooleanCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.DateTimeCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.DecimalCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.DoubleCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.FloatCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.IntegerCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.PositiveIntegerCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.StringCreator;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.schema.restriction.BaseRestriction;
 
@@ -35,6 +43,19 @@ public class CreatorUtil {
 	public static final Image removeImage = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CROSS_REMOVE).createImage();
 
 	public static final Image ADD_IMAGE = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_ADD_ELEMENT).createImage();
+	
+	
+	public static final String REGEX_POSITIVE_INT ="[0-9]?";
+	
+	public static final String REGEX_NON_NEGATIVE_INT ="[0-9]?";
+	
+	public static final String REGEX_INT = "(-)?" + REGEX_POSITIVE_INT;
+	
+	
+	public static final String REGEX_NON_NEGATIVE_FLOAT =  "(\\d){1,10}\\.(\\d){1,10}";
+	
+	public static final String REGEX_FLOAT = "(-)?" + REGEX_NON_NEGATIVE_FLOAT;
+
 	
 	public static void generateOutput(Control control, Map<String, String> map) {
 		if (control == null)
@@ -68,51 +89,63 @@ public class CreatorUtil {
 		}
 	}
 	
-	public static Control createControl(Composite descendent, String localPart, BaseRestriction restriction) {
-		if (SchemaConstants.TYPE_NAME_STRING.equals(localPart)) {
-			if (restriction != null) {
+	public static void createControl(Composite descendent, String localPart, BaseRestriction restriction, CompositeCreatorContext ctx) {
+		if (SchemaConstants.SIMPLE_TYPE_STRING.equals(localPart)) {
+			StringCreator creator = new StringCreator();
+			creator.createControls(descendent, ctx, restriction);
+			return;
+		} 
+		
+		if (SchemaConstants.SIMPLE_TYPE_BOOLEAN.equals(localPart)) {
+			BooleanCreator creator = new BooleanCreator();
+			creator.createControls(descendent, ctx, restriction);
+			return;
+		} 
+		
+		if (SchemaConstants.SIMPLE_TYPE_INT.equals(localPart)) {
+			IntegerCreator creator = new IntegerCreator();
+			creator.createControls(descendent, ctx, restriction);
+			return;
+		} 
+		
+		if (SchemaConstants.SIMPLE_TYPE_INTEGER.equals(localPart)) {
+			IntegerCreator creator = new IntegerCreator();
+			creator.createControls(descendent, ctx, restriction);
+			return;
+		} 
+		
+		if (SchemaConstants.SIMPLE_TYPE_POSITIVE_INTEGER.equals(localPart)) {
+			PositiveIntegerCreator creator = new PositiveIntegerCreator();
+			creator.createControls(descendent, ctx, restriction);
+			return;
+		} 
+		
+		if (SchemaConstants.SIMPLE_TYPE_DATE_TIME.equals(localPart)) {
+			DateTimeCreator creator = new DateTimeCreator();
+			creator.createControls(descendent, ctx, restriction);
+			return;
+		}
+		
+		if (SchemaConstants.SIMPLE_TYPE_FLOAT.equals(localPart)) {
+			FloatCreator creator = new FloatCreator();
+			creator.createControls(descendent, ctx, restriction);
+			return;
+		}
+		
+		if (SchemaConstants.SIMPLE_TYPE_DOUBLE.equals(localPart)) {
+			DoubleCreator creator = new DoubleCreator();
+			creator.createControls(descendent, ctx, restriction);
+			return;
+		}
+		
+		
+		if (SchemaConstants.SIMPLE_TYPE_DECIMAL.equals(localPart)) {
+			DecimalCreator creator = new DecimalCreator();
+			creator.createControls(descendent, ctx, restriction);
+			return;
+		}
 				
-			}
-			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		} else if (SchemaConstants.TYPE_NAME_BOOLEAN.equals(localPart)) {
-			return PluginUtil.createCheckButton(descendent, 12, 12);
-		} else if (SchemaConstants.TYPE_NAME_INT.equals(localPart)) {
-			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		} 
-		
-		else if (SchemaConstants.TYPE_NAME_INTEGER.equals(localPart)) {
-			if (restriction != null) {
-				
-			}
-			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		} 
-		
-		else if (SchemaConstants.TYPE_NAME_POSITIVE_INTEGER.equals(localPart)) {
-			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		} 
-		else if (SchemaConstants.TYPE_NAME_DATE_TIME.equals(localPart)) {
-			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		}
-		else if (SchemaConstants.TYPE_NAME_FLOAT.equals(localPart)) {
-			//generate web front end prints suggestions (e.g. 0.5)
-			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		}
-		
-		else if (SchemaConstants.TYPE_NAME_DOUBLE.equals(localPart)) {
-			//generate web front end prints suggestions (e.g. 0.5)
-			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		}
-		
-		
-		else if (SchemaConstants.TYPE_NAME_DECIMAL.equals(localPart)) {
-			//generate web front end prints suggestions (e.g. 0.5)
-			return PluginUtil.createText(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		}
-		
-		
 		System.err.println("Type is not supported yet: " + localPart);
-
-		return null;
 	}
 
 	public static void createLabel(String text, Composite descendent) {

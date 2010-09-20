@@ -14,7 +14,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
@@ -28,7 +27,6 @@ import com.predic8.schema.Element;
 import com.predic8.schema.Extension;
 import com.predic8.schema.Restriction;
 import com.predic8.schema.SchemaComponent;
-import com.predic8.schema.Sequence;
 import com.predic8.schema.SimpleType;
 import com.predic8.schema.TypeDefinition;
 import com.predic8.schema.creator.AbstractSchemaCreator;
@@ -227,58 +225,50 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		CreatorUtil.createLabel(item.getName().toString(), descendent);
 
-		Control control = CreatorUtil.createControl(descendent, getBuildInTypeName(item), restr);
-
-		if (control == null) 
+		String typename = getBuildInTypeName(item);
+		if (typename == null)
 			return;
 		
-		control.setData(SOAPConstants.PATH, ((CompositeCreatorContext) ctx).getPath() + "/" + getItemName(item));
-		if (((CompositeCreatorContext)ctx).isElementOptional())
-			CreatorUtil.createAddRemoveButton(descendent, control, false);
-		
+		CreatorUtil.createControl(descendent, typename, restr, (CompositeCreatorContext)ctx);
 	}
 
 	private Composite createDescendent() {
 		Composite descendent = new Composite(stack.peek(), SWT.NONE);
-		descendent.setLayout(PluginUtil.createGridlayout(3, 5));
+		descendent.setLayout(PluginUtil.createGridlayout(4, 5));
 		descendent.setLayoutData(PluginUtil.createGridData(false, false));
 		return descendent;
 	}
 
+	
+	private String getElementTypeNameFromEmbededSimpleRestriction(Element element) {
+		if (element.getEmbeddedType() instanceof SimpleType) {
+			BaseRestriction restriction = (BaseRestriction) ((SimpleType) element.getEmbeddedType()).getRestriction();
+			QName qname = (QName) restriction.getBase();
+			return qname.getLocalPart();
+		} 
+		return null;
+	}
+	
 	private String getBuildInTypeName(Declaration item) {
 		if (item.getType() != null)
 			return item.getType().getLocalPart();
 
 		if (item instanceof Element) {
-			Element element = (Element) item;
-			if (element.getEmbeddedType() instanceof SimpleType) {
-				BaseRestriction restriction = (BaseRestriction) ((SimpleType) element.getEmbeddedType()).getRestriction();
-				QName qname = (QName) restriction.getBase();
-				return qname.getLocalPart();
-			} else if (element.getEmbeddedType() instanceof ComplexType) {
-				
-				ComplexType ctp = (ComplexType)element.getEmbeddedType();
-				Sequence sequence = (Sequence)ctp.getSequence();
-				List<Element> elements = (List<Element>)sequence.getElements();
-				for (Element element2 : elements) {
-					System.out.println("take care of it: "  +  element2);
-				}
-				//TODO here we have to adjust, getEmbededType() was null
-			} else {
-				System.err.println("case description:  getType()==null  getEmbededType()==null ");
-				return "";
-			}
+			return getElementTypeNameFromEmbededSimpleRestriction((Element)item);
 		}
 
 		if (item instanceof Attribute) {
-			Attribute attribute = (Attribute)item;
-			SimpleType stp = (SimpleType)attribute.getSimpleType();
-			BaseRestriction restriction = (BaseRestriction)stp.getRestriction();
-			QName qname = (QName) restriction.getBase();
-			return qname.getLocalPart();
+			return getAttributeTypeNameFromSimpleRestriction(item);
 		}
 		
 		throw new RuntimeException("Can not get build in type name for item: " + item);
+	}
+
+	private String getAttributeTypeNameFromSimpleRestriction(Declaration item) {
+		Attribute attribute = (Attribute)item;
+		SimpleType stp = (SimpleType)attribute.getSimpleType();
+		BaseRestriction restriction = (BaseRestriction)stp.getRestriction();
+		return ((QName) restriction.getBase()).getLocalPart();
 	}
 
 	private String getItemName(Declaration item) {
@@ -400,17 +390,17 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	@Override
 	public void createLengthFacet(LengthFacet arg0, Object arg1) {
-		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
-	public void createMaxLengthFacet(MaxLengthFacet arg0, Object arg1) {
-		// TODO Auto-generated method stub
+	public void createMaxLengthFacet(MaxLengthFacet facet, Object arg1) {
+		System.err.println("max length facet value: " + facet.getValue());
 	}
 
 	@Override
-	public void createMinLengthFacet(MinLengthFacet arg0, Object arg1) {
-		// TODO Auto-generated method stub
+	public void createMinLengthFacet(MinLengthFacet facet, Object arg1) {
+		System.err.println("min length facet value: " + facet.getValue());
 	}
 
 	@Override

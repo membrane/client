@@ -12,6 +12,7 @@ import org.eclipse.swt.widgets.Text;
 
 import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.plugin.membrane_client.creator.CompositeCreatorContext;
+import com.predic8.schema.restriction.BaseRestriction;
 
 public class PluginUtil {
 
@@ -38,6 +39,18 @@ public class PluginUtil {
 	}
 
 	public static Text createText(Composite comp, int width, int height) {
+		Text text = new Text(comp, SWT.BORDER);
+		GridData gData = new GridData();
+		gData.heightHint = height;
+		gData.widthHint = width;
+		text.setLayoutData(gData);
+		return text;
+	}
+	
+	public static Text createText(Composite comp, int width, int height, BaseRestriction restriction) {
+		if (restriction == null)
+			return createText(comp, width, height);
+		
 		Text text = new Text(comp, SWT.BORDER);
 		GridData gData = new GridData();
 		gData.heightHint = height;

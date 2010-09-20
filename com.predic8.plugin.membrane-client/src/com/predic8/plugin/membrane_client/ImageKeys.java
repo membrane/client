@@ -20,4 +20,6 @@ public class ImageKeys {
 	
 	public static final String IMAGE_CROSS_REMOVE = "image cross remove";
 	
+	public static final String IMAGE_INFO = "image information";
+	
 }

@@ -10,24 +10,19 @@ import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.plugin.membrane_client.ui.RegexVerifierListener;
 import com.predic8.schema.restriction.BaseRestriction;
 
-public class IntegerCreator extends SimpleTypeControlCreator {
+public class DateCreator extends SimpleTypeControlCreator {
 
 	@Override
-	public Control getActiveControl(Composite parent, BaseRestriction restriction) {
+	protected Control getActiveControl(Composite parent, BaseRestriction restriction) {
 		Text text = PluginUtil.createText(parent, CreatorUtil.WIDGET_WIDTH, CreatorUtil.WIDGET_HEIGHT);
 		text.addVerifyListener(new RegexVerifierListener(getRegEx()));
 		return text;
-		
 	}
 
-	@Override
-	protected String getRegEx() {
-		return "(-)?[0-9]?";
-	}
 	
 	@Override
 	protected String getDescription() {
-		return "The integer datatype: ... -1, 0, 1, ...";
+		return "The date datatype: 1999-05-31";
 	}
 	
 }

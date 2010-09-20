@@ -22,7 +22,7 @@ public class DoubleCreator extends SimpleTypeControlCreator {
 	
 	@Override
 	protected String getDescription() {
-		return "-INF, -1E4, -0, 0, 12.78E-2, 12, INF, NaN";
+		return "The double datatype: -INF, -1E4, -0, 0, 12.78E-2, 12, INF, NaN";
 	}
 	
 	

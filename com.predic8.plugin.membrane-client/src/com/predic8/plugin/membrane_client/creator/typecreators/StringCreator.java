@@ -22,7 +22,7 @@ public class StringCreator extends SimpleTypeControlCreator {
 	
 	@Override
 	protected String getDescription() {
-		return "*";
+		return "The string datatype: set of finite-length sequences of characters.";
 	}
 	
 }

@@ -22,7 +22,7 @@ public class DecimalCreator extends SimpleTypeControlCreator {
 	
 	@Override
 	protected String getDescription() {
-		return "-1.23, 0, 123.4, 1000.00";
+		return "The decimal datatype: -1.23, 0, 123.4, 1000.00";
 	}
 	
 }

@@ -27,7 +27,7 @@ public class NonNegativeIntegerCreator extends SimpleTypeControlCreator {
 	
 	@Override
 	protected String getDescription() {
-		return "0, 1, 2, ...";
+		return "The non negative integer datatype: 0, 1, 2, ...";
 	}
 	
 }

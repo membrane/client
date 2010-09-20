@@ -1,6 +1,8 @@
 package com.predic8.plugin.membrane_client.creator;
 
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -30,7 +32,8 @@ public abstract class SimpleTypeControlCreator {
 
 	public void createControls(Composite parent, CompositeCreatorContext ctx, BaseRestriction restriction) {
 		Control control = getActiveControl(parent, restriction);
-		createDescriptionLabel(parent);
+		createDeco(control);
+		//createDescriptionLabel(parent);
 		if (ctx.isElementOptional())
 			CreatorUtil.createAddRemoveButton(parent, control, false);
 	}
@@ -59,4 +62,12 @@ public abstract class SimpleTypeControlCreator {
 		label.setLayoutData(infoGridData);
 	}
 
+	protected void createDeco(Control control) {
+		ControlDecoration deco = new ControlDecoration(control, SWT.RIGHT);
+		deco.setDescriptionText(getDescription());
+		deco.setImage(FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
+		deco.setShowOnlyOnFocus(false);
+		deco.setMarginWidth(5);
+	}
+	
 }

@@ -16,7 +16,7 @@ public class BooleanCreator extends SimpleTypeControlCreator {
 
 	@Override
 	protected String getDescription() {
-		return "Your selection will be interpreted as: true | false )";
+		return "The boolean datatype: true | false | 1, 0 ";
 	}
 	
 }

@@ -22,7 +22,7 @@ public class DateTimeCreator extends SimpleTypeControlCreator {
 	
 	@Override
 	protected String getDescription() {
-		return "1999-05-31T13:20:00.000-05:00";
+		return "The dateTime datatype: 1999-05-31T13:20:00.000-05:00";
 	}
 	
 }

@@ -27,7 +27,7 @@ public class PositiveIntegerCreator extends SimpleTypeControlCreator {
 	
 	@Override
 	protected String getDescription() {
-		return "1, 2, ...";
+		return "The positive integer datatype: 1, 2, ...";
 	}
 	
 }

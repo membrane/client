@@ -270,14 +270,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		BaseRestriction restriction = (BaseRestriction)stp.getRestriction();
 		return ((QName) restriction.getBase()).getLocalPart();
 	}
-
-	private String getItemName(Declaration item) {
-		return getItemName(item.getName().toString(), (item instanceof Attribute));
-	}
-
-	private String getItemName(String str, boolean attr) {
-		return attr ? ("@" + str) : str;
-	}
 	
 	private void createAddButton(Composite parent, final Composite child) {
 		Button bt = CreatorUtil.createAddButton(parent);

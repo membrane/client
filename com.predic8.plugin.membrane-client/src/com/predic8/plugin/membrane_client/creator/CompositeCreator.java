@@ -69,7 +69,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		stack.push(root);
 	}
 
-	@SuppressWarnings("rawtypes")
 	public void buildComposite(String portTypeName, String operationName, String bindingName) {
 
 		stack.clear();
@@ -88,7 +87,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 				handleMsgParts(body.getMessageParts());
 			} else if (object instanceof com.predic8.wsdl.soap12.SOAPBody) {
 				com.predic8.wsdl.soap12.SOAPBody body = (com.predic8.wsdl.soap12.SOAPBody) object;
-				handleMsgParts((List) body.getMessageParts());
+				handleMsgParts(body.getMessageParts());
 			}
 		}
 
@@ -100,11 +99,11 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		CompositeCreatorContext ctx = new CompositeCreatorContext();
 		ctx.setPath("xpath:");
 		for (SOAPHeader header : bodies) {
-			Part part = (Part) msg.getPart(header.getPart());
-			definitions.getElement(part.getElement()).create(this, ctx);
+			definitions.getElement(msg.getPart(header.getPart()).getElement()).create(this, ctx);
 		}
 	}
 
+	
 	@SuppressWarnings("rawtypes")
 	private void handleMsgParts(List msgParts) {
 		for (Object part : msgParts) {
@@ -159,9 +158,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		header.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
 		header.setLayout(PluginUtil.createGridlayout(3, 0));
 		
-		
 		new Label(header, SWT.NONE).setText(PluginUtil.getComplexTypeCaption(ctx));
-		
 		
 		Composite child = new Composite(composite, SWT.NONE);
 		child.setLayout(gridLayout);

@@ -25,4 +25,9 @@ public class DecimalCreator extends SimpleTypeControlCreator {
 		return "The decimal datatype: -1.23, 0, 123.4, 1000.00";
 	}
 	
+	@Override
+	protected String getRegEx() {
+		return "(-)?[0-9]*((/.)*[0-9]*)";
+	}
+	
 }

@@ -139,7 +139,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 				}
 			}
 
-			stack.pop();
+			if (!stack.isEmpty())
+				stack.pop();
 
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
@@ -218,14 +219,14 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private void writeInputForBuildInType(Declaration item, Object ctx, BaseRestriction restr) {
 
-		Composite descendent = createDescendent();
-
-		CreatorUtil.createLabel(item.getName().toString(), descendent);
-
 		String typename = getBuildInTypeName(item);
 		if (typename == null)
 			return;
 		
+		Composite descendent = createDescendent();
+
+		CreatorUtil.createLabel(item.getName().toString(), descendent);
+
 		CreatorUtil.createControl(descendent, typename, restr, (CompositeCreatorContext)ctx);
 	}
 

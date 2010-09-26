@@ -28,7 +28,7 @@ public abstract class SimpleTypeControlCreator extends TypeCreator {
 	}
 
 	public void createControls(Composite parent, CompositeCreatorContext ctx, BaseRestriction restriction) {
-		createLabel(ctx.getLabel(), parent);
+		createLabel(ctx.getLabel(), parent, ctx.getIndex());
 		Control control = getActiveControl(parent, restriction);
 		ControlUtil.createDeco(control, getDescription(), SWT.RIGHT);
 		getAuxilaryControl(parent, restriction);

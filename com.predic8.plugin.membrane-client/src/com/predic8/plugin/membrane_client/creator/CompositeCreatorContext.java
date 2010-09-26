@@ -21,6 +21,8 @@ public class CompositeCreatorContext extends CreatorContext {
 	
 	private List<String> complexData;
 	
+	private int index;
+	
 	public Element getElement() {
 		return element;
 	}
@@ -100,6 +102,14 @@ public class CompositeCreatorContext extends CreatorContext {
 
 	public void setComplexData(List<String> complexData) {
 		this.complexData = complexData;
+	}
+	
+	public void incrementIndex() {
+		index ++;
+	}
+
+	public int getIndex() {
+		return index;
 	}
 	
 }

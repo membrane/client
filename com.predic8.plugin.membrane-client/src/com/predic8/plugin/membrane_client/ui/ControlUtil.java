@@ -23,7 +23,6 @@ public class ControlUtil {
 	
 	public static void cloneControl(Control control, Composite parent) {
 		if (control instanceof Combo) {
-			//cloneCombo(control, parent);
 			return;
 		}
 		
@@ -54,6 +53,7 @@ public class ControlUtil {
 		Object data = obj.getData(CompositeCreatorContext.CONTEXT_DATA);
 		if (data instanceof CompositeCreatorContext) {
 			CompositeCreatorContext context = (CompositeCreatorContext)data;
+			context.incrementIndex();
 			CreatorUtil.createControls(clone, null, context);
 		}
 	}

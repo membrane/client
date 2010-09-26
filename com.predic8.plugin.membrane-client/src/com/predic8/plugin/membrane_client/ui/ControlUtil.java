@@ -3,12 +3,9 @@ package com.predic8.plugin.membrane_client.ui;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 
 import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.plugin.membrane_client.creator.CompositeCreatorContext;
@@ -34,44 +31,8 @@ public class ControlUtil {
 			cloneComposite(control, parent);
 			return;
 		}
-
-//		if (control instanceof Label) {
-//			cloneLabel(control, parent);
-//			return;
-//		}
-//		
-//		if (control instanceof Text) {
-//			cloneText(control, parent);
-//			return;
-//		}
-//
-//		if (control instanceof Button) {
-//			cloneButton(control, parent);
-//			return;
-//		}
 	}
 
-	
-	private static void cloneLabel(Control control, Composite parent) {
-		Label obj = (Label)control;
-		Label clone = new Label(parent, obj.getStyle());
-		clone.setText(obj.getText());
-		copyDataAndProperties(obj, clone);
-	}
-
-	private static void cloneText(Control control, Composite parent) {
-		Text obj = (Text)control;
-		Text clone = new Text(parent, obj.getStyle());
-		copyDataAndProperties(obj, clone);
-	}
-
-	private static void cloneButton(Control control, Composite parent) {
-		Button obj = (Button)control;
-		Button clone = new Button(parent, obj.getStyle());
-		clone.setImage(obj.getImage());
-		copyDataAndProperties(obj, clone);
-	}
-	
 	private static void copyDataAndProperties(Control obj, Control clone) {
 		clone.setLayoutData(obj.getLayoutData());
 		clone.setData(obj.getData());
@@ -79,16 +40,6 @@ public class ControlUtil {
 		clone.setEnabled(obj.getEnabled());
 	}
 	
-	private static void cloneCombo(Control control, Composite parent) {
-		Combo obj = (Combo)control;
-		Combo clone = new Combo(parent, obj.getStyle());
-		clone.setItems(obj.getItems());
-		
-		if (obj.getSelectionIndex() >= 0)
-			clone.select(obj.getSelectionIndex());
-		copyDataAndProperties(obj, clone);
-	}
-
 	private static void cloneComposite(Control control, Composite parent) {
 		Composite obj = (Composite) control;
 		Composite clone = new Composite(parent, SWT.NONE);

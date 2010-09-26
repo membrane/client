@@ -222,22 +222,20 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			return;
 
 		try {
-
 			CompositeCreatorContext clone = ctx.clone();
 			clone.setLabel(item.getName().toString());
 			clone.setTypeName(typename);
-			
-			Composite descendent = createDescendent();
-
-			CreatorUtil.createControls(descendent, restr, clone);
-
-			descendent.setData(CompositeCreatorContext.CONTEXT_DATA, clone);
-			
+			createLowLevelWidgets(restr, clone);
 			
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
+	}
 
+	private void createLowLevelWidgets(BaseRestriction restr, CompositeCreatorContext clone) {
+		Composite descendent = createDescendent();
+		CreatorUtil.createControls(descendent, restr, clone);
+		descendent.setData(CompositeCreatorContext.CONTEXT_DATA, clone);
 	}
 
 	private Composite createDescendent() {
@@ -292,24 +290,17 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	@Override
 	public void createEnumerationFacet(EnumerationFacet facet, Object context) {
-
-		Composite descendent = createDescendent();
-
 		try {
-			CompositeCreatorContext ctx = ((CompositeCreatorContext) context).clone();
-			ctx.setLabel(ctx.getElement().getName().toString());
-			ctx.setTypeName(SchemaConstants.COMPLEX_TYPE_ENUMERATION);
-			ctx.setComplexData(facet.getValues());
+			CompositeCreatorContext clone = ((CompositeCreatorContext) context).clone();
+			clone.setLabel(clone.getElement().getName().toString());
+			clone.setTypeName(SchemaConstants.COMPLEX_TYPE_ENUMERATION);
+			clone.setComplexData(facet.getValues());
 			
-			CreatorUtil.createControls(descendent, null, ctx);
-
-			descendent.setData(CompositeCreatorContext.CONTEXT_DATA, ctx);
+			createLowLevelWidgets(null, clone);
 			
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
-
-		
 	}
 
 	public void setDefinitions(Definitions definitions) {

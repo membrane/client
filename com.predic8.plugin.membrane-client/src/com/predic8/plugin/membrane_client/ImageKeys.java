@@ -22,4 +22,6 @@ public class ImageKeys {
 	
 	public static final String IMAGE_INFO = "image information";
 	
+	public static final String IMAGE_CALENDAR = "image calendar";
+	
 }

@@ -232,7 +232,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private Composite createDescendent() {
 		Composite descendent = new Composite(stack.peek(), SWT.NONE);
-		descendent.setLayout(PluginUtil.createGridlayout(4, 5));
+		descendent.setLayout(PluginUtil.createGridlayout(5, 5));
 		descendent.setLayoutData(PluginUtil.createGridData(false, false));
 		return descendent;
 	}

@@ -1,13 +1,25 @@
 package com.predic8.plugin.membrane_client.creator;
 
+import java.util.List;
+
 import com.predic8.schema.Element;
 import com.predic8.soamodel.CreatorContext;
 
 public class CompositeCreatorContext extends CreatorContext {
 
+	public static final String CONTEXT_DATA = "context data"; 
+	
 	private String path;
 	
 	private Element element; 
+	
+	
+	
+	private String label;
+	
+	private String typeName;
+	
+	private List<String> complexData;
 	
 	public Element getElement() {
 		return element;
@@ -24,6 +36,7 @@ public class CompositeCreatorContext extends CreatorContext {
 		if (element != null)
 			copy.setElement(getElementCopy());
 		copy.setPath(path);
+		
 		return copy;
 	}
 
@@ -63,6 +76,30 @@ public class CompositeCreatorContext extends CreatorContext {
 		if (getElement() == null)
 			return false;
 		return "unbounded".equals(getElement().getMaxOccurs());
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public String getTypeName() {
+		return typeName;
+	}
+
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
+
+	public List<String> getComplexData() {
+		return complexData;
+	}
+
+	public void setComplexData(List<String> complexData) {
+		this.complexData = complexData;
 	}
 	
 }

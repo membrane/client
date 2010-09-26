@@ -67,4 +67,7 @@ public class SchemaConstants {
 	
 	
 
+	
+	public static final String COMPLEX_TYPE_ENUMERATION = "enumeration";
+	
 }

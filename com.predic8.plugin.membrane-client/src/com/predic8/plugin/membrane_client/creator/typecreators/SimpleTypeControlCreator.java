@@ -1,4 +1,4 @@
-package com.predic8.plugin.membrane_client.creator;
+package com.predic8.plugin.membrane_client.creator.typecreators;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -9,10 +9,12 @@ import org.eclipse.swt.widgets.Label;
 
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
+import com.predic8.plugin.membrane_client.creator.CompositeCreatorContext;
+import com.predic8.plugin.membrane_client.creator.CreatorUtil;
 import com.predic8.plugin.membrane_client.ui.ControlUtil;
 import com.predic8.schema.restriction.BaseRestriction;
 
-public abstract class SimpleTypeControlCreator {
+public abstract class SimpleTypeControlCreator extends TypeCreator {
 
 	protected GridData infoGridData;
 	
@@ -26,6 +28,7 @@ public abstract class SimpleTypeControlCreator {
 	}
 
 	public void createControls(Composite parent, CompositeCreatorContext ctx, BaseRestriction restriction) {
+		createLabel(ctx.getLabel(), parent);
 		Control control = getActiveControl(parent, restriction);
 		ControlUtil.createDeco(control, getDescription(), SWT.RIGHT);
 		getAuxilaryControl(parent, restriction);

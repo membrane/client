@@ -21,19 +21,40 @@ import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.membrane.client.core.SchemaConstants;
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
+import com.predic8.plugin.membrane_client.creator.typecreators.AnyURICreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.Base64BinaryCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.BooleanCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.ByteCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.DateCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.DateTimeCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.DecimalCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.DoubleCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.DurationCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.FloatCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.GDayCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.GMonthCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.GMonthDayCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.GYearCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.GYearMonthCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.HexBinaryCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.IntegerCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.LanguageCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.LongCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.NegativeIntegerCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.NonNegativeIntegerCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.NonPositiveIntegerCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.NormalizedStringCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.PositiveIntegerCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.ShortCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.StringCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.StringEnumerationCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.TimeCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.TokenCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.TypeCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.UnsignedByteCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.UnsignedIntegerCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.UnsignedLongCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.UnsignedShortCreator;
 import com.predic8.plugin.membrane_client.ui.ControlUtil;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.schema.restriction.BaseRestriction;
@@ -88,26 +109,78 @@ public class CreatorUtil {
 	}
 
 	public static TypeCreator getCreator(CompositeCreatorContext ctx) {
+		
 		if (SchemaConstants.SIMPLE_TYPE_STRING.equals(ctx.getTypeName()))
 			return new StringCreator();
 
-		if (SchemaConstants.SIMPLE_TYPE_BOOLEAN.equals(ctx.getTypeName()))
-			return new BooleanCreator();
-
-		if (SchemaConstants.SIMPLE_TYPE_INT.equals(ctx.getTypeName()))
-			return new IntegerCreator();
+		if (SchemaConstants.SIMPLE_TYPE_NORMALIZED_STRING.equals(ctx.getTypeName()))
+			return new NormalizedStringCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_TOKEN.equals(ctx.getTypeName()))
+			return new TokenCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_BASE_64_BINARY.equals(ctx.getTypeName()))
+			return new Base64BinaryCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_HEX_BINARY.equals(ctx.getTypeName()))
+			return new HexBinaryCreator();
 
 		if (SchemaConstants.SIMPLE_TYPE_INTEGER.equals(ctx.getTypeName()))
 			return new IntegerCreator();
-
+		
 		if (SchemaConstants.SIMPLE_TYPE_POSITIVE_INTEGER.equals(ctx.getTypeName()))
 			return new PositiveIntegerCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_NEGATIVE_INTEGER.equals(ctx.getTypeName()))
+			return new NegativeIntegerCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_NON_NEGATIVE_INTEGER.equals(ctx.getTypeName()))
+			return new NonNegativeIntegerCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_NON_POSITIVE_INTEGER.equals(ctx.getTypeName()))
+			return new NonPositiveIntegerCreator();
+
+		if (SchemaConstants.SIMPLE_TYPE_LONG.equals(ctx.getTypeName()))
+			return new LongCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_UNSIGNED_LONG.equals(ctx.getTypeName()))
+			return new UnsignedLongCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_INT.equals(ctx.getTypeName()))
+			return new IntegerCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_UNSIGNED_INT.equals(ctx.getTypeName()))
+			return new UnsignedIntegerCreator();
 		
 		if (SchemaConstants.SIMPLE_TYPE_UNSIGNED_INTEGER.equals(ctx.getTypeName()))
 			return new UnsignedIntegerCreator();
 		
-		if (SchemaConstants.SIMPLE_TYPE_UNSIGNED_INT.equals(ctx.getTypeName()))
-			return new UnsignedIntegerCreator();
+		if (SchemaConstants.SIMPLE_TYPE_SHORT.equals(ctx.getTypeName()))
+			return new ShortCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_UNSIGNED_SHORT.equals(ctx.getTypeName()))
+			return new UnsignedShortCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_BYTE.equals(ctx.getTypeName()))
+			return new ByteCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_UNSIGNED_BYTE.equals(ctx.getTypeName()))
+			return new UnsignedByteCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_DECIMAL.equals(ctx.getTypeName()))
+			return new DecimalCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_FLOAT.equals(ctx.getTypeName()))
+			return new FloatCreator();
+
+		if (SchemaConstants.SIMPLE_TYPE_DOUBLE.equals(ctx.getTypeName()))
+			return new DoubleCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_BOOLEAN.equals(ctx.getTypeName()))
+			return new BooleanCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_DURATION.equals(ctx.getTypeName()))
+			return new DurationCreator();
 		
 		if (SchemaConstants.SIMPLE_TYPE_DATE_TIME.equals(ctx.getTypeName()))
 			return new DateTimeCreator();
@@ -118,15 +191,28 @@ public class CreatorUtil {
 		if (SchemaConstants.SIMPLE_TYPE_TIME.equals(ctx.getTypeName()))
 			return new TimeCreator();
 
-		if (SchemaConstants.SIMPLE_TYPE_FLOAT.equals(ctx.getTypeName()))
-			return new FloatCreator();
+		if (SchemaConstants.SIMPLE_TYPE_G_YEAR.equals(ctx.getTypeName()))
+			return new GYearCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_G_YEAR_MONTH.equals(ctx.getTypeName()))
+			return new GYearMonthCreator();
 
-		if (SchemaConstants.SIMPLE_TYPE_DOUBLE.equals(ctx.getTypeName()))
-			return new DoubleCreator();
+		if (SchemaConstants.SIMPLE_TYPE_G_MONTH.equals(ctx.getTypeName()))
+			return new GMonthCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_G_MONTH_DAY.equals(ctx.getTypeName()))
+			return new GMonthDayCreator();
 
-		if (SchemaConstants.SIMPLE_TYPE_DECIMAL.equals(ctx.getTypeName()))
-			return new DecimalCreator();
+		if (SchemaConstants.SIMPLE_TYPE_G_DAY.equals(ctx.getTypeName()))
+			return new GDayCreator();
 
+		if (SchemaConstants.SIMPLE_TYPE_ANY_URI.equals(ctx.getTypeName()))
+			return new AnyURICreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_LANGUAGE.equals(ctx.getTypeName()))
+			return new LanguageCreator();
+		
+		
 		if (SchemaConstants.COMPLEX_TYPE_ENUMERATION.equals(ctx.getTypeName()))
 			return new StringEnumerationCreator();
 

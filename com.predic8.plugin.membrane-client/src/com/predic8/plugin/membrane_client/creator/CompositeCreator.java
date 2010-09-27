@@ -51,11 +51,11 @@ import com.predic8.wsdl.soap11.SOAPHeader;
 
 public class CompositeCreator extends AbstractSchemaCreator {
 
-	private ScrolledComposite scrollComposite;
+	private ScrolledComposite scrollComp;
 
 	private Definitions definitions;
 
-	private GridLayout gridLayout;
+	private GridLayout layout;
 
 	private Composite root;
 
@@ -63,9 +63,9 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	public CompositeCreator(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.VERTICAL));
-		gridLayout = PluginUtil.createGridlayout(1, 5);
-		scrollComposite = CreatorUtil.createScrollComposite(parent);
-		root = CreatorUtil.createRootComposite(scrollComposite);
+		layout = PluginUtil.createGridlayout(1, 2);
+		scrollComp = CreatorUtil.createScrollComposite(parent);
+		root = CreatorUtil.createRootComposite(scrollComp);
 		stack.push(root);
 	}
 
@@ -82,16 +82,15 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		List<BindingElement> list = bindingOperation.getInput().getBindingElements();
 
 		for (BindingElement object : list) {
+			//TODO refactor after SOAModel has abstract SOAP Body
 			if (object instanceof SOAPBody) {
-				SOAPBody body = (SOAPBody) object;
-				handleMsgParts(body.getMessageParts());
+				handleMsgParts(((SOAPBody) object).getMessageParts());
 			} else if (object instanceof com.predic8.wsdl.soap12.SOAPBody) {
-				com.predic8.wsdl.soap12.SOAPBody body = (com.predic8.wsdl.soap12.SOAPBody) object;
-				handleMsgParts(body.getMessageParts());
+				handleMsgParts(((com.predic8.wsdl.soap12.SOAPBody) object).getMessageParts());
 			}
 		}
 
-		CreatorUtil.layoutScrolledComposites(scrollComposite, root);
+		CreatorUtil.layoutScrolledComposites(scrollComp, root);
 	}
 
 	private void createHeaders(BindingOperation bindingOperation, Message msg) {
@@ -125,7 +124,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 			if (cType.getQname() != null) {
 
-				createChildComposite(newCtx); // ???????? hier war old ctx
+				createChildComposite(newCtx);
 
 				writeAttributes(cType, newCtx);
 				if (model != null) {
@@ -150,19 +149,19 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	private void createChildComposite(CompositeCreatorContext ctx) {
 
 		Composite composite = new Composite(stack.peek(), SWT.BORDER);
-		composite.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_YELLOW));
-		composite.setLayout(gridLayout);
+		//composite.setBackground(COLOR_CHILD);
+		composite.setLayout(layout);
 		composite.setLayoutData(PluginUtil.createGridData(false, false));
 
 		Composite header = new Composite(composite, SWT.NONE);
-		header.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
+		header.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 		header.setLayout(PluginUtil.createGridlayout(3, 0));
 
 		new Label(header, SWT.NONE).setText(PluginUtil.getComplexTypeCaption(ctx));
 
 		Composite child = new Composite(composite, SWT.NONE);
-		child.setLayout(gridLayout);
-		child.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_GRAY));
+		child.setLayout(layout);
+		child.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_INFO_BACKGROUND));
 		child.setLayoutData(PluginUtil.createGridData(false, false));
 		child.setData(SOAPConstants.PATH, ctx.getPath());
 
@@ -186,31 +185,16 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	@Override
 	public void createElement(Element element, Object ctx) {
-		System.err.println("element name is " + element.getName());
-		
 		CompositeCreatorContext context = (CompositeCreatorContext) ctx;
-		if (element.getEmbeddedType() != null) {
-			try {
-				CompositeCreatorContext newCtx = context.clone();
-				newCtx.setElement(element);
-
-				((TypeDefinition) element.getEmbeddedType()).create(this, newCtx);
-			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
-			}
+		TypeDefinition embType = (TypeDefinition) element.getEmbeddedType();
+		if (embType != null) {
+			createTypeDefinition(element, context, embType);
 			return;
 		}
 
 		TypeDefinition refType = element.getSchema().getType(element.getType());
-
 		if (refType != null) {
-			try {
-				CompositeCreatorContext newCtx = context.clone();
-				newCtx.setElement(element);
-				refType.create(this, newCtx);
-			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
-			}
+			createTypeDefinition(element, context, refType);
 			return;
 		}
 
@@ -218,6 +202,16 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		writeInputForBuildInType(element, context, null);
 	}
 
+	private void createTypeDefinition(Element element, CompositeCreatorContext context, TypeDefinition typeDef) {
+		try {
+			CompositeCreatorContext newCtx = context.clone();
+			newCtx.setElement(element);
+			typeDef.create(this, newCtx);
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private void writeInputForBuildInType(Declaration item, CompositeCreatorContext ctx, BaseRestriction restr) {
 
 		String typename = getBuildInTypeName(item);
@@ -243,7 +237,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private Composite createDescendent() {
 		Composite descendent = new Composite(stack.peek(), SWT.NONE);
-		descendent.setLayout(PluginUtil.createGridlayout(5, 5));
+		descendent.setLayout(PluginUtil.createGridlayout(5, 2));
 		descendent.setLayoutData(PluginUtil.createGridData(false, false));
 		return descendent;
 	}
@@ -274,8 +268,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private String getAttributeTypeNameFromSimpleRestriction(Declaration item) {
 		Attribute attribute = (Attribute) item;
-		SimpleType stp = (SimpleType) attribute.getSimpleType();
-		BaseRestriction restriction = (BaseRestriction) stp.getRestriction();
+		BaseRestriction restriction = (BaseRestriction) ((SimpleType) attribute.getSimpleType()).getRestriction();
 		return ((QName) restriction.getBase()).getLocalPart();
 	}
 
@@ -286,7 +279,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			public void widgetSelected(SelectionEvent e) {
 				Button b = (Button) e.getSource();
 				CreatorUtil.cloneAndAddChildComposite(b.getParent().getParent(), child);
-				CreatorUtil.layoutScrolledComposites(scrollComposite, root);
+				CreatorUtil.layoutScrolledComposites(scrollComp, root);
 			}
 		});
 	}
@@ -311,7 +304,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	}
 
 	public void dispose() {
-		scrollComposite.dispose();
+		scrollComp.dispose();
 	}
 
 	@Override

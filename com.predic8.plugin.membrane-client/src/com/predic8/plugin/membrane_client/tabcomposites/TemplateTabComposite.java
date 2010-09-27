@@ -16,7 +16,6 @@ package com.predic8.plugin.membrane_client.tabcomposites;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.swt.widgets.TabFolder;
 
@@ -62,12 +61,6 @@ public class TemplateTabComposite extends AbstractTabComposite {
 		
 		Map<String, String> result = new HashMap<String, String>();
 		CreatorUtil.generateOutput(creator.getRoot(), result);
-		
-		Set<String> keys = result.keySet();
-		for (String key : keys) {
-			System.err.println("key: " + key + "     value: " + result.get(key));
-		}
-		
 		return result;
 	}
 	

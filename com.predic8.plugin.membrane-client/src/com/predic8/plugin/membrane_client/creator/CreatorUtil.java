@@ -6,6 +6,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -86,6 +87,8 @@ public class CreatorUtil {
 
 	public static final String REGEX_FLOAT = "(-)?" + REGEX_NON_NEGATIVE_FLOAT;
 
+	private static final Color COLOR_PARENT = new Color(Display.getCurrent(), 222, 220, 219);
+	
 	public static void generateOutput(Control control, Map<String, String> map) {
 		if (control == null)
 			return;
@@ -342,7 +345,7 @@ public class CreatorUtil {
 
 	public static Composite createRootComposite(Composite parent) {
 		Composite root = new Composite(parent, SWT.NONE);
-		root.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
+		root.setBackground(COLOR_PARENT);
 		root.setLayout(PluginUtil.createGridlayout(1, 5));
 		root.setParent(parent);
 		root.setLayoutData(PluginUtil.createGridData(GridData.FILL_HORIZONTAL, GridData.FILL_VERTICAL, true, true));

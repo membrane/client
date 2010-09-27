@@ -1,5 +1,6 @@
 package com.predic8.plugin.membrane_client.creator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.predic8.schema.Element;
@@ -12,8 +13,6 @@ public class CompositeCreatorContext extends CreatorContext {
 	private String path;
 	
 	private Element element; 
-	
-	
 	
 	private String label;
 	
@@ -32,12 +31,24 @@ public class CompositeCreatorContext extends CreatorContext {
 	}
 	
 	@Override
-	protected CompositeCreatorContext clone() throws CloneNotSupportedException {
+	public CompositeCreatorContext clone() throws CloneNotSupportedException {
 		CompositeCreatorContext copy = new CompositeCreatorContext();
 		
 		if (element != null)
 			copy.setElement(getElementCopy());
 		copy.setPath(path);
+		
+		copy.setLabel(label);
+		copy.setTypeName(typeName);
+		copy.setIndex(index);
+		
+		if (complexData != null) {
+			List<String> datas = new ArrayList<String>();
+			for (String string : complexData) {
+				datas.add(string);
+			}
+			copy.setComplexData(datas);
+		}
 		
 		return copy;
 	}
@@ -112,4 +123,7 @@ public class CompositeCreatorContext extends CreatorContext {
 		return index;
 	}
 	
+	public void setIndex(int index) {
+		this.index = index;
+	}
 }

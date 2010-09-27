@@ -19,6 +19,10 @@ public class SchemaConstants {
 	
 	public static final String SIMPLE_TYPE_INTEGER = "integer";
 	
+	public static final String SIMPLE_TYPE_UNSIGNED_INTEGER = "unsignedInteger";
+	
+	public static final String SIMPLE_TYPE_UNSIGNED_INT = "unsignedInt";
+	
 	public static final String SIMPLE_TYPE_POSITIVE_INTEGER = "positiveInteger";
 	
 	public static final String SIMPLE_TYPE_NON_POSITIVE_INTEGER = "nonPositiveInteger";

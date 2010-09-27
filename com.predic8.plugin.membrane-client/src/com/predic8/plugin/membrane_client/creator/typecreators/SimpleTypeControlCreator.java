@@ -7,6 +7,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
+import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.plugin.membrane_client.creator.CompositeCreatorContext;
@@ -32,8 +33,22 @@ public abstract class SimpleTypeControlCreator extends TypeCreator {
 		Control control = getActiveControl(parent, restriction);
 		ControlUtil.createDeco(control, getDescription(), SWT.RIGHT);
 		getAuxilaryControl(parent, restriction);
+		control.setData(SOAPConstants.PATH, getValue(ctx));
 		if (ctx.isElementOptional())
 			CreatorUtil.createAddRemoveButton(parent, control, false);
+	}
+
+	private String getValue(CompositeCreatorContext ctx) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(ctx.getPath());
+		if (ctx.getIndex() != 0) {
+			buffer.append("[");
+			buffer.append(ctx.getIndex());
+			buffer.append("]");
+		}
+		buffer.append("/");
+		buffer.append(ctx.getElement().getName());
+		return buffer.toString();
 	}
 
 	protected abstract Control getActiveControl(Composite parent, BaseRestriction restriction);

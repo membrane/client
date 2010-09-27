@@ -186,6 +186,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	@Override
 	public void createElement(Element element, Object ctx) {
+		System.err.println("element name is " + element.getName());
+		
 		CompositeCreatorContext context = (CompositeCreatorContext) ctx;
 		if (element.getEmbeddedType() != null) {
 			try {
@@ -212,6 +214,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			return;
 		}
 
+		context.setElement(element);
 		writeInputForBuildInType(element, context, null);
 	}
 
@@ -359,8 +362,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		TypeDefinition type = (TypeDefinition) restriction.getParent();
 
 		if (type.getParent() instanceof Element) {
-			Element element = (Element) type.getParent();
-			writeInputForBuildInType(element, ctx, restriction);
+			writeInputForBuildInType((Element) type.getParent(), ctx, restriction);
 		}
 	}
 

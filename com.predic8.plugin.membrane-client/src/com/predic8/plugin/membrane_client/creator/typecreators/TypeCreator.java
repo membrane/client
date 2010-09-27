@@ -22,7 +22,6 @@ public abstract class TypeCreator {
 		gd.heightHint = WIDGET_HEIGHT;
 		Label label = new Label(descendent, SWT.NONE);
 		label.setLayoutData(gd);
-		String txt = index == 0 ? text : (text + " [" + index + "]");
-		label.setText(txt);
+		label.setText(text);
 	}
 }

@@ -20,12 +20,12 @@ public class ControlUtil {
 		deco.setShowOnlyOnFocus(false);
 		deco.setMarginWidth(5);
 	}
-	
+
 	public static void cloneControl(Control control, Composite parent) {
 		if (control instanceof Combo) {
 			return;
 		}
-		
+
 		if (control instanceof Composite) {
 			cloneComposite(control, parent);
 			return;
@@ -38,7 +38,7 @@ public class ControlUtil {
 		clone.setData(SOAPConstants.PATH, obj.getData(SOAPConstants.PATH));
 		clone.setEnabled(obj.getEnabled());
 	}
-	
+
 	private static void cloneComposite(Control control, Composite parent) {
 		Composite obj = (Composite) control;
 		Composite clone = new Composite(parent, SWT.NONE);
@@ -49,13 +49,13 @@ public class ControlUtil {
 		for (Control child : children) {
 			cloneControl(child, clone);
 		}
-		
+
 		Object data = obj.getData(CompositeCreatorContext.CONTEXT_DATA);
 		if (data instanceof CompositeCreatorContext) {
-			CompositeCreatorContext context = (CompositeCreatorContext)data;
+			CompositeCreatorContext context = (CompositeCreatorContext) data;
 			context.incrementIndex();
 			CreatorUtil.createControls(clone, null, context);
 		}
 	}
-	
+
 }

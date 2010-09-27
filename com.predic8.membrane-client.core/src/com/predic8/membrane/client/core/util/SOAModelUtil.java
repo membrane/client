@@ -111,10 +111,10 @@ public class SOAModelUtil {
 	
 	
 	private static String createRequestBody(BindingOperation bOperation, AbstractSchemaCreator schemaCreator, Map<String, String> formParams) {
-		StringWriter stringWriter = new StringWriter();
+		StringWriter writer = new StringWriter();
 		
 		SOARequestCreator creator = new SOARequestCreator();
-		creator.setBuilder(new MarkupBuilder(stringWriter));
+		creator.setBuilder(new MarkupBuilder(writer));
 		creator.setDefinitions(bOperation.getDefinitions());
 		creator.setCreator(schemaCreator);
 		
@@ -127,7 +127,7 @@ public class SOAModelUtil {
 			e.printStackTrace();
 		}
 		
-		return stringWriter.toString();
+		return writer.toString();
 	}
 	
 	public static List<SOAPHeader> getHeaderElements(BindingOperation operation) {

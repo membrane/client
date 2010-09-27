@@ -30,6 +30,8 @@ import com.predic8.plugin.membrane_client.creator.typecreators.DateTimeCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.DecimalCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.DoubleCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.DurationCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.ENTITIESCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.ENTITYCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.FloatCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.GDayCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.GMonthCreator;
@@ -37,14 +39,23 @@ import com.predic8.plugin.membrane_client.creator.typecreators.GMonthDayCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.GYearCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.GYearMonthCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.HexBinaryCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.IDCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.IDREFCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.IDREFSCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.IntegerCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.LanguageCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.LongCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.NCNameCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.NMTOKENCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.NMTOKENSCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.NOTATIONCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.NameCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.NegativeIntegerCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.NonNegativeIntegerCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.NonPositiveIntegerCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.NormalizedStringCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.PositiveIntegerCreator;
+import com.predic8.plugin.membrane_client.creator.typecreators.QNameCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.ShortCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.StringCreator;
 import com.predic8.plugin.membrane_client.creator.typecreators.StringEnumerationCreator;
@@ -206,12 +217,44 @@ public class CreatorUtil {
 		if (SchemaConstants.SIMPLE_TYPE_G_DAY.equals(ctx.getTypeName()))
 			return new GDayCreator();
 
+		if (SchemaConstants.SIMPLE_TYPE_NAME.equals(ctx.getTypeName()))
+			return new NameCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_QNAME.equals(ctx.getTypeName()))
+			return new QNameCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_NCNAME.equals(ctx.getTypeName()))
+			return new NCNameCreator();
+		
 		if (SchemaConstants.SIMPLE_TYPE_ANY_URI.equals(ctx.getTypeName()))
 			return new AnyURICreator();
 		
 		if (SchemaConstants.SIMPLE_TYPE_LANGUAGE.equals(ctx.getTypeName()))
 			return new LanguageCreator();
 		
+		if (SchemaConstants.SIMPLE_TYPE_ID.equals(ctx.getTypeName()))
+			return new IDCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_IDREF.equals(ctx.getTypeName()))
+			return new IDREFCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_IDREFS.equals(ctx.getTypeName()))
+			return new IDREFSCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_ENTITY.equals(ctx.getTypeName()))
+			return new ENTITYCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_ENTITIES.equals(ctx.getTypeName()))
+			return new ENTITIESCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_NOTATION.equals(ctx.getTypeName()))
+			return new NOTATIONCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_NMTOKEN.equals(ctx.getTypeName()))
+			return new NMTOKENCreator();
+		
+		if (SchemaConstants.SIMPLE_TYPE_NMTOKENS.equals(ctx.getTypeName()))
+			return new NMTOKENSCreator();
 		
 		if (SchemaConstants.COMPLEX_TYPE_ENUMERATION.equals(ctx.getTypeName()))
 			return new StringEnumerationCreator();

@@ -76,6 +76,21 @@ public class SchemaConstants {
 	
 	public static final String SIMPLE_TYPE_LANGUAGE = "language";
 	
+	public static final String SIMPLE_TYPE_ID = "ID";
+	
+	public static final String SIMPLE_TYPE_IDREF = "IDREF";
+	
+	public static final String SIMPLE_TYPE_IDREFS = "IDREFS";
+	
+	public static final String SIMPLE_TYPE_ENTITY = "ENTITY";
+	
+	public static final String SIMPLE_TYPE_ENTITIES = "ENTITIES";
+	
+	public static final String SIMPLE_TYPE_NOTATION = "NOTATION";
+	
+	public static final String SIMPLE_TYPE_NMTOKEN = "NMTOKEN";
+	
+	public static final String SIMPLE_TYPE_NMTOKENS = "NMTOKENS";
 	
 	public static final String COMPLEX_TYPE_ENUMERATION = "enumeration";
 	

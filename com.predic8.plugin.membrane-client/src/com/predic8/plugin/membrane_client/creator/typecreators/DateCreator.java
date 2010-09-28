@@ -67,7 +67,7 @@ public class DateCreator extends SimpleTypeControlCreator {
 				dialog.open ();	
 			}
 		});
-		open.setLayoutData(infoGridData);
+		open.setLayoutData(gdata);
 		return open;
 	}
 

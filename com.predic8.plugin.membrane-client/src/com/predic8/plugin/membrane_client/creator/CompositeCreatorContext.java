@@ -126,4 +126,13 @@ public class CompositeCreatorContext extends CreatorContext {
 	public void setIndex(int index) {
 		this.index = index;
 	}
+	
+	public CompositeCreatorContext cloneExCatched() {
+		try {
+			return this.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException("Creator context supports clone operation.");
+		}
+	}
+	
 }

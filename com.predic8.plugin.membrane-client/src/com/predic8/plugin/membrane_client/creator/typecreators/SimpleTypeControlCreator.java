@@ -17,15 +17,15 @@ import com.predic8.schema.restriction.BaseRestriction;
 
 public abstract class SimpleTypeControlCreator extends TypeCreator {
 
-	protected GridData infoGridData;
+	protected GridData gdata;
 	
 	public static final Image INFO_IMAGE = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_INFO).createImage();
 	
 	public SimpleTypeControlCreator() {
-		infoGridData = new GridData();
-		infoGridData.heightHint = 14;
-		infoGridData.widthHint = 14;
-		infoGridData.horizontalIndent = 15;
+		gdata = new GridData();
+		gdata.heightHint = 14;
+		gdata.widthHint = 14;
+		gdata.horizontalIndent = 15;
 	}
 
 	public void createControls(Composite parent, CompositeCreatorContext ctx, BaseRestriction restriction) {
@@ -56,7 +56,7 @@ public abstract class SimpleTypeControlCreator extends TypeCreator {
 	protected Control getAuxilaryControl(Composite parent, BaseRestriction restriction) {
 		Label label = new Label(parent, SWT.NONE);
 		label.setText(" ");
-		label.setLayoutData(infoGridData);
+		label.setLayoutData(gdata);
 		return label;
 		
 	}

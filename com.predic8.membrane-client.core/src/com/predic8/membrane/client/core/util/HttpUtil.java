@@ -31,9 +31,12 @@ public class HttpUtil {
 		
 		header.add(Header.CONTENT_TYPE, SOAModelUtil.getContentTypeFor(bindingOperation));
 		header.add(Header.CONTENT_ENCODING, "UTF-8");
-		header.add("SOAPAction", SOAModelUtil.getSoapAction(bindingOperation));
+		
+		//TODO remove toString()
+		if (bindingOperation.getOperation().getSoapAction() != null)
+			header.add("SOAPAction", bindingOperation.getOperation().getSoapAction().toString());
+		
 		header.add("Host", SOAModelUtil.getHost(url));
-
 		return header;
 	}
 	

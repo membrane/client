@@ -15,7 +15,6 @@ import com.predic8.schema.creator.AbstractSchemaCreator;
 import com.predic8.wsdl.BindingElement;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Definitions;
-import com.predic8.wsdl.ExtensibilityOperation;
 import com.predic8.wsdl.WSDLParser;
 import com.predic8.wsdl.WSDLParserContext;
 import com.predic8.wsdl.soap11.SOAPBinding;
@@ -74,6 +73,7 @@ public class SOAModelUtil {
 		return uri;
 	}
 	
+	//TODO use AbstractSOAPBinding after changes in SOAModel
 	public static String getContentTypeFor(String soapVersion) {
 		if (SOAPConstants.SOAP_VERSION_11.equals(soapVersion))
 			return "text/xml";
@@ -101,15 +101,6 @@ public class SOAModelUtil {
 		throw new RuntimeException("Unsupported SOAP version.");
 	}
 		
-	public static String getSoapAction(BindingOperation bindOp) {
-		ExtensibilityOperation sOp = bindOp.getOperation();
-		if (sOp.getSoapAction() == null)
-			return "";
-			
-		return sOp.getSoapAction().toString();
-	}
-	
-	
 	private static String createRequestBody(BindingOperation bOperation, AbstractSchemaCreator schemaCreator, Map<String, String> formParams) {
 		StringWriter writer = new StringWriter();
 		
@@ -130,6 +121,7 @@ public class SOAModelUtil {
 		return writer.toString();
 	}
 	
+	//TODO remove
 	public static List<SOAPHeader> getHeaderElements(BindingOperation operation) {
 		List<BindingElement> bindElements = operation.getInput().getBindingElements();
 		List<SOAPHeader> result = new ArrayList<SOAPHeader>();

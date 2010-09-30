@@ -12,6 +12,9 @@ import java.util.Map;
 
 import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.schema.creator.AbstractSchemaCreator;
+import com.predic8.schema.restriction.BaseRestriction;
+import com.predic8.schema.restriction.facet.Facet;
+import com.predic8.schema.restriction.facet.MaxLengthFacet;
 import com.predic8.wsdl.BindingElement;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Definitions;
@@ -58,9 +61,7 @@ public class SOAModelUtil {
 		else if (url.startsWith("https://"))
 			url = url.substring(8);
 		
-		String[] tiles = url.split("/");
-		
-		return tiles[0];
+		return url.split("/")[0];
 	}
 	
 	public static String getPathAndQueryString(String dest) throws MalformedURLException {
@@ -132,6 +133,15 @@ public class SOAModelUtil {
 			}
 		}
 		return result;
+	}
+	
+	
+	public static MaxLengthFacet getMaxLengthFacet(BaseRestriction rest) {
+		for (Facet facet : rest.getFacets()) {
+			if (facet instanceof MaxLengthFacet) 
+				return (MaxLengthFacet)facet;
+		}
+		return null;
 	}
 	
 }

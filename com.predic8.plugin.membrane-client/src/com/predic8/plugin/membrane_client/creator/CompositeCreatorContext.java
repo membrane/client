@@ -1,8 +1,5 @@
 package com.predic8.plugin.membrane_client.creator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.predic8.schema.Element;
 import com.predic8.soamodel.CreatorContext;
 
@@ -17,8 +14,6 @@ public class CompositeCreatorContext extends CreatorContext {
 	private String label;
 	
 	private String typeName;
-	
-	private List<String> complexData;
 	
 	private int index;
 	
@@ -41,14 +36,6 @@ public class CompositeCreatorContext extends CreatorContext {
 		copy.setLabel(label);
 		copy.setTypeName(typeName);
 		copy.setIndex(index);
-		
-		if (complexData != null) {
-			List<String> datas = new ArrayList<String>();
-			for (String string : complexData) {
-				datas.add(string);
-			}
-			copy.setComplexData(datas);
-		}
 		
 		return copy;
 	}
@@ -107,14 +94,6 @@ public class CompositeCreatorContext extends CreatorContext {
 		this.typeName = typeName;
 	}
 
-	public List<String> getComplexData() {
-		return complexData;
-	}
-
-	public void setComplexData(List<String> complexData) {
-		this.complexData = complexData;
-	}
-	
 	public void incrementIndex() {
 		index ++;
 	}

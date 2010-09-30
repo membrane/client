@@ -21,6 +21,8 @@ public abstract class SimpleTypeControlCreator extends TypeCreator {
 	
 	public static final Image INFO_IMAGE = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_INFO).createImage();
 	
+	protected Control control;
+	
 	public SimpleTypeControlCreator() {
 		gdata = new GridData();
 		gdata.heightHint = 14;
@@ -30,7 +32,7 @@ public abstract class SimpleTypeControlCreator extends TypeCreator {
 
 	public void createControls(Composite parent, CompositeCreatorContext ctx, BaseRestriction restriction) {
 		createLabel(ctx.getLabel(), parent, ctx.getIndex());
-		Control control = getActiveControl(parent, restriction);
+		control = getActiveControl(parent, restriction);
 		ControlUtil.createDeco(control, getDescription(), SWT.RIGHT);
 		getAuxilaryControl(parent, restriction);
 		control.setData(SOAPConstants.PATH, getValue(ctx));
@@ -52,7 +54,7 @@ public abstract class SimpleTypeControlCreator extends TypeCreator {
 	}
 
 	protected abstract Control getActiveControl(Composite parent, BaseRestriction restriction);
-
+	
 	protected Control getAuxilaryControl(Composite parent, BaseRestriction restriction) {
 		Label label = new Label(parent, SWT.NONE);
 		label.setText(" ");

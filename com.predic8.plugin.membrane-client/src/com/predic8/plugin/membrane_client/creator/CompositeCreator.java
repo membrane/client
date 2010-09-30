@@ -99,8 +99,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	}
 
 	@SuppressWarnings("rawtypes")
-	private void handleMsgParts(List msgParts) {
-		for (Object part : msgParts) {
+	private void handleMsgParts(List parts) {
+		for (Object part : parts) {
 			CompositeCreatorContext ctx = new CompositeCreatorContext();
 			ctx.setPath("xpath:");
 			definitions.getElement(((Part) part).getElement()).create(this, ctx);
@@ -119,17 +119,17 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		if (cType.getQname() != null) {
 			createChildComposite(newCtx);
-			createattributesAndCreateModel(cType, newCtx, model);
+			createAttributesAndCreateModel(cType, newCtx, model);
 
 			if (!ancestors.isEmpty())
 				ancestors.pop();
 		} else {
-			createattributesAndCreateModel(cType, newCtx, model);
+			createAttributesAndCreateModel(cType, newCtx, model);
 		}
 
 	}
 
-	private void createattributesAndCreateModel(ComplexType cType, CompositeCreatorContext newCtx, SchemaComponent model) {
+	private void createAttributesAndCreateModel(ComplexType cType, CompositeCreatorContext newCtx, SchemaComponent model) {
 		writeAttributes(cType, newCtx);
 		if (model != null) {
 			model.create(this, newCtx);
@@ -138,18 +138,18 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private void createChildComposite(CompositeCreatorContext ctx) {
 
-		Composite composite = new Composite(ancestors.peek(), SWT.BORDER | SWT.DOUBLE_BUFFERED);
+		Composite comp = new Composite(ancestors.peek(), SWT.BORDER | SWT.DOUBLE_BUFFERED);
 		// composite.setBackground(COLOR_CHILD);
-		composite.setLayout(layout);
-		composite.setLayoutData(PluginUtil.createGridData(false, false));
+		comp.setLayout(layout);
+		comp.setLayoutData(PluginUtil.createGridData(false, false));
 
-		Composite header = new Composite(composite, SWT.NONE);
+		Composite header = new Composite(comp, SWT.NONE);
 		//header.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_SELECTION));
 		header.setLayout(PluginUtil.createGridlayout(3, 0));
 
 		new Label(header, SWT.NONE).setText(PluginUtil.getComplexTypeCaption(ctx));
 
-		Composite widgetsHost = new Composite(composite, SWT.NONE);
+		Composite widgetsHost = new Composite(comp, SWT.NONE);
 		widgetsHost.setLayout(layout);
 		//widgetsHost.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_TITLE_FOREGROUND));
 		widgetsHost.setLayoutData(PluginUtil.createGridData(false, false));
@@ -167,25 +167,16 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	}
 
 	private void writeAttributes(ComplexType cType, CompositeCreatorContext ctx) {
-		List<Attribute> attributes = cType.getAttributes();
-		for (Attribute attribute : attributes) {
+		for (Attribute attribute : cType.getAttributes()) {
 			writeInputForBuildInType(attribute, ctx, null);
 		}
 	}
 
 	@Override
 	public void createElement(Element element, Object ctx) {
-
 		CompositeCreatorContext context = (CompositeCreatorContext) ctx;
-		TypeDefinition embType = (TypeDefinition) element.getEmbeddedType();
-		if (embType != null) {
-			createTypeDefinition(element, context, embType);
-			return;
-		}
-
-		TypeDefinition refType = element.getSchema().getType(element.getType());
-		if (refType != null) {
-			createTypeDefinition(element, context, refType);
+		if (getTypeDefinition(element) != null) {
+			createTypeDefinition(element, context, getTypeDefinition(element));
 			return;
 		}
 
@@ -193,6 +184,14 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		writeInputForBuildInType(element, context, null);
 	}
 
+	private TypeDefinition getTypeDefinition(Element element) {
+		TypeDefinition embType = (TypeDefinition) element.getEmbeddedType();
+		if (embType != null)
+			return embType;
+		
+		return element.getSchema().getType(element.getType());
+	}
+	
 	private void createTypeDefinition(Element element, CompositeCreatorContext context, TypeDefinition typeDef) {
 		CompositeCreatorContext newCtx = context.cloneExCatched();
 		newCtx.setElement(element);
@@ -211,10 +210,10 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		createLowLevelWidgets(restr, clone);
 	}
 
-	private void createLowLevelWidgets(BaseRestriction restr, CompositeCreatorContext clone) {
-		Composite descendent = createPlaceHolder();
-		CreatorUtil.createControls(descendent, restr, clone);
-		descendent.setData(CompositeCreatorContext.CONTEXT_DATA, clone);
+	private void createLowLevelWidgets(BaseRestriction restr, CompositeCreatorContext ctx) {
+		Composite placeHolder = createPlaceHolder();
+		CreatorUtil.createControls(placeHolder, restr, ctx);
+		placeHolder.setData(CompositeCreatorContext.CONTEXT_DATA, ctx);
 	}
 
 	private Composite createPlaceHolder() {
@@ -268,11 +267,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	@Override
 	public void createEnumerationFacet(EnumerationFacet facet, Object context) {
-//		CompositeCreatorContext clone = cloneContext(context);
-//		clone.setLabel(clone.getElement().getName().toString());
-//		clone.setTypeName(SchemaConstants.COMPLEX_TYPE_ENUMERATION);
-//		clone.setComplexData(facet.getValues());
-//		createLowLevelWidgets(null, clone);
+		
 	}
 
 	public void setDefinitions(Definitions definitions) {
@@ -299,8 +294,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		((SchemaComponent) ext.getModel()).create(this, context);
 
-		List<Attribute> attributes = ext.getAttributes();
-		for (Attribute attribute : attributes) {
+		for (Attribute attribute : ext.getAttributes()) {
 			writeInputForBuildInType(attribute, context, null);
 		}
 	}
@@ -311,23 +305,16 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			((SchemaComponent) restriction.getModel()).create(this, ctx);
 		}
 
-		List<Attribute> attrs = restriction.getAttributes();
-		for (Attribute attribute : attrs) {
+		for (Attribute attribute : restriction.getAttributes()) {
 			writeInputForBuildInType(attribute, (CompositeCreatorContext) ctx, null);
 		}
 	}
 
-	private void createSimpleRestr(BaseRestriction restriction, CompositeCreatorContext ctx) {
-		List<Facet> list = restriction.getFacets();
-		if (containsEnumarationfacet(list)) {
-			super.createSimpleRestriction(restriction, ctx);
-			return;
-		}
-		
-		TypeDefinition type = (TypeDefinition) restriction.getParent();
+	private void createNonStringRestriction(BaseRestriction rest, CompositeCreatorContext ctx) {
+		TypeDefinition type = (TypeDefinition) rest.getParent();
 
 		if (type.getParent() instanceof Element) {
-			writeInputForBuildInType((Element) type.getParent(), ctx, restriction);
+			writeInputForBuildInType((Element) type.getParent(), ctx, rest);
 		}
 	}
 
@@ -335,8 +322,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		if (list == null || list.isEmpty()) 
 			return false;
 		
-		for (Facet object : list) {
-			if (object instanceof EnumerationFacet) {
+		for (Facet facet : list) {
+			if (facet instanceof EnumerationFacet) {
 				return true;
 			}
 		}
@@ -349,8 +336,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			CompositeCreatorContext clone = ctx.cloneExCatched();
 			clone.setLabel(clone.getElement().getName().toString());
 			clone.setTypeName(SimpleTypeCreatorFactory.COMPLEX_TYPE_ENUMERATION);
-			clone.setComplexData(((EnumerationFacet)rest.getEnumerationFacet()).getValues());
-			createLowLevelWidgets(null, clone);
+			createLowLevelWidgets(rest, clone);
 			return;
 		}
 		
@@ -371,12 +357,12 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		}
 
 		else if (restriction instanceof PositiveIntegerRestriction) {
-			createSimpleRestr(restriction, context);
+			createNonStringRestriction(restriction, context);
 			return;
 		}
 
 		else if (restriction instanceof DecimalRestriction) {
-			createSimpleRestr(restriction, context);
+			createNonStringRestriction(restriction, context);
 			return;
 		}
 

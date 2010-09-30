@@ -10,15 +10,21 @@ import com.predic8.plugin.membrane_client.creator.CompositeCreatorContext;
 import com.predic8.plugin.membrane_client.creator.CreatorUtil;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.schema.restriction.BaseRestriction;
+import com.predic8.schema.restriction.facet.EnumerationFacet;
 
 public class StringEnumerationCreator extends TypeCreator {
 
 	@Override
-	public void createControls(Composite parent, CompositeCreatorContext ctx, BaseRestriction restriction) {
+	public void createControls(Composite parent, CompositeCreatorContext ctx, BaseRestriction rest) {
 		createLabel(ctx.getLabel(), parent, ctx.getIndex());
-		Combo control = createCombo(ctx.getComplexData(), parent, ctx);
+		Combo control = createCombo(getValues(rest), parent, ctx);
 		if (ctx.isElementOptional())
 			CreatorUtil.createAddRemoveButton(parent, control, false);
+	}
+	
+	
+	private List<String> getValues(BaseRestriction rest) {
+		return ((EnumerationFacet)rest.getEnumerationFacet()).getValues();
 	}
 
 	private Combo createCombo(List<String> values, Composite descendent, CompositeCreatorContext ctx) {

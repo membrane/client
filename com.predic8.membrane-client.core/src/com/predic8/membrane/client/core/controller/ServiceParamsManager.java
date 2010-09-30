@@ -11,6 +11,7 @@ import com.predic8.membrane.client.core.model.ServiceParams;
 import com.predic8.membrane.client.core.store.ConfigFileStore;
 import com.predic8.membrane.client.core.store.ConfigStore;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
+import com.predic8.wsdl.Definitions;
 
 public class ServiceParamsManager {
 
@@ -33,7 +34,13 @@ public class ServiceParamsManager {
 			config = configStore.read(getDefaultConfigurationFile());
 			List<WSDL> wsdls = config.getWsdls().getWSDLList();
 			for (WSDL wsdl : wsdls) {
-				addNewServiceParams(new ServiceParams(wsdl.getUrl().getValue(), SOAModelUtil.getDefinitions(wsdl.getUrl().getValue())), false);
+				Definitions definitions = null;
+				try {
+					definitions = SOAModelUtil.getDefinitions(wsdl.getUrl().getValue());
+				} catch (RuntimeException e) {
+					
+				}
+				addNewServiceParams(new ServiceParams(wsdl.getUrl().getValue(), definitions), false);
 			}
 		} catch (Exception e) {
 			config = new Config();

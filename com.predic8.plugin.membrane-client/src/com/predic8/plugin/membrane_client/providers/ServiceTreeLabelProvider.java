@@ -18,6 +18,8 @@ public class ServiceTreeLabelProvider extends LabelProvider {
 	
 	private Image wsdlImage;
 	
+	private Image wsdlErrorImage;
+	
 	private Image portImage;
 	
 	public ServiceTreeLabelProvider() {
@@ -50,6 +52,13 @@ public class ServiceTreeLabelProvider extends LabelProvider {
 			wsdlImage = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_WSDL).createImage();
 	
 		return wsdlImage;
+	}
+	
+	private Image getWSDLErrorImage() {
+		if (wsdlErrorImage == null)
+			wsdlErrorImage = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_WSDL_ERROR).createImage();
+	
+		return wsdlErrorImage;
 	}
 	
 	@Override
@@ -86,7 +95,8 @@ public class ServiceTreeLabelProvider extends LabelProvider {
 		}
 		
 		if (element instanceof ServiceParams) {
-			return getWSDLImage();
+			ServiceParams sp = (ServiceParams)element;
+			return sp.getDefinitions() == null ? getWSDLErrorImage() : getWSDLImage();
 		}
 		
 		return super.getImage(element);

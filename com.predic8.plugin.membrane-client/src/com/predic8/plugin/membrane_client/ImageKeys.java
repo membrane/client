@@ -12,6 +12,8 @@ public class ImageKeys {
 
 	public static final String IMAGE_WSDL = "image wsdl";
 
+	public static final String IMAGE_WSDL_ERROR = "image wsdl error";
+	
 	public static final String IMAGE_FOLDER = "image folder";
 	
 	public static final String IMAGE_CONTROL_PLAY = "image control play";

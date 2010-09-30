@@ -1,12 +1,11 @@
 package com.predic8.plugin.membrane_client.providers;
 
-import java.util.List;
-
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 import com.predic8.membrane.client.core.model.ServiceParams;
+import com.predic8.wsdl.Definitions;
 
 public class WSDLTableLabelProvider extends LabelProvider implements ITableLabelProvider {
 
@@ -23,8 +22,11 @@ public class WSDLTableLabelProvider extends LabelProvider implements ITableLabel
 			return params.getLocation();
 		
 		if (columnIndex == 1) {
-			List ops = (List)params.getDefinitions().getOperations();
-			return "" + ops.size();
+			Definitions definitions = params.getDefinitions();
+			if (definitions == null)
+				return "0";
+			
+			return "" + definitions.getOperations().size();
 		}
 		return "";
 	}

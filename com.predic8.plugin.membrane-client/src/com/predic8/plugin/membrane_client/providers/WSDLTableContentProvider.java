@@ -10,9 +10,7 @@ public class WSDLTableContentProvider implements IStructuredContentProvider {
 	@Override
 	public Object[] getElements(Object inputElement) {
 		
-		List params = (List)inputElement;
-		
-		return params.toArray();
+		return ((List)inputElement).toArray();
 	}
 
 	@Override

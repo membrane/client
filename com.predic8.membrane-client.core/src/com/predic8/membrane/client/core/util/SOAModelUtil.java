@@ -23,7 +23,7 @@ import com.predic8.wstool.creator.RequestTemplateCreator;
 import com.predic8.wstool.creator.SOARequestCreator;
 
 public class SOAModelUtil {
-
+	
 	public static String getRequestTemplateBody(BindingOperation bOperation) {
 		return createRequestBody(bOperation, new RequestTemplateCreator(), null);
 	}

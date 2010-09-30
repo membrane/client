@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import com.predic8.membrane.client.core.SOAPConstants;
-import com.predic8.membrane.client.core.util.SOAModelUtil;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.schema.Attribute;
 import com.predic8.schema.ComplexType;
@@ -43,14 +42,14 @@ import com.predic8.schema.restriction.facet.LengthFacet;
 import com.predic8.schema.restriction.facet.MaxLengthFacet;
 import com.predic8.schema.restriction.facet.MinLengthFacet;
 import com.predic8.schema.restriction.facet.PatternFacet;
+import com.predic8.wsdl.AbstractSOAPBody;
+import com.predic8.wsdl.AbstractSOAPHeader;
 import com.predic8.wsdl.BindingElement;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Definitions;
 import com.predic8.wsdl.Message;
 import com.predic8.wsdl.Operation;
 import com.predic8.wsdl.Part;
-import com.predic8.wsdl.soap11.SOAPBody;
-import com.predic8.wsdl.soap11.SOAPHeader;
 
 public class CompositeCreator extends AbstractSchemaCreator {
 
@@ -83,22 +82,20 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		createHeaders(bindingOperation, operation.getInput().getMessage());
 
 		for (BindingElement object : bindingOperation.getInput().getBindingElements()) {
-			// TODO refactor after SOAModel has abstract SOAP Body. Attention of SOAP header
-			if (object instanceof SOAPBody) {
-				handleMsgParts(((SOAPBody) object).getMessageParts());
-			} else if (object instanceof com.predic8.wsdl.soap12.SOAPBody) {
-				handleMsgParts(((com.predic8.wsdl.soap12.SOAPBody) object).getMessageParts());
-			}
+			//TODO Attention of SOAP header
+			if (object instanceof AbstractSOAPBody) {
+				handleMsgParts(((AbstractSOAPBody) object).getMessageParts());
+			} 
 		}
 
 		CreatorUtil.layoutScrolledComposites(scrollComp, root);
 	}
 
 	private void createHeaders(BindingOperation bindingOperation, Message msg) {
-		List<SOAPHeader> bodies = SOAModelUtil.getHeaderElements(bindingOperation);
+		List<AbstractSOAPHeader> bodies = bindingOperation.getInput().getSOAPHeaders();
 		CompositeCreatorContext ctx = new CompositeCreatorContext();
 		ctx.setPath("xpath:");
-		for (SOAPHeader header : bodies) {
+		for (AbstractSOAPHeader header : bodies) {
 			definitions.getElement(msg.getPart(header.getPart()).getElement()).create(this, ctx);
 		}
 	}
@@ -269,6 +266,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 				if (data instanceof CompositeCreatorContext) {
 					ancestors.push(b.getParent().getParent().getParent());
 					CompositeCreatorContext ctx = (CompositeCreatorContext)data;
+					ctx.incrementIndex();
 					createElement(ctx.getElement(), ctx.cloneExCatched());
 					ancestors.pop();
 					CreatorUtil.layoutScrolledComposites(scrollComp, root);

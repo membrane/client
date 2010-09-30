@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import com.predic8.membrane.client.core.SOAPConstants;
@@ -15,13 +13,11 @@ import com.predic8.schema.creator.AbstractSchemaCreator;
 import com.predic8.schema.restriction.BaseRestriction;
 import com.predic8.schema.restriction.facet.Facet;
 import com.predic8.schema.restriction.facet.MaxLengthFacet;
-import com.predic8.wsdl.BindingElement;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Definitions;
 import com.predic8.wsdl.WSDLParser;
 import com.predic8.wsdl.WSDLParserContext;
 import com.predic8.wsdl.soap11.SOAPBinding;
-import com.predic8.wsdl.soap11.SOAPHeader;
 import com.predic8.wstool.creator.RequestCreator;
 import com.predic8.wstool.creator.RequestTemplateCreator;
 import com.predic8.wstool.creator.SOARequestCreator;
@@ -121,20 +117,6 @@ public class SOAModelUtil {
 		
 		return writer.toString();
 	}
-	
-	//TODO remove
-	public static List<SOAPHeader> getHeaderElements(BindingOperation operation) {
-		List<BindingElement> bindElements = operation.getInput().getBindingElements();
-		List<SOAPHeader> result = new ArrayList<SOAPHeader>();
-
-		for (BindingElement bindingElement : bindElements) {
-			if (bindingElement instanceof SOAPHeader) {
-				result.add((SOAPHeader) bindingElement);
-			}
-		}
-		return result;
-	}
-	
 	
 	public static MaxLengthFacet getMaxLengthFacet(BaseRestriction rest) {
 		for (Facet facet : rest.getFacets()) {

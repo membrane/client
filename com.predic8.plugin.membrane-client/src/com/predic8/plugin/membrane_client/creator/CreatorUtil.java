@@ -96,7 +96,7 @@ public class CreatorUtil {
 	}
 	
 	public static ScrolledComposite createScrollComposite(Composite parent) {
-		ScrolledComposite sC = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.DOUBLE_BUFFERED);
+		ScrolledComposite sC = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.DOUBLE_BUFFERED | SWT.SMOOTH);
 		sC.setExpandHorizontal(true);
 		sC.setExpandVertical(true);
 		sC.setLayout(new GridLayout());

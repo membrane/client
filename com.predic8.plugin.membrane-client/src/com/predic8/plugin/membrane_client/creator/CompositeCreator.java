@@ -100,12 +100,11 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	private void handleMsgParts(List parts) {
-		for (Object part : parts) {
+	private void handleMsgParts(List<Part> parts) {
+		for (Part part : parts) {
 			CompositeCreatorContext ctx = new CompositeCreatorContext();
 			ctx.setPath("xpath:");
-			definitions.getElement(((Part) part).getElement()).create(this, ctx);
+			definitions.getElement(part.getElement()).create(this, ctx);
 		}
 	}
 
@@ -141,19 +140,16 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	private void createChildComposite(CompositeCreatorContext ctx) {
 
 		Composite comp = new Composite(ancestors.peek(), SWT.BORDER | SWT.DOUBLE_BUFFERED);
-		// composite.setBackground(COLOR_CHILD);
 		comp.setLayout(layout);
 		comp.setLayoutData(PluginUtil.createGridData(false, false));
 
 		Composite header = new Composite(comp, SWT.NONE);
-		//header.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_SELECTION));
-		header.setLayout(PluginUtil.createGridlayout(3, 0));
+		header.setLayout(PluginUtil.createGridlayout(4, 0));
 
 		new Label(header, SWT.NONE).setText(PluginUtil.getComplexTypeCaption(ctx));
 
 		Composite widgetsHost = new Composite(comp, SWT.NONE);
 		widgetsHost.setLayout(layout);
-		//widgetsHost.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_TITLE_FOREGROUND));
 		widgetsHost.setLayoutData(PluginUtil.createGridData(false, false));
 		widgetsHost.setData(SOAPConstants.PATH, ctx.getPath());
 		widgetsHost.setData(CompositeCreatorContext.CONTEXT_DATA, ctx);
@@ -166,6 +162,9 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			createAddButton(header, widgetsHost);
 		}
 
+		if (ctx.getIndex() > 0)
+			createDeleteButton(header, widgetsHost);
+		
 		ancestors.push(widgetsHost);
 	}
 
@@ -275,6 +274,20 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			}
 		});
 	}
+	
+	private void createDeleteButton(Composite parent, final Composite child) {
+		Button bt = CreatorUtil.createDeleteButton(parent);
+		bt.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Button b = (Button) e.getSource();				
+				child.dispose();
+				b.getParent().getParent().dispose();
+				CreatorUtil.layoutScrolledComposites(scrollComp, root);
+			}
+		});
+	}
+	
 	
 	@Override
 	public void createEnumerationFacet(EnumerationFacet facet, Object context) {

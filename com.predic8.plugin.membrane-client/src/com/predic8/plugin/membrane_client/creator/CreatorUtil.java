@@ -25,6 +25,8 @@ public class CreatorUtil {
 	public static final Image REMOVE_IMAGE = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CROSS_REMOVE).createImage();
 
 	public static final Image ADD_IMAGE = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_ADD_ELEMENT).createImage();
+	
+	public static final Image DELETE_IMAGE = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_DELETE).createImage();
 
 	private static final Color COLOR_PARENT = new Color(Display.getCurrent(), 222, 220, 230);
 	
@@ -82,6 +84,17 @@ public class CreatorUtil {
 		return bt;
 	}
 
+	public static Button createDeleteButton(Composite parent) {
+		Button bt = new Button(parent, SWT.PUSH);
+		bt.setImage(DELETE_IMAGE);
+		GridData gdBt = new GridData();
+		gdBt.widthHint = 10;
+		gdBt.heightHint = 10;
+		gdBt.horizontalIndent = 30;
+		bt.setLayoutData(gdBt);
+		return bt;
+	}
+	
 	public static ScrolledComposite createScrollComposite(Composite parent) {
 		ScrolledComposite sC = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.DOUBLE_BUFFERED);
 		sC.setExpandHorizontal(true);

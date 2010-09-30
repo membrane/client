@@ -24,4 +24,6 @@ public class ImageKeys {
 	
 	public static final String IMAGE_CALENDAR = "image calendar";
 	
+	public static final String IMAGE_DELETE = "image delete";
+	
 }

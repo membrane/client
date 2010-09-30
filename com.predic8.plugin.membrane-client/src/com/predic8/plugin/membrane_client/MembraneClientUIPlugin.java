@@ -70,6 +70,8 @@ public class MembraneClientUIPlugin extends AbstractUIPlugin {
 		reg.put(ImageKeys.IMAGE_INFO, imageDescriptorFromPlugin(PLUGIN_ID, "icons/information.png"));
 		
 		reg.put(ImageKeys.IMAGE_CALENDAR, imageDescriptorFromPlugin(PLUGIN_ID, "icons/calendar.png"));
+		
+		reg.put(ImageKeys.IMAGE_DELETE, imageDescriptorFromPlugin(PLUGIN_ID, "icons/delete.png"));
 	}
 	
 }

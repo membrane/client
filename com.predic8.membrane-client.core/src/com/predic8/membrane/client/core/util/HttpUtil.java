@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import com.predic8.membrane.core.Constants;
 import com.predic8.membrane.core.http.Header;
 import com.predic8.membrane.core.http.Request;
+import com.predic8.wsdl.AbstractSOAPBinding;
 import com.predic8.wsdl.BindingOperation;
 
 public class HttpUtil {
@@ -29,12 +30,13 @@ public class HttpUtil {
 	private static Header getHeader(BindingOperation bindingOperation, String url) {
 		Header header = new Header();
 		
-		header.add(Header.CONTENT_TYPE, SOAModelUtil.getContentTypeFor(bindingOperation));
+		AbstractSOAPBinding asb = (AbstractSOAPBinding)bindingOperation.getBinding().getBinding();
+		
+		header.add(Header.CONTENT_TYPE, asb.getContentType());
 		header.add(Header.CONTENT_ENCODING, "UTF-8");
 		
-		//TODO remove toString()
 		if (bindingOperation.getOperation().getSoapAction() != null)
-			header.add("SOAPAction", bindingOperation.getOperation().getSoapAction().toString());
+			header.add("SOAPAction", bindingOperation.getOperation().getSoapAction());
 		
 		header.add("Host", SOAModelUtil.getHost(url));
 		return header;

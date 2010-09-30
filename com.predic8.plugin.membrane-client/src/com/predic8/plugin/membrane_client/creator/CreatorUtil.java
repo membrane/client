@@ -17,7 +17,6 @@ import org.eclipse.swt.widgets.Display;
 
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
-import com.predic8.plugin.membrane_client.ui.ControlUtil;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.schema.restriction.BaseRestriction;
 
@@ -29,7 +28,6 @@ public class CreatorUtil {
 
 	private static final Color COLOR_PARENT = new Color(Display.getCurrent(), 222, 220, 230);
 	
-
 	public static void createControls(Composite descendent, BaseRestriction restriction, CompositeCreatorContext ctx) {
 		SimpleTypeCreatorFactory.getCreator(ctx).createControls(descendent, ctx, restriction);
 	}
@@ -71,22 +69,6 @@ public class CreatorUtil {
 				updateButtonControlEnable(control, (Button) e.getSource(), visible);
 			}
 		});
-	}
-
-	public static void cloneAndAddChildComposite(Composite parent, Composite child) {
-
-		Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(child.getLayout());
-		composite.setBackground(child.getBackground());
-		composite.setLayoutData(child.getLayoutData());
-
-		Control[] children = child.getChildren();
-		for (Control control : children) {
-			ControlUtil.cloneControl(control, composite);
-		}
-
-		parent.layout();
-		parent.redraw();
 	}
 
 	public static Button createAddButton(Composite parent) {

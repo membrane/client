@@ -159,7 +159,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		//widgetsHost.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_TITLE_FOREGROUND));
 		widgetsHost.setLayoutData(PluginUtil.createGridData(false, false));
 		widgetsHost.setData(SOAPConstants.PATH, ctx.getPath());
-
+		widgetsHost.setData(CompositeCreatorContext.CONTEXT_DATA, ctx);
+		
 		// here we got a problem, what happens by [0,unbounded) ?
 		if (ctx.isElementOptional())
 			CreatorUtil.createAddRemoveButton(header, widgetsHost, true);
@@ -263,13 +264,20 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		bt.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Button b = (Button) e.getSource();
-				CreatorUtil.cloneAndAddChildComposite(b.getParent().getParent(), child);
-				CreatorUtil.layoutScrolledComposites(scrollComp, root);
+				Button b = (Button) e.getSource();				
+				Object data = child.getData(CompositeCreatorContext.CONTEXT_DATA);
+				if (data instanceof CompositeCreatorContext) {
+					ancestors.push(b.getParent().getParent().getParent());
+					CompositeCreatorContext ctx = (CompositeCreatorContext)data;
+					createElement(ctx.getElement(), ctx.cloneExCatched());
+					ancestors.pop();
+					CreatorUtil.layoutScrolledComposites(scrollComp, root);
+				}
+				
 			}
 		});
 	}
-
+	
 	@Override
 	public void createEnumerationFacet(EnumerationFacet facet, Object context) {
 		

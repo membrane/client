@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.TabItem;
 import com.predic8.membrane.core.http.Message;
 import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.message.composite.MessageComposite;
+import com.predic8.plugin.membrane_client.message.composite.RequestComposite;
 import com.predic8.wsdl.BindingOperation;
 
 public class MessageTabManager {
@@ -53,7 +54,7 @@ public class MessageTabManager {
 
 	private NullBodyTabComposite nullBodyTabComposite;
 
-	private TemplateTabComposite templateTabComposite; 
+	private FormTabComposite formTabComposite; 
 	
 	public MessageTabManager(final MessageComposite baseComp) {
 		this.baseComp = baseComp;
@@ -64,7 +65,8 @@ public class MessageTabManager {
 		headerTabComposite = new HeaderTabComposite(folder);
 		nullBodyTabComposite = new NullBodyTabComposite(folder);
 
-		templateTabComposite = new TemplateTabComposite(folder);
+		
+		createFormComposite(baseComp);
 		
 		createBodyTabs();
 
@@ -74,6 +76,11 @@ public class MessageTabManager {
 
 		doUpdate(null, null);
 
+	}
+
+	private void createFormComposite(final MessageComposite baseComp) {
+		if (baseComp instanceof RequestComposite)
+			formTabComposite = new FormTabComposite(folder);
 	}
 
 	private void addSelectionListenerToFolder(final MessageComposite baseComp) {
@@ -174,13 +181,17 @@ public class MessageTabManager {
 		
 		currentBodyTab.show();
 
-		if (operation != null) {
-			templateTabComposite.setBindingOperation(operation);
-			templateTabComposite.show();
-		}
+		updateFormTabComposite(operation);
 		
 		
 		baseComp.setFormatEnabled(currentBodyTab.isFormatSupported());
+	}
+
+	private void updateFormTabComposite(BindingOperation operation) {
+		if (formTabComposite != null && operation != null) {
+			formTabComposite.setBindingOperation(operation);
+			formTabComposite.show();
+		}
 	}
 
 	private BodyTabComposite getCurrentBodyTab(Message msg) {
@@ -273,8 +284,8 @@ public class MessageTabManager {
 		return currentBodyTab != null && !currentBodyTab.isDisposed() && currentBodyTab.getTabItem() != null && !currentBodyTab.getTabItem().isDisposed();
 	}
 
-	public TemplateTabComposite getTemplateTabComposite() {
-		return templateTabComposite;
+	public FormTabComposite getFormTabComposite() {
+		return formTabComposite;
 	}
 	
 }

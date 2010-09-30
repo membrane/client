@@ -14,23 +14,21 @@
 
 package com.predic8.plugin.membrane_client.tabcomposites;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.swt.widgets.TabFolder;
 
 import com.predic8.membrane.client.core.util.SOAModelUtil;
 import com.predic8.plugin.membrane_client.creator.CompositeCreator;
-import com.predic8.plugin.membrane_client.creator.CreatorUtil;
 import com.predic8.wsdl.BindingOperation;
 
-public class TemplateTabComposite extends AbstractTabComposite {
+public class FormTabComposite extends AbstractTabComposite {
 
 	public static final String TAB_TITLE = "Form";
 
 	private CompositeCreator creator;
 	
-	public TemplateTabComposite(TabFolder parent) {
+	public FormTabComposite(TabFolder parent) {
 		super(parent, TAB_TITLE);
 	}
 	
@@ -51,17 +49,12 @@ public class TemplateTabComposite extends AbstractTabComposite {
 		this.checkWidget();
 		
 		this.layout();
-		this.redraw();
-		
+		this.redraw();	
 	}
-	
+
+
 	public Map<String, String> getFormParams() {
-		if (creator == null)
-			return null;
-		
-		Map<String, String> result = new HashMap<String, String>();
-		CreatorUtil.generateOutput(creator.getRoot(), result);
-		return result;
+		return creator.getFormParams();
 	}
 	
 }

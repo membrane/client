@@ -2,7 +2,9 @@ package com.predic8.plugin.membrane_client.creator;
 
 import groovy.xml.QName;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import org.eclipse.swt.SWT;
@@ -12,8 +14,11 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 
 import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
@@ -395,4 +400,43 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		return root;
 	}
 
+	public Map<String, String> getFormParams() {
+		return getFormParams(root);
+	}
+	
+	public Map<String, String> getFormParams(Control control) {
+		Map<String, String> formParams = new HashMap<String, String>();
+		if (control == null)
+			return formParams;
+	
+		if (control instanceof Composite) {
+			Control[] children = ((Composite) control).getChildren();
+			for (Control child : children) {
+				formParams.putAll(getFormParams(child));
+			}
+			return formParams;
+		}
+	
+		if (control.getData(SOAPConstants.PATH) == null)
+			return formParams;
+	
+		formParams.put(control.getData(SOAPConstants.PATH).toString(), getValue(control));
+		return formParams;
+	}
+	
+	private String getValue(Control control) {
+		if (control instanceof Text) {
+			return ((Text) control).getText();
+		}
+
+		if (control instanceof Button) {
+			return Boolean.toString(((Button) control).getSelection());
+		}
+
+		if (control instanceof Combo) {
+			return ((Combo) control).getItem(((Combo) control).getSelectionIndex());
+		}
+		return null;
+	}
+	
 }

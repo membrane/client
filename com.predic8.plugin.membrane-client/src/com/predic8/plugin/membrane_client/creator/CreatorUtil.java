@@ -1,6 +1,5 @@
 package com.predic8.plugin.membrane_client.creator;
 
-import java.util.Map;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -12,13 +11,10 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Text;
 
-import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.plugin.membrane_client.ui.ControlUtil;
@@ -33,40 +29,7 @@ public class CreatorUtil {
 
 	private static final Color COLOR_PARENT = new Color(Display.getCurrent(), 222, 220, 230);
 	
-	public static void generateOutput(Control control, Map<String, String> map) {
-		if (control == null)
-			return;
 
-		if (control instanceof Composite) {
-			Control[] children = ((Composite) control).getChildren();
-			for (Control child : children) {
-				generateOutput(child, map);
-			}
-			return;
-		}
-
-		if (control.getData(SOAPConstants.PATH) == null)
-			return;
-
-		map.put(control.getData(SOAPConstants.PATH).toString(), getValue(control));
-	}
-
-	private static String getValue(Control control) {
-		if (control instanceof Text) {
-			return ((Text) control).getText();
-		}
-
-		if (control instanceof Button) {
-			return Boolean.toString(((Button) control).getSelection());
-		}
-
-		if (control instanceof Combo) {
-			return ((Combo) control).getItem(((Combo) control).getSelectionIndex());
-		}
-		return null;
-	}
-
-	
 	public static void createControls(Composite descendent, BaseRestriction restriction, CompositeCreatorContext ctx) {
 		SimpleTypeCreatorFactory.getCreator(ctx).createControls(descendent, ctx, restriction);
 	}

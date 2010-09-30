@@ -154,7 +154,7 @@ public class RequestView extends MessageView {
 					}
 					
 					updateControlButtons(true, null);
-					executeClientCall(SOAModelUtil.getSOARequestBody(bindingOperation, baseComp.getFormParams()));
+					executeClientCall(SOAModelUtil.getSOARequestBody(bindingOperation, getRequestComposite().getFormParams()));
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -240,6 +240,10 @@ public class RequestView extends MessageView {
 
 	private boolean otherJobStarted(final Job job) {
 		return job != null && callerJob != null && job != callerJob;
+	}
+
+	private RequestComposite getRequestComposite() {
+		return ((RequestComposite)baseComp);
 	}
 	
 }

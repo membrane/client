@@ -14,6 +14,8 @@
 
 package com.predic8.plugin.membrane_client.message.composite;
 
+import java.util.Map;
+
 import org.eclipse.swt.widgets.Composite;
 
 import com.predic8.membrane.core.Router;
@@ -63,4 +65,9 @@ public class RequestComposite extends MessageComposite {
 	public void setSaveEnabled(boolean status) {
 		compositeHost.setRequestSaveEnabled(status);
 	}
+	
+	public Map<String, String> getFormParams() {
+		return tabManager.getFormTabComposite().getFormParams();
+	}
+
 }

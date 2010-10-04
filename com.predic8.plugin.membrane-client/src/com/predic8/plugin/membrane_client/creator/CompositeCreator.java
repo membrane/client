@@ -38,7 +38,6 @@ import com.predic8.schema.restriction.PositiveIntegerRestriction;
 import com.predic8.schema.restriction.StringRestriction;
 import com.predic8.schema.restriction.facet.EnumerationFacet;
 import com.predic8.schema.restriction.facet.Facet;
-import com.predic8.schema.restriction.facet.PatternFacet;
 import com.predic8.wsdl.AbstractSOAPBody;
 import com.predic8.wsdl.AbstractSOAPHeader;
 import com.predic8.wsdl.BindingElement;
@@ -387,10 +386,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			createNonStringRestriction(restriction, context);
 			return;
 		}
-
-		System.err.println("base restriction has type: " + restriction.getClass().getName());
-
-		super.createSimpleRestriction(restriction, ctx);
+		
+		throw new RuntimeException("The base restriction of type: " + restriction.getClass().getName() + " is not supported yet.");
 	}
 	
 	public Composite getRoot() {
@@ -442,12 +439,6 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			return ((Combo) control).getItem(((Combo) control).getSelectionIndex());
 		}
 		return null;
-	}
-
-	@Override
-	public void createPatternFacet(PatternFacet arg0, Object arg1) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

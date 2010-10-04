@@ -6,9 +6,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-import com.predic8.plugin.membrane_client.creator.CompositeCreatorContext;
 import com.predic8.schema.restriction.BaseRestriction;
 
 public class PluginUtil {
@@ -37,10 +37,7 @@ public class PluginUtil {
 
 	public static Text createText(Composite comp, int width, int height) {
 		Text text = new Text(comp, SWT.BORDER);
-		GridData gData = new GridData();
-		gData.heightHint = height;
-		gData.widthHint = width;
-		text.setLayoutData(gData);
+		text.setLayoutData(createGridData(width, height));
 		return text;
 	}
 	
@@ -96,6 +93,19 @@ public class PluginUtil {
 		return gd;
 	}
 	
+	public static GridData createGridData(int wHint, int hHint) {
+		GridData gd = new GridData();
+		gd.widthHint = wHint;
+		gd.heightHint = hHint;
+		return gd;
+	}
+	
+	public static GridData createGridData(int wHint) {
+		GridData gd = new GridData();
+		gd.widthHint = wHint;
+		return gd;
+	}
+	
 	public static Button createCheckButton(Composite parent, int w, int h) {
 		Button bt = new Button(parent, SWT.CHECK);
 		GridData chk = new GridData();
@@ -105,16 +115,16 @@ public class PluginUtil {
 		return bt;
 	}
 	
-	public static String getComplexTypeCaption(CompositeCreatorContext ctx) {
-		StringBuffer buf = new StringBuffer();
-		buf.append(ctx.getElement().getName().toString());
-		buf.append(" (");
-		buf.append(ctx.getElement().getMinOccurs());
-		buf.append("..");
-		buf.append(ctx.getElement().getMaxOccurs());
-		buf.append(")");
-
-		return buf.toString();
+	public static Label createLabel(Composite parent, int width) {
+		Label label = new Label(parent, SWT.NONE);
+		label.setLayoutData(createGridData(width));
+		return label;
+	}
+	
+	public static Label createLabel(Composite parent, int width, int height) {
+		Label label = new Label(parent, SWT.NONE);
+		label.setLayoutData(createGridData(width, height));
+		return label;
 	}
 	
 }

@@ -18,17 +18,14 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.predic8.membrane.core.http.HeaderField;
 import com.predic8.membrane.core.http.Message;
+import com.predic8.plugin.membrane_client.ui.PluginUtil;
 
 public class AddHeaderFieldDialog extends Dialog {
 
@@ -48,44 +45,20 @@ public class AddHeaderFieldDialog extends Dialog {
 	protected Control createDialogArea(Composite parent) {
 		baseAreaComp = createBaseAreaComposite(parent);
 
-		createLabel().setText("Field Name");
+		PluginUtil.createLabel(baseAreaComp, 72, 22).setText("Field Name");
 
-		textName = createText();
+		textName = PluginUtil.createText(baseAreaComp, 140, 20);
 		
-		createLabel().setText("Field Value");
+		PluginUtil.createLabel(baseAreaComp, 72, 22).setText("Field Value");
 
-		textValue = createText();
+		textValue = PluginUtil.createText(baseAreaComp, 140, 20);
 		
 		return baseAreaComp;
 	}
 
-	private Text createText() {
-		Text text = new Text(baseAreaComp, SWT.NONE);
-		GridData gData = new GridData();
-		gData.heightHint = 20;
-		gData.widthHint = 140;
-		text.setLayoutData(gData);
-		return text;
-	}
-	
-	private Label createLabel() {
-		Label label = new Label(baseAreaComp, SWT.NONE);
-		GridData gData = new GridData();
-		gData.heightHint = 22;
-		gData.widthHint = 72;
-		label.setLayoutData(gData);
-		return label;
-	}
-
 	private Composite createBaseAreaComposite(Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		layout.marginLeft = 20;
-		layout.marginRight = 20;
-		layout.marginTop = 20;
-		layout.marginBottom = 20;
-		composite.setLayout(layout);
+		composite.setLayout(PluginUtil.createGridlayout(2, 20));
 		return composite;
 	}
 

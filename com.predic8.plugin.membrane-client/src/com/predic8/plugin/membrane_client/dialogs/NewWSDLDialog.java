@@ -12,7 +12,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -57,15 +56,15 @@ public class NewWSDLDialog extends Dialog {
 		btLocation.addSelectionListener(sListener);
 		btLocation.setSelection(true);
 
-		createLabel(70).setText("Location URL: ");
+		PluginUtil.createLabel(bComposite, 70).setText("Location URL: ");
 
 		textURL = PluginUtil.createText(bComposite, 320);
 
-		createLabel(30).setText(" ");
+		PluginUtil.createLabel(bComposite, 30).setText(" ");
 
 		btFile = new Button(bComposite, SWT.RADIO);
 		btFile.addSelectionListener(sListener);
-		createLabel(70).setText("File path: ");
+		PluginUtil.createLabel(bComposite, 70).setText("File path: ");
 
 		textFilePath = PluginUtil.createText(bComposite, 320);
 		textFilePath.setEnabled(false);
@@ -91,15 +90,6 @@ public class NewWSDLDialog extends Dialog {
 		});
 
 		return bt;
-	}
-
-	private Label createLabel(int width) {
-		Label label = new Label(bComposite, SWT.NONE);
-		GridData gData = new GridData();
-		// gData.heightHint = 22;
-		gData.widthHint = width;
-		label.setLayoutData(gData);
-		return label;
 	}
 
 	private Composite createBaseAreaComposite(Composite parent) {

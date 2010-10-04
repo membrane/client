@@ -143,7 +143,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		Composite header = new Composite(comp, SWT.NONE);
 		header.setLayout(PluginUtil.createGridlayout(4, 0));
 
-		new Label(header, SWT.NONE).setText(PluginUtil.getComplexTypeCaption(ctx));
+		new Label(header, SWT.NONE).setText(CreatorUtil.getComplexTypeCaption(ctx));
 
 		Composite widgetsHost = new Composite(comp, SWT.NONE);
 		widgetsHost.setLayout(layout);

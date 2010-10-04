@@ -123,5 +123,17 @@ public class CreatorUtil {
 		scrollComposite.layout();
 		root.layout();
 	}
+	
+	public static String getComplexTypeCaption(CompositeCreatorContext ctx) {
+		StringBuffer buf = new StringBuffer();
+		buf.append(ctx.getElement().getName().toString());
+		buf.append(" (");
+		buf.append(ctx.getElement().getMinOccurs());
+		buf.append("..");
+		buf.append(ctx.getElement().getMaxOccurs());
+		buf.append(")");
+
+		return buf.toString();
+	}
 
 }

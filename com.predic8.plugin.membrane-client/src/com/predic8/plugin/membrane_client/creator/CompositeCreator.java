@@ -38,9 +38,6 @@ import com.predic8.schema.restriction.PositiveIntegerRestriction;
 import com.predic8.schema.restriction.StringRestriction;
 import com.predic8.schema.restriction.facet.EnumerationFacet;
 import com.predic8.schema.restriction.facet.Facet;
-import com.predic8.schema.restriction.facet.LengthFacet;
-import com.predic8.schema.restriction.facet.MaxLengthFacet;
-import com.predic8.schema.restriction.facet.MinLengthFacet;
 import com.predic8.schema.restriction.facet.PatternFacet;
 import com.predic8.wsdl.AbstractSOAPBody;
 import com.predic8.wsdl.AbstractSOAPHeader;
@@ -394,27 +391,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		super.createSimpleRestriction(restriction, ctx);
 	}
-
-	@Override
-	public void createLengthFacet(LengthFacet arg0, Object arg1) {
-
-	}
-
-	@Override
-	public void createMaxLengthFacet(MaxLengthFacet facet, Object arg1) {
-		System.err.println("max length facet value: " + facet.getValue());
-	}
-
-	@Override
-	public void createMinLengthFacet(MinLengthFacet facet, Object arg1) {
-		System.err.println("min length facet value: " + facet.getValue());
-	}
-
-	@Override
-	public void createPatternFacet(PatternFacet arg0, Object arg1) {
-		// TODO Auto-generated method stub
-	}
-
+	
 	public Composite getRoot() {
 		return root;
 	}
@@ -456,6 +433,12 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			return ((Combo) control).getItem(((Combo) control).getSelectionIndex());
 		}
 		return null;
+	}
+
+	@Override
+	public void createPatternFacet(PatternFacet arg0, Object arg1) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

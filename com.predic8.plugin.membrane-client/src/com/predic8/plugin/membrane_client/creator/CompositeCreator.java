@@ -263,6 +263,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 					ancestors.push(b.getParent().getParent().getParent());
 					CompositeCreatorContext ctx = (CompositeCreatorContext)data;
 					ctx.incrementIndex();
+					ctx.cutElementNameFromPath();
 					createElement(ctx.getElement(), ctx.cloneExCatched());
 					ancestors.pop();
 					CreatorUtil.layoutScrolledComposites(scrollComp, root);

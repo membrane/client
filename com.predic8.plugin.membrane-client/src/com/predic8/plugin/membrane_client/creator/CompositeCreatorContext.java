@@ -5,44 +5,44 @@ import com.predic8.soamodel.CreatorContext;
 
 public class CompositeCreatorContext extends CreatorContext {
 
-	public static final String CONTEXT_DATA = "context data"; 
-	
+	public static final String CONTEXT_DATA = "context data";
+
 	private String path;
-	
-	private Element element; 
-	
+
+	private Element element;
+
 	private String label;
-	
+
 	private String typeName;
-	
+
 	private int index;
-	
+
 	public Element getElement() {
 		return element;
 	}
-	
+
 	public void setElement(Element element) {
 		this.element = element;
 	}
-	
+
 	@Override
 	public CompositeCreatorContext clone() throws CloneNotSupportedException {
 		CompositeCreatorContext copy = new CompositeCreatorContext();
-		
+
 		if (element != null)
 			copy.setElement(getElementCopy());
 		copy.setPath(path);
-		
+
 		copy.setLabel(label);
 		copy.setTypeName(typeName);
 		copy.setIndex(index);
-		
+
 		return copy;
 	}
 
 	private Element getElementCopy() {
 		Element copy = new Element();
-		
+
 		copy.setName(element.getName());
 		copy.setParent(element.getParent());
 		copy.setAnnotation(element.getAnnotation());
@@ -54,7 +54,7 @@ public class CompositeCreatorContext extends CreatorContext {
 		copy.setSchema(element.getSchema());
 		copy.setToplevel(element.getToplevel());
 		copy.setType(element.getType());
-		
+
 		return copy;
 	}
 
@@ -65,13 +65,13 @@ public class CompositeCreatorContext extends CreatorContext {
 	public void setPath(String path) {
 		this.path = path;
 	}
-	
+
 	public boolean isElementOptional() {
 		if (getElement() == null)
 			return false;
 		return "0".equals(getElement().getMinOccurs());
 	}
-	
+
 	public boolean isElementUnbounded() {
 		if (getElement() == null)
 			return false;
@@ -95,17 +95,26 @@ public class CompositeCreatorContext extends CreatorContext {
 	}
 
 	public void incrementIndex() {
-		index ++;
+		index++;
+	}
+
+	public void cutElementNameFromPath() {
+		if (path == null)
+			return;
+
+		int idx = path.lastIndexOf("/");
+		if (idx > 0)
+			path = path.substring(0, idx);
 	}
 
 	public int getIndex() {
 		return index;
 	}
-	
+
 	public void setIndex(int index) {
 		this.index = index;
 	}
-	
+
 	public CompositeCreatorContext cloneExCatched() {
 		try {
 			return this.clone();
@@ -113,5 +122,5 @@ public class CompositeCreatorContext extends CreatorContext {
 			throw new RuntimeException("Creator context supports clone operation.");
 		}
 	}
-	
+
 }

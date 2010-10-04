@@ -9,11 +9,13 @@ import com.predic8.membrane.client.core.model.ServiceParams;
 
 public class RemoveServiceParamsActiion extends Action {
 
+	public static final String ID = "remove WSDL action";
+	
 	private TreeViewer treeViewer;
 	
 	public RemoveServiceParamsActiion(TreeViewer viewer) {
 		setText("remove");
-		setId("remove WSDL action");
+		setId(ID);
 		this.treeViewer = viewer;
 	}
 	

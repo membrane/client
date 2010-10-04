@@ -9,11 +9,13 @@ import com.predic8.membrane.client.core.util.SOAModelUtil;
 
 public class ReloadServiceParamsActiion extends Action {
 
+	public static final String ID = "reload WSDL action";
+	
 	private TreeViewer treeViewer;
 
 	public ReloadServiceParamsActiion(TreeViewer viewer) {
 		setText("reload");
-		setId("reload WSDL action");
+		setId(ID);
 		this.treeViewer = viewer;
 	}
 

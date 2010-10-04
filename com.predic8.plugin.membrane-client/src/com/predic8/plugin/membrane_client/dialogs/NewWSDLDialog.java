@@ -4,6 +4,7 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -29,13 +30,13 @@ public class NewWSDLDialog extends Dialog {
 	private Composite bComposite;
 
 	private Button btLocation;
-	
+
 	private Button btFile;
-	
+
 	private Text textFilePath;
-	
+
 	private Button btBrowse;
-	
+
 	public NewWSDLDialog(Shell shell) {
 		super(shell);
 	}
@@ -51,34 +52,31 @@ public class NewWSDLDialog extends Dialog {
 		bComposite = createBaseAreaComposite(parent);
 
 		WSDLSourceSelection sListener = new WSDLSourceSelection();
-		
+
 		btLocation = new Button(bComposite, SWT.RADIO);
 		btLocation.addSelectionListener(sListener);
 		btLocation.setSelection(true);
-		
+
 		createLabel(70).setText("Location URL: ");
 
 		textURL = PluginUtil.createText(bComposite, 320);
 
 		createLabel(30).setText(" ");
-		
-		
+
 		btFile = new Button(bComposite, SWT.RADIO);
 		btFile.addSelectionListener(sListener);
 		createLabel(70).setText("File path: ");
-		
+
 		textFilePath = PluginUtil.createText(bComposite, 320);
 		textFilePath.setEnabled(false);
-		
-		
+
 		btBrowse = createFileBrowser();
-		
-		
+
 		return bComposite;
 	}
 
 	private Button createFileBrowser() {
-		Button bt = new Button(bComposite, SWT.PUSH); 
+		Button bt = new Button(bComposite, SWT.PUSH);
 		bt.setImage(MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_FOLDER).createImage());
 		GridData g = new GridData();
 		g.heightHint = 20;
@@ -91,14 +89,14 @@ public class NewWSDLDialog extends Dialog {
 				textFilePath.setText(openFileDialog());
 			}
 		});
-		
+
 		return bt;
 	}
 
 	private Label createLabel(int width) {
 		Label label = new Label(bComposite, SWT.NONE);
 		GridData gData = new GridData();
-		//gData.heightHint = 22;
+		// gData.heightHint = 22;
 		gData.widthHint = width;
 		label.setLayoutData(gData);
 		return label;
@@ -130,7 +128,7 @@ public class NewWSDLDialog extends Dialog {
 		if (btLocation.getSelection()) {
 			return new ServiceParams(textURL.getText().trim(), SOAModelUtil.getDefinitions(textURL.getText().trim()));
 		}
-		return new ServiceParams(textFilePath.getText().trim(), SOAModelUtil.getDefinitions("file:"+textFilePath.getText().trim()));
+		return new ServiceParams(textFilePath.getText().trim(), SOAModelUtil.getDefinitions("file:" + textFilePath.getText().trim()));
 	}
 
 	private class WSDLSourceSelection extends SelectionAdapter {
@@ -158,13 +156,25 @@ public class NewWSDLDialog extends Dialog {
 			}
 		});
 	}
-	
+
 	private String openFileDialog() {
 		FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN);
 		dialog.setText("Open");
-		dialog.setFilterExtensions(new String[] { "*.*" }); //"*.*",
+		dialog.setFilterExtensions(new String[] { "*.*" }); // "*.*",
 		String selected = dialog.open();
 		return selected;
 	}
-	
+
+	@Override
+	protected void initializeBounds() {
+		super.initializeBounds();
+		Shell shell = this.getShell();
+		Rectangle bounds = shell.getMonitor().getBounds();
+		Rectangle rect = shell.getBounds();
+		int x = bounds.x + (bounds.width - rect.width) / 2;
+		int y = bounds.y + (bounds.height - rect.height) / 2;
+		shell.setLocation(x, y);
+
+	}
+
 }

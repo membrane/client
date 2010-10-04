@@ -21,6 +21,7 @@ import org.eclipse.ui.part.ViewPart;
 import com.predic8.membrane.client.core.controller.ServiceParamsManager;
 import com.predic8.membrane.client.core.listeners.ServiceParamsChangeListener;
 import com.predic8.membrane.client.core.model.ServiceParams;
+import com.predic8.plugin.membrane_client.actions.AddNewWSDLActiion;
 import com.predic8.plugin.membrane_client.actions.ReloadServiceParamsActiion;
 import com.predic8.plugin.membrane_client.actions.RemoveServiceParamsActiion;
 import com.predic8.plugin.membrane_client.providers.ServiceTreeContentProvider;
@@ -33,6 +34,8 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 	public static final String VIEW_ID = "com.predic8.plugin.membrane_client.views.ServiceTreeView";
 	
 	private TreeViewer treeViewer;
+	
+	protected IAction addNewWSDLAction;
 	
 	private IAction removeAction;
 	
@@ -75,12 +78,15 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 				ITreeSelection selection = (ITreeSelection)event.getSelection();
 				Object firstElement = selection.getFirstElement();
 				if (firstElement instanceof ServiceParams) {
-					if (menuManager.getItems().length == 0) {
+					if (menuManager.find(ReloadServiceParamsActiion.ID) == null) 
 						menuManager.add(reloadAction);
+					
+					if (menuManager.find(RemoveServiceParamsActiion.ID) == null) 
 						menuManager.add(removeAction);
-					}
+					
 				} else {
-					menuManager.removeAll();
+					menuManager.remove(ReloadServiceParamsActiion.ID);
+					menuManager.remove(RemoveServiceParamsActiion.ID);
 				}
 			}
 		});
@@ -102,11 +108,12 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 	private void createActions() {
 		removeAction = new RemoveServiceParamsActiion(treeViewer);
 		reloadAction = new ReloadServiceParamsActiion(treeViewer);
+		addNewWSDLAction = new AddNewWSDLActiion();
 	}
 
 	private Menu createContextMenu() {
 		menuManager = new MenuManager();
-		
+		menuManager.add(addNewWSDLAction);
 		return menuManager.createContextMenu(treeViewer.getControl());
 	}
 

@@ -20,6 +20,7 @@ import org.eclipse.ui.part.ViewPart;
 import com.predic8.membrane.client.core.controller.ServiceParamsManager;
 import com.predic8.membrane.client.core.listeners.ServiceParamsChangeListener;
 import com.predic8.membrane.client.core.model.ServiceParams;
+import com.predic8.plugin.membrane_client.actions.AddNewWSDLActiion;
 import com.predic8.plugin.membrane_client.actions.OperationAction;
 import com.predic8.plugin.membrane_client.providers.WSDLTableContentProvider;
 import com.predic8.plugin.membrane_client.providers.WSDLTableLabelProvider;
@@ -35,6 +36,8 @@ public class WSDLListView extends ViewPart implements ServiceParamsChangeListene
 
 	protected IAction removeAction;
 
+	protected IAction addNewWSDLAction;
+	
 	protected MenuManager menuManager;
 
 	@Override
@@ -132,6 +135,7 @@ public class WSDLListView extends ViewPart implements ServiceParamsChangeListene
 
 	private void updateMenuManager() {
 		menuManager.removeAll();
+		menuManager.add(addNewWSDLAction);
 		for (IAction action : actions) {
 			menuManager.add(action);
 		}
@@ -144,7 +148,7 @@ public class WSDLListView extends ViewPart implements ServiceParamsChangeListene
 	}
 
 	private void createStaticActions() {
-		//removeAction = new RemoveServiceParamsActiion(t);
+		addNewWSDLAction = new AddNewWSDLActiion();
 	}
 
 	@Override

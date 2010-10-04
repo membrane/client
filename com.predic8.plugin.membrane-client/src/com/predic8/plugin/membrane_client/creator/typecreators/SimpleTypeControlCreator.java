@@ -40,19 +40,6 @@ public abstract class SimpleTypeControlCreator extends TypeCreator {
 			CreatorUtil.createAddRemoveButton(parent, control, false);
 	}
 
-	private String getValue(CompositeCreatorContext ctx) {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(ctx.getPath());
-		if (ctx.getIndex() != 0) {
-			buffer.append("[");
-			buffer.append(ctx.getIndex());
-			buffer.append("]");
-		}
-		buffer.append("/");
-		buffer.append(ctx.getElement().getName());
-		return buffer.toString();
-	}
-
 	protected abstract Control getActiveControl(Composite parent, BaseRestriction restriction);
 	
 	protected Control getAuxilaryControl(Composite parent, BaseRestriction restriction) {

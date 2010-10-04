@@ -24,4 +24,18 @@ public abstract class TypeCreator {
 		label.setLayoutData(gd);
 		label.setText(text);
 	}
+	
+	protected String getValue(CompositeCreatorContext ctx) {
+		StringBuffer buffer = new StringBuffer();
+		buffer.append(ctx.getPath());
+		if (ctx.getIndex() != 0) {
+			buffer.append("[");
+			buffer.append(ctx.getIndex());
+			buffer.append("]");
+		}
+		buffer.append("/");
+		buffer.append(ctx.getElement().getName());
+		return buffer.toString();
+	}
+	
 }

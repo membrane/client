@@ -405,6 +405,10 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		if (control == null)
 			return formParams;
 	
+		if (control instanceof Combo) {
+			return getDataFromWidgets(control, formParams);
+		}
+		
 		if (control instanceof Composite) {
 			Control[] children = ((Composite) control).getChildren();
 			for (Control child : children) {
@@ -413,6 +417,10 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			return formParams;
 		}
 	
+		return getDataFromWidgets(control, formParams);
+	}
+
+	private Map<String, String> getDataFromWidgets(Control control, Map<String, String> formParams) {
 		if (control.getData(SOAPConstants.PATH) == null)
 			return formParams;
 	

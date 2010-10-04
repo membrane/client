@@ -29,7 +29,7 @@ public class StringEnumerationCreator extends TypeCreator {
 
 	private Combo createCombo(List<String> values, Composite descendent, CompositeCreatorContext ctx) {
 		Combo combo = PluginUtil.createCombo(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		combo.setData(SOAPConstants.PATH, ctx.getPath() + "/" + ctx.getElement().getName());
+		combo.setData(SOAPConstants.PATH, getValue(ctx));
 		
 		if (values != null && !values.isEmpty()) {
 			for (String str : values) {

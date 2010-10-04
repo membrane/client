@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 import com.predic8.membrane.client.core.SOAPConstants;
-import com.predic8.plugin.membrane_client.ui.PluginUtil;
+import com.predic8.plugin.membrane_client.ui.LayoutUtil;
 import com.predic8.schema.Attribute;
 import com.predic8.schema.ComplexType;
 import com.predic8.schema.Declaration;
@@ -62,7 +62,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	public CompositeCreator(Composite parent) {
 		parent.setLayout(new FillLayout(SWT.VERTICAL));
-		layout = PluginUtil.createGridlayout(1, 2);
+		layout = LayoutUtil.createGridlayout(1, 2);
 		scrollComp = CreatorUtil.createScrollComposite(parent);
 		root = CreatorUtil.createRootComposite(scrollComp);
 		ancestors.push(root);
@@ -138,16 +138,16 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		Composite comp = new Composite(ancestors.peek(), SWT.BORDER | SWT.DOUBLE_BUFFERED);
 		comp.setLayout(layout);
-		comp.setLayoutData(PluginUtil.createGridData(false, false));
+		comp.setLayoutData(LayoutUtil.createGridData(false, false));
 
 		Composite header = new Composite(comp, SWT.NONE);
-		header.setLayout(PluginUtil.createGridlayout(4, 0));
+		header.setLayout(LayoutUtil.createGridlayout(4, 0));
 
 		new Label(header, SWT.NONE).setText(CreatorUtil.getComplexTypeCaption(ctx));
 
 		Composite widgetsHost = new Composite(comp, SWT.NONE);
 		widgetsHost.setLayout(layout);
-		widgetsHost.setLayoutData(PluginUtil.createGridData(false, false));
+		widgetsHost.setLayoutData(LayoutUtil.createGridData(false, false));
 		widgetsHost.setData(SOAPConstants.PATH, ctx.getPath());
 		widgetsHost.setData(CompositeCreatorContext.CONTEXT_DATA, ctx);
 		
@@ -217,8 +217,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private Composite createPlaceHolder() {
 		Composite comp = new Composite(ancestors.peek(), SWT.NONE);
-		comp.setLayout(PluginUtil.createGridlayout(5, 2));
-		comp.setLayoutData(PluginUtil.createGridData(false, false));
+		comp.setLayout(LayoutUtil.createGridlayout(5, 2));
+		comp.setLayoutData(LayoutUtil.createGridData(false, false));
 		return comp;
 	}
 

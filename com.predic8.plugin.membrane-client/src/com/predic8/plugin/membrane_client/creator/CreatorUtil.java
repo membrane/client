@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Display;
 
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
-import com.predic8.plugin.membrane_client.ui.PluginUtil;
+import com.predic8.plugin.membrane_client.ui.LayoutUtil;
 import com.predic8.schema.restriction.BaseRestriction;
 
 public class CreatorUtil {
@@ -106,9 +106,9 @@ public class CreatorUtil {
 	public static Composite createRootComposite(Composite parent) {
 		Composite root = new Composite(parent, SWT.NONE | SWT.DOUBLE_BUFFERED);
 		root.setBackground(COLOR_PARENT);
-		root.setLayout(PluginUtil.createGridlayout(1, 5));
+		root.setLayout(LayoutUtil.createGridlayout(1, 5));
 		root.setParent(parent);
-		root.setLayoutData(PluginUtil.createGridData(GridData.FILL_HORIZONTAL, GridData.FILL_VERTICAL, true, true));
+		root.setLayoutData(LayoutUtil.createGridData(GridData.FILL_HORIZONTAL, GridData.FILL_VERTICAL, true, true));
 		return root;
 	}
 

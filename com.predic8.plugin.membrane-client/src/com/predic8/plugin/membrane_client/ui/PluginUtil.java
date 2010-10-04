@@ -37,7 +37,7 @@ public class PluginUtil {
 
 	public static Text createText(Composite comp, int width, int height) {
 		Text text = new Text(comp, SWT.BORDER);
-		text.setLayoutData(createGridData(width, height));
+		text.setLayoutData(LayoutUtil.createGridData(width, height));
 		return text;
 	}
 	
@@ -62,50 +62,6 @@ public class PluginUtil {
 		return combo;
 	}
 	
-	public static GridLayout createGridlayout(int col, int margin) {
-		GridLayout layout = new GridLayout();
-		layout.numColumns = col;
-		layout.marginTop = margin;
-		layout.marginLeft = margin;
-		layout.marginBottom = margin;
-		layout.marginRight = margin;
-		return layout;
-	}
-	
-	public static GridData createGridData(int h, int v, boolean gH, boolean gV) {
-		GridData gd = new GridData(h, v);
-		gd.grabExcessHorizontalSpace = gH;
-		gd.grabExcessVerticalSpace = gV;
-		return gd;
-	}
-	
-	public static GridData createGridData(int h, boolean gH, boolean gV) {
-		GridData gd = new GridData(h);
-		gd.grabExcessHorizontalSpace = gH;
-		gd.grabExcessVerticalSpace = gV;
-		return gd;
-	}
-
-	public static GridData createGridData(boolean gH, boolean gV) {
-		GridData gd = new GridData();
-		gd.grabExcessHorizontalSpace = gH;
-		gd.grabExcessVerticalSpace = gV;
-		return gd;
-	}
-	
-	public static GridData createGridData(int wHint, int hHint) {
-		GridData gd = new GridData();
-		gd.widthHint = wHint;
-		gd.heightHint = hHint;
-		return gd;
-	}
-	
-	public static GridData createGridData(int wHint) {
-		GridData gd = new GridData();
-		gd.widthHint = wHint;
-		return gd;
-	}
-	
 	public static Button createCheckButton(Composite parent, int w, int h) {
 		Button bt = new Button(parent, SWT.CHECK);
 		GridData chk = new GridData();
@@ -117,13 +73,13 @@ public class PluginUtil {
 	
 	public static Label createLabel(Composite parent, int width) {
 		Label label = new Label(parent, SWT.NONE);
-		label.setLayoutData(createGridData(width));
+		label.setLayoutData(LayoutUtil.createGridData(width));
 		return label;
 	}
 	
 	public static Label createLabel(Composite parent, int width, int height) {
 		Label label = new Label(parent, SWT.NONE);
-		label.setLayoutData(createGridData(width, height));
+		label.setLayoutData(LayoutUtil.createGridData(width, height));
 		return label;
 	}
 	

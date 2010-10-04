@@ -152,10 +152,6 @@ public class ProxyPreferencesPage extends PreferencePage implements IWorkbenchPr
 			PreferencesData.setProxyPort(null);
 		}
 		
-		
-		
-		
-		
 		return super.performOk();
 	}
 	

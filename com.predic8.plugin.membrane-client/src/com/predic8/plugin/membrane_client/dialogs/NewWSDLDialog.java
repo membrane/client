@@ -5,8 +5,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -20,6 +18,7 @@ import com.predic8.membrane.client.core.model.ServiceParams;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
+import com.predic8.plugin.membrane_client.ui.LayoutUtil;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
 
 public class NewWSDLDialog extends Dialog {
@@ -77,10 +76,7 @@ public class NewWSDLDialog extends Dialog {
 	private Button createFileBrowser() {
 		Button bt = new Button(bComposite, SWT.PUSH);
 		bt.setImage(MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_FOLDER).createImage());
-		GridData g = new GridData();
-		g.heightHint = 20;
-		g.widthHint = 20;
-		bt.setLayoutData(g);
+		bt.setLayoutData(LayoutUtil.createGridData(20, 20));
 		bt.setEnabled(false);
 		bt.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -88,19 +84,12 @@ public class NewWSDLDialog extends Dialog {
 				textFilePath.setText(openFileDialog());
 			}
 		});
-
 		return bt;
 	}
 
 	private Composite createBaseAreaComposite(Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 4;
-		layout.marginLeft = 20;
-		layout.marginRight = 20;
-		layout.marginTop = 20;
-		layout.marginBottom = 20;
-		composite.setLayout(layout);
+		composite.setLayout(LayoutUtil.createGridlayout(4, 20));
 		return composite;
 	}
 

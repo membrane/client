@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Text;
 
 import com.predic8.membrane.core.http.HeaderField;
 import com.predic8.membrane.core.http.Message;
+import com.predic8.plugin.membrane_client.ui.LayoutUtil;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
 
 public class AddHeaderFieldDialog extends Dialog {
@@ -58,7 +59,7 @@ public class AddHeaderFieldDialog extends Dialog {
 
 	private Composite createBaseAreaComposite(Composite parent) {
 		Composite composite = (Composite) super.createDialogArea(parent);
-		composite.setLayout(PluginUtil.createGridlayout(2, 20));
+		composite.setLayout(LayoutUtil.createGridlayout(2, 20));
 		return composite;
 	}
 

@@ -152,9 +152,8 @@ public class RequestView extends MessageView {
 					if (!canPerformClientCall()) {
 						return;
 					}
-					
 					updateControlButtons(true, null);
-					executeClientCall(SOAModelUtil.getSOARequestBody(bindingOperation, getRequestComposite().getFormParams()));
+					executeClientCall(getRequestBody());
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -162,6 +161,13 @@ public class RequestView extends MessageView {
 		});
 	}
 
+	private String getRequestBody() {
+		if (getRequestComposite().isBodyTabSelected())
+			return getRequestComposite().getBodyText();
+		else 
+			return SOAModelUtil.getSOARequestBody(bindingOperation, getRequestComposite().getFormParams());
+	}
+	
 	private void updateControlButtons(final boolean status, final Job job) {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override

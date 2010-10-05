@@ -11,8 +11,7 @@ public class TimeCreator extends SimpleTypeControlCreator {
 
 	@Override
 	protected Control getActiveControl(Composite parent, BaseRestriction restriction) {
-		DateTime time = new DateTime (parent, SWT.TIME | SWT.LONG);
-		return time;
+		return new DateTime (parent, SWT.TIME | SWT.LONG);
 	}
 
 	

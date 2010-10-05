@@ -85,4 +85,8 @@ public class AbstractTabComposite extends Composite {
 		this.tabTitle = tabTitle;
 	}
 	
+	public boolean isDisplayed() {
+		return (tabItem != null) && (!tabItem.isDisposed());
+	}
+	
 }

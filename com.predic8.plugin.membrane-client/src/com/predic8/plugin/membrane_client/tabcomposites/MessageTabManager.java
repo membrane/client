@@ -169,8 +169,6 @@ public class MessageTabManager {
 		headerTabComposite.show();
 		headerTabComposite.update(msg);
 
-		folder.setSelection(headerTabComposite.getTabItem());
-		folder.notifyListeners(SWT.Selection, null);
 		hideAllBodyTabs();
 		if (msg.getHeader().getContentType() == null || msg.getBody() == null) {
 			return;
@@ -182,11 +180,23 @@ public class MessageTabManager {
 		currentBodyTab.show();
 
 		updateFormTabComposite(operation);
-		
+
+		setSelectionForFolder();
 		
 		baseComp.setFormatEnabled(currentBodyTab.isFormatSupported());
 	}
 
+	private void setSelectionForFolder() {
+		folder.setSelection(getSelectionTabItem());
+		folder.notifyListeners(SWT.Selection, null);
+	}
+
+	private TabItem getSelectionTabItem() {
+		if (formTabComposite != null && formTabComposite.isDisplayed())
+			return formTabComposite.getTabItem();
+		return headerTabComposite.getTabItem();
+	}
+	
 	private void updateFormTabComposite(BindingOperation operation) {
 		if (formTabComposite != null && operation != null) {
 			formTabComposite.setBindingOperation(operation);
@@ -286,6 +296,13 @@ public class MessageTabManager {
 
 	public FormTabComposite getFormTabComposite() {
 		return formTabComposite;
+	}
+	
+	public boolean isBodyTabSelected() {
+		TabItem item = folder.getItem(folder.getSelectionIndex());
+		if (item != null && item.equals(currentBodyTab.getTabItem()))
+			return true;
+		return false;
 	}
 	
 }

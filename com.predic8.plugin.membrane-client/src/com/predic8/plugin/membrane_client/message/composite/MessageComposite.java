@@ -118,4 +118,8 @@ public abstract class MessageComposite extends Composite {
 	public void setCompositeHost(IBaseCompositeHost compositeHost) {
 		this.compositeHost = compositeHost;
 	}
+	
+	public boolean isBodyTabSelected() {
+		return tabManager.isBodyTabSelected();
+	}
 }

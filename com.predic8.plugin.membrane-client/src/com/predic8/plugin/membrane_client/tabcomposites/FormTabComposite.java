@@ -17,6 +17,9 @@ package com.predic8.plugin.membrane_client.tabcomposites;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TabFolder;
 
 import com.predic8.membrane.client.core.util.SOAModelUtil;
@@ -25,6 +28,8 @@ import com.predic8.wsdl.BindingOperation;
 
 public class FormTabComposite extends AbstractTabComposite {
 
+	private static Log log = LogFactory.getLog(FormTabComposite.class.getName());
+	
 	public static final String TAB_TITLE = "Form";
 
 	private CompositeCreator creator;
@@ -34,7 +39,7 @@ public class FormTabComposite extends AbstractTabComposite {
 	}
 	
 	
-	public void setBindingOperation(BindingOperation operation) {
+	public void setBindingOperation(final BindingOperation operation) {
 		
 		if (creator != null) {
 			creator.dispose();
@@ -45,23 +50,29 @@ public class FormTabComposite extends AbstractTabComposite {
 		
 		creator.setDefinitions(operation.getDefinitions());
 		
-		creator.buildComposite(SOAModelUtil.getPortTypeName(operation), operation.getName(), operation.getBinding().getName());
-		
-		this.checkWidget();
-		
-		this.layout();
-		this.redraw();	
+		Display.getCurrent().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				creator.buildComposite(SOAModelUtil.getPortTypeName(operation), operation.getName(), operation.getBinding().getName());
+				FormTabComposite.this.checkWidget();
+				FormTabComposite.this.layout();
+				FormTabComposite.this.redraw();
+			}
+		});	
 	}
-
 
 	public Map<String, String> getFormParams() {
 		Map<String, String> formParams = creator.getFormParams();
+		dumpFormParams(formParams);
+		return formParams;
+	}
+
+	private void dumpFormParams(Map<String, String> formParams) {
+		log.info("Dumping of generated form parameters.");
 		Set<String> keys = formParams.keySet();
 		for (String key : keys) {
-			System.err.println("key: " + key + "    value: " + formParams.get(key));
+			log.info(key + ": " + formParams.get(key));
 		}
-		
-		return formParams;
 	}
 	
 }

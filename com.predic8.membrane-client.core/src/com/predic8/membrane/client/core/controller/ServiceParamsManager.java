@@ -47,7 +47,7 @@ public class ServiceParamsManager {
 			try {
 				definitions = SOAModelUtil.getDefinitions(wsdl.getUrl().getValue());
 			} catch (RuntimeException e) {
-				log.debug("Unable to get definitions for " + wsdl.getUrl() + ": " + e.getMessage());
+				log.warn("Unable to get definitions for " + wsdl.getUrl() + ": " + e.getMessage());
 			}
 			addNewServiceParams(new ServiceParams(wsdl.getUrl().getValue(), definitions), false);
 		}
@@ -57,7 +57,7 @@ public class ServiceParamsManager {
 		try {
 			config = configStore.read(getDefaultConfigurationFile());
 		} catch (Exception e) {
-			log.debug("Unable to get read configuration from store. dedfault configuration will be used instead.");
+			log.warn("Unable to get read configuration from store. dedfault configuration will be used instead.");
 			config = new Config();
 		}
 	}

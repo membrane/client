@@ -396,6 +396,12 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		return root;
 	}
 
+	
+	public void setVisible(boolean visible) {
+		root.setVisible(visible);
+		CreatorUtil.layoutScrolledComposites(scrollComp, root);
+	}
+	
 	public Map<String, String> getFormParams() {
 		return getFormParams(root);
 	}

@@ -19,6 +19,9 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TabFolder;
 
@@ -34,31 +37,43 @@ public class FormTabComposite extends AbstractTabComposite {
 
 	private CompositeCreator creator;
 	
+	private Composite composite;
+	
 	public FormTabComposite(TabFolder parent) {
 		super(parent, TAB_TITLE);
+		composite = new Composite(this, SWT.DOUBLE_BUFFERED );
+		composite.setLayout(new FillLayout());
 	}
 	
 	
 	public void setBindingOperation(final BindingOperation operation) {
 		
-		if (creator != null) {
-			creator.dispose();
-			creator = null;
-		}
+		disposeCreator();
 		
-		creator = new CompositeCreator(this);
+		creator = new CompositeCreator(composite);
 		
 		creator.setDefinitions(operation.getDefinitions());
 		
 		Display.getCurrent().asyncExec(new Runnable() {
 			@Override
 			public void run() {
+				creator.setVisible(false);
 				creator.buildComposite(SOAModelUtil.getPortTypeName(operation), operation.getName(), operation.getBinding().getName());
 				FormTabComposite.this.checkWidget();
 				FormTabComposite.this.layout();
 				FormTabComposite.this.redraw();
+				creator.setVisible(true);
+				composite.layout();
 			}
 		});	
+	}
+
+
+	private void disposeCreator() {
+		if (creator != null) {
+			creator.dispose();
+			creator = null;
+		}
 	}
 
 	public Map<String, String> getFormParams() {

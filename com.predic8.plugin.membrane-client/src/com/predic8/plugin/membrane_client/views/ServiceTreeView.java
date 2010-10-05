@@ -13,15 +13,13 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import com.predic8.membrane.client.core.controller.ServiceParamsManager;
 import com.predic8.membrane.client.core.listeners.ServiceParamsChangeListener;
 import com.predic8.membrane.client.core.model.ServiceParams;
 import com.predic8.plugin.membrane_client.actions.AddNewWSDLActiion;
+import com.predic8.plugin.membrane_client.actions.CreateFormAction;
 import com.predic8.plugin.membrane_client.actions.ReloadServiceParamsActiion;
 import com.predic8.plugin.membrane_client.actions.RemoveServiceParamsActiion;
 import com.predic8.plugin.membrane_client.providers.ServiceTreeContentProvider;
@@ -36,6 +34,8 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 	private TreeViewer treeViewer;
 	
 	protected IAction addNewWSDLAction;
+	
+	protected CreateFormAction createFormAction;
 	
 	private IAction removeAction;
 	
@@ -78,15 +78,23 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 				ITreeSelection selection = (ITreeSelection)event.getSelection();
 				Object firstElement = selection.getFirstElement();
 				if (firstElement instanceof ServiceParams) {
+					menuManager.remove(CreateFormAction.ID);
 					if (menuManager.find(ReloadServiceParamsActiion.ID) == null) 
 						menuManager.add(reloadAction);
 					
 					if (menuManager.find(RemoveServiceParamsActiion.ID) == null) 
 						menuManager.add(removeAction);
 					
+				} else if (firstElement instanceof BindingOperation) {
+					menuManager.remove(ReloadServiceParamsActiion.ID);
+					menuManager.remove(RemoveServiceParamsActiion.ID);
+					createFormAction.setOperation((BindingOperation)firstElement);
+					if (menuManager.find(CreateFormAction.ID) == null) 
+						menuManager.add(createFormAction);
 				} else {
 					menuManager.remove(ReloadServiceParamsActiion.ID);
 					menuManager.remove(RemoveServiceParamsActiion.ID);
+					menuManager.remove(CreateFormAction.ID);
 				}
 			}
 		});
@@ -109,6 +117,7 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 		removeAction = new RemoveServiceParamsActiion(treeViewer);
 		reloadAction = new ReloadServiceParamsActiion(treeViewer);
 		addNewWSDLAction = new AddNewWSDLActiion();
+		createFormAction = new CreateFormAction();
 	}
 
 	private Menu createContextMenu() {
@@ -119,19 +128,10 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 
 	private void onDoubleClick(DoubleClickEvent event) {
 		ITreeSelection selection = (ITreeSelection)event.getSelection();
-		
 		Object firstElement = selection.getFirstElement();
 		if ( !(firstElement instanceof BindingOperation)) 
 			return;
 		
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		try {
-			page.showView(RequestView.VIEW_ID);
-			RequestView view = (RequestView) page.findView(RequestView.VIEW_ID);
-			view.setOperation((BindingOperation)firstElement);
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
+		PluginUtil.showRequestView((BindingOperation)firstElement);
 	}
-	
 }

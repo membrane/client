@@ -8,8 +8,13 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
+import com.predic8.plugin.membrane_client.views.RequestView;
 import com.predic8.schema.restriction.BaseRestriction;
+import com.predic8.wsdl.BindingOperation;
 
 public class PluginUtil {
 
@@ -81,6 +86,20 @@ public class PluginUtil {
 		Label label = new Label(parent, SWT.NONE);
 		label.setLayoutData(LayoutUtil.createGridData(width, height));
 		return label;
+	}
+	
+	public static void showRequestView(BindingOperation operation) {
+		if (operation == null)
+			return;
+		
+		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		try {
+			page.showView(RequestView.VIEW_ID);
+			RequestView view = (RequestView) page.findView(RequestView.VIEW_ID);
+			view.setOperation(operation);
+		} catch (PartInitException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

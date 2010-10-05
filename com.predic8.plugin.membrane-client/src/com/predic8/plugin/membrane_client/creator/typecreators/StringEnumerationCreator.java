@@ -18,7 +18,7 @@ public class StringEnumerationCreator extends TypeCreator {
 	public void createControls(Composite parent, CompositeCreatorContext ctx, BaseRestriction rest) {
 		createLabel(ctx.getLabel(), parent, ctx.getIndex());
 		Combo control = createCombo(getValues(rest), parent, ctx);
-		if (ctx.isElementOptional())
+		if (ctx.isOptional())
 			CreatorUtil.createAddRemoveButton(parent, control, false);
 	}
 	

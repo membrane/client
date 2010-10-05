@@ -18,6 +18,7 @@ import org.eclipse.swt.widgets.Display;
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.plugin.membrane_client.ui.LayoutUtil;
+import com.predic8.schema.Element;
 import com.predic8.schema.restriction.BaseRestriction;
 
 public class CreatorUtil {
@@ -126,11 +127,11 @@ public class CreatorUtil {
 	
 	public static String getComplexTypeCaption(CompositeCreatorContext ctx) {
 		StringBuffer buf = new StringBuffer();
-		buf.append(ctx.getElement().getName().toString());
+		buf.append(ctx.getDeclaration().getName().toString());
 		buf.append(" (");
-		buf.append(ctx.getElement().getMinOccurs());
+		buf.append(((Element)ctx.getDeclaration()).getMinOccurs());
 		buf.append("..");
-		buf.append(ctx.getElement().getMaxOccurs());
+		buf.append(((Element)ctx.getDeclaration()).getMaxOccurs());
 		buf.append(")");
 
 		return buf.toString();

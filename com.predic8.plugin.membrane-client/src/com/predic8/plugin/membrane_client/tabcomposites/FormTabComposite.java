@@ -15,6 +15,7 @@
 package com.predic8.plugin.membrane_client.tabcomposites;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.swt.widgets.TabFolder;
 
@@ -54,7 +55,13 @@ public class FormTabComposite extends AbstractTabComposite {
 
 
 	public Map<String, String> getFormParams() {
-		return creator.getFormParams();
+		Map<String, String> formParams = creator.getFormParams();
+		Set<String> keys = formParams.keySet();
+		for (String key : keys) {
+			System.err.println("key: " + key + "    value: " + formParams.get(key));
+		}
+		
+		return formParams;
 	}
 	
 }

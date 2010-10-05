@@ -1,5 +1,7 @@
 package com.predic8.plugin.membrane_client.creator;
 
+import com.predic8.schema.Attribute;
+import com.predic8.schema.Declaration;
 import com.predic8.schema.Element;
 import com.predic8.soamodel.CreatorContext;
 
@@ -9,7 +11,7 @@ public class CompositeCreatorContext extends CreatorContext {
 
 	private String path;
 
-	private Element element;
+	private Declaration declaration;
 
 	private String label;
 
@@ -17,45 +19,12 @@ public class CompositeCreatorContext extends CreatorContext {
 
 	private int index;
 
-	public Element getElement() {
-		return element;
+	public Declaration getDeclaration() {
+		return declaration;
 	}
 
-	public void setElement(Element element) {
-		this.element = element;
-	}
-
-	@Override
-	public CompositeCreatorContext clone() throws CloneNotSupportedException {
-		CompositeCreatorContext copy = new CompositeCreatorContext();
-
-		if (element != null)
-			copy.setElement(getElementCopy());
-		copy.setPath(path);
-
-		copy.setLabel(label);
-		copy.setTypeName(typeName);
-		copy.setIndex(index);
-
-		return copy;
-	}
-
-	private Element getElementCopy() {
-		Element copy = new Element();
-
-		copy.setName(element.getName());
-		copy.setParent(element.getParent());
-		copy.setAnnotation(element.getAnnotation());
-		copy.setEmbeddedType(element.getEmbeddedType());
-		copy.setMaxOccurs(element.getMaxOccurs());
-		copy.setMinOccurs(element.getMinOccurs());
-		copy.setParent(element.getParent());
-		copy.setRef(element.getRef());
-		copy.setSchema(element.getSchema());
-		copy.setToplevel(element.getToplevel());
-		copy.setType(element.getType());
-
-		return copy;
+	public void setDeclaration(Declaration decl) {
+		this.declaration = decl;
 	}
 
 	public String getPath() {
@@ -66,16 +35,24 @@ public class CompositeCreatorContext extends CreatorContext {
 		this.path = path;
 	}
 
-	public boolean isElementOptional() {
-		if (getElement() == null)
+	public boolean isOptional() {
+		if (getDeclaration() == null)
 			return false;
-		return "0".equals(getElement().getMinOccurs());
+		
+		if (declaration instanceof Attribute)
+			return false;
+		
+		return "0".equals(((Element)getDeclaration()).getMinOccurs());
 	}
 
 	public boolean isElementUnbounded() {
-		if (getElement() == null)
+		if (getDeclaration() == null)
 			return false;
-		return "unbounded".equals(getElement().getMaxOccurs());
+		
+		if (declaration instanceof Attribute)
+			return false;
+		
+		return "unbounded".equals(((Element)getDeclaration()).getMaxOccurs());
 	}
 
 	public String getLabel() {
@@ -117,7 +94,7 @@ public class CompositeCreatorContext extends CreatorContext {
 
 	public CompositeCreatorContext cloneExCatched() {
 		try {
-			return this.clone();
+			return (CompositeCreatorContext)clone();
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException("Creator context supports clone operation.");
 		}

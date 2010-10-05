@@ -65,6 +65,7 @@ public class DateTimeCreator extends SimpleTypeControlCreator {
 					}
 				});
 				dialog.setDefaultButton (ok);
+				dialog.setLocation(0, 0);
 				dialog.pack ();
 				dialog.open ();	
 			}

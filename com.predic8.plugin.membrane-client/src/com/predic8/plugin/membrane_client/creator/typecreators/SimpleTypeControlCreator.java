@@ -36,7 +36,7 @@ public abstract class SimpleTypeControlCreator extends TypeCreator {
 		ControlUtil.createDeco(control, getDescription(), SWT.RIGHT);
 		getAuxilaryControl(parent, restriction);
 		control.setData(SOAPConstants.PATH, getValue(ctx));
-		if (ctx.isElementOptional())
+		if (ctx.isOptional())
 			CreatorUtil.createAddRemoveButton(parent, control, false);
 	}
 

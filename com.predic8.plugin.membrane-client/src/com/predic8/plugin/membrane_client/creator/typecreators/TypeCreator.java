@@ -6,6 +6,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import com.predic8.plugin.membrane_client.creator.CompositeCreatorContext;
+import com.predic8.schema.Attribute;
 import com.predic8.schema.restriction.BaseRestriction;
 
 public abstract class TypeCreator {
@@ -34,7 +35,10 @@ public abstract class TypeCreator {
 			buffer.append("]");
 		}
 		buffer.append("/");
-		buffer.append(ctx.getElement().getName());
+		if (ctx.getDeclaration() instanceof Attribute) {
+			buffer.append("@");
+		}
+		buffer.append(ctx.getDeclaration().getName());
 		return buffer.toString();
 	}
 	

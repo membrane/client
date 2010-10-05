@@ -110,7 +110,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		CompositeCreatorContext ctx = (CompositeCreatorContext) oldContext;
 
 		CompositeCreatorContext newCtx = ctx.cloneExCatched();
-		newCtx.setPath(ctx.getPath() + "/" + ctx.getElement().getName());
+		newCtx.setPath(ctx.getPath() + "/" + ctx.getDeclaration().getName());
 
 		SchemaComponent model = (SchemaComponent) cType.getModel();
 
@@ -127,7 +127,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	}
 
 	private void createAttributesAndCreateModel(ComplexType cType, CompositeCreatorContext newCtx, SchemaComponent model) {
-		writeAttributes(cType, newCtx);
+		createAttributes(cType, newCtx);
 		if (model != null) {
 			model.create(this, newCtx);
 		}
@@ -151,7 +151,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		widgetsHost.setData(CompositeCreatorContext.CONTEXT_DATA, ctx);
 		
 		// here we got a problem, what happens by [0,unbounded) ?
-		if (ctx.isElementOptional())
+		if (ctx.isOptional())
 			CreatorUtil.createAddRemoveButton(header, widgetsHost, true);
 
 		if (ctx.isElementUnbounded()) {
@@ -164,9 +164,11 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		ancestors.push(widgetsHost);
 	}
 
-	private void writeAttributes(ComplexType cType, CompositeCreatorContext ctx) {
-		for (Attribute attribute : cType.getAttributes()) {
-			writeInputForBuildInType(attribute, ctx, null);
+	private void createAttributes(ComplexType cType, CompositeCreatorContext ctx) {
+		for (Attribute attribute : cType.getAttributes()) {	
+			CompositeCreatorContext newCtx = ctx.cloneExCatched();
+			newCtx.setDeclaration(attribute);
+			writeInputForBuildInType(attribute, newCtx, null);
 		}
 	}
 
@@ -178,7 +180,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			return;
 		}
 
-		context.setElement(element);
+		context.setDeclaration(element);
 		writeInputForBuildInType(element, context, null);
 	}
 
@@ -192,7 +194,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	
 	private void createTypeDefinition(Element element, CompositeCreatorContext context, TypeDefinition typeDef) {
 		CompositeCreatorContext newCtx = context.cloneExCatched();
-		newCtx.setElement(element);
+		newCtx.setDeclaration(element);
 		typeDef.create(this, newCtx);
 	}
 
@@ -263,7 +265,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 					CompositeCreatorContext ctx = (CompositeCreatorContext)data;
 					ctx.incrementIndex();
 					ctx.cutElementNameFromPath();
-					createElement(ctx.getElement(), ctx.cloneExCatched());
+					createElement((Element)ctx.getDeclaration(), ctx.cloneExCatched());
 					ancestors.pop();
 					CreatorUtil.layoutScrolledComposites(scrollComp, root);
 				}
@@ -309,7 +311,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 				ComplexType type = (ComplexType) def;
 				SchemaComponent model = (SchemaComponent) type.getModel();
 				model.create(this, context);
-				writeAttributes(type, context);
+				createAttributes(type, context);
 			}
 		}
 
@@ -355,7 +357,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	private void createStringRestriction(BaseRestriction rest, CompositeCreatorContext ctx) {
 		if (containsEnumarationfacet(rest.getFacets())) {
 			CompositeCreatorContext clone = ctx.cloneExCatched();
-			clone.setLabel(clone.getElement().getName().toString());
+			clone.setLabel(clone.getDeclaration().getName().toString());
 			clone.setTypeName(SimpleTypeCreatorFactory.COMPLEX_TYPE_ENUMERATION);
 			createLowLevelWidgets(rest, clone);
 			return;

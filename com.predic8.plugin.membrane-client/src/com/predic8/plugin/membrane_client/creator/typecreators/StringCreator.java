@@ -1,6 +1,10 @@
 package com.predic8.plugin.membrane_client.creator.typecreators;
 
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 
 import com.predic8.membrane.client.core.util.SOAModelUtil;
 import com.predic8.schema.restriction.BaseRestriction;
@@ -28,4 +32,11 @@ public class StringCreator extends TextCreator {
 		return "The string datatype: set of finite-length sequences of characters.";
 	}
 
+	@Override
+	protected Control getAuxilaryControl(Composite parent, BaseRestriction rest) {
+		Label label = new Label(parent, SWT.NONE);
+		label.setText(" ");
+		label.setLayoutData(gData);
+		return label;
+	}
 }

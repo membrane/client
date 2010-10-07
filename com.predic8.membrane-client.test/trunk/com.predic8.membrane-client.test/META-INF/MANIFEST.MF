@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ClientTest
+Bundle-SymbolicName: com.predic8.membrane-client.test
+Bundle-Version: 1.2.0
+Bundle-ClassPath: lib/junit-4.5.jar,.,resources/,lib/org.eclipse.swt_3.6.0.v3650b.jar,lib/org.eclipse.swt.win32.win32.x86_3.6.0.v3650b.jar
+Bundle-Activator: com.predic8.membrane_client.test.Activator
+Bundle-Vendor: predic8 GmbH
+Require-Bundle: org.eclipse.core.runtime,
+ com.predic8.plugin.membrane_client,
+ org.eclipse.hyades.test.tools.core,
+ org.junit
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy

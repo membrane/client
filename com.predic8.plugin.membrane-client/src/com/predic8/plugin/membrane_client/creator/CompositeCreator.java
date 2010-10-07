@@ -1,7 +1,4 @@
 package com.predic8.plugin.membrane_client.creator;
-
-import groovy.xml.QName;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +25,7 @@ import com.predic8.schema.Declaration;
 import com.predic8.schema.Element;
 import com.predic8.schema.Extension;
 import com.predic8.schema.Restriction;
+import com.predic8.schema.Schema;
 import com.predic8.schema.SchemaComponent;
 import com.predic8.schema.SimpleType;
 import com.predic8.schema.TypeDefinition;
@@ -225,17 +223,24 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private String getElementTypeNameFromEmbededSimpleRestriction(Element element) {
 		if (element.getEmbeddedType() instanceof SimpleType) {
-			BaseRestriction restriction = (BaseRestriction) ((SimpleType) element.getEmbeddedType()).getRestriction();
-			QName qname = (QName) restriction.getBase();
-			return qname.getLocalPart();
+			return ((SimpleType) element.getEmbeddedType()).getRestriction().getBase().getLocalPart();
 		}
 		return null;
 	}
 
 	private String getBuildInTypeName(Declaration item) {
-		if (item.getType() != null)
-			return item.getType().getLocalPart();
-
+		if (item.getType() != null) {
+			if (Schema.SCHEMA_NS.equals(item.getType().getNamespaceURI()))	
+				return item.getType().getLocalPart();
+		
+			TypeDefinition tDef = (item.getSchema().getType(item.getType()));
+			if (tDef instanceof SimpleType) {
+				return  ((SimpleType)tDef).getRestriction().getBase().getLocalPart();
+			}
+			 
+			throw new RuntimeException("Not supported yet: " + item);
+		}
+		
 		if (item instanceof Element) {
 			return getElementTypeNameFromEmbededSimpleRestriction((Element) item);
 		}
@@ -249,8 +254,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private String getAttributeTypeNameFromSimpleRestriction(Declaration item) {
 		Attribute attribute = (Attribute) item;
-		BaseRestriction restriction = (BaseRestriction) ((SimpleType) attribute.getSimpleType()).getRestriction();
-		return ((QName) restriction.getBase()).getLocalPart();
+		BaseRestriction rest = ((SimpleType) attribute.getSimpleType()).getRestriction();
+		return rest.getBase().getLocalPart();
 	}
 
 	private void createAddButton(Composite parent, final Composite child) {
@@ -367,29 +372,30 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		if (type.getParent() instanceof Element) {
 			writeInputForBuildInType((Element) type.getParent(), ctx, rest);
+			return;
 		}
-		
+		writeInputForBuildInType(ctx.getDeclaration(), ctx, rest);
 	}
 	
 	@Override
-	public void createSimpleRestriction(BaseRestriction restriction, Object ctx) {
+	public void createSimpleRestriction(BaseRestriction rest, Object ctx) {
 		CompositeCreatorContext context = (CompositeCreatorContext) ctx;
-		if (restriction instanceof StringRestriction) {
-			createStringRestriction(restriction, context);
+		if (rest instanceof StringRestriction) {
+			createStringRestriction(rest, context);
 			return;
 		}
 
-		else if (restriction instanceof PositiveIntegerRestriction) {
-			createNonStringRestriction(restriction, context);
+		else if (rest instanceof PositiveIntegerRestriction) {
+			createNonStringRestriction(rest, context);
 			return;
 		}
 
-		else if (restriction instanceof DecimalRestriction) {
-			createNonStringRestriction(restriction, context);
+		else if (rest instanceof DecimalRestriction) {
+			createNonStringRestriction(rest, context);
 			return;
 		}
 		
-		throw new RuntimeException("The base restriction of type: " + restriction.getClass().getName() + " is not supported yet.");
+		throw new RuntimeException("The base restriction of type: " + rest.getClass().getName() + " is not supported yet.");
 	}
 	
 	public Composite getRoot() {

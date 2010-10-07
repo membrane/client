@@ -32,7 +32,7 @@ public class ServiceTreeContentProvider implements ITreeContentProvider {
 		}
 		
 		if (parentElement instanceof Port) {
-			return ((List)(((Port)parentElement).getBinding()).getOperations()).toArray();
+			return ((Port)parentElement).getBinding().getOperations().toArray();
 			
 		}
 		

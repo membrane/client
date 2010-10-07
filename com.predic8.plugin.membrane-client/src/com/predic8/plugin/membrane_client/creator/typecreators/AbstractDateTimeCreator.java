@@ -14,13 +14,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 import com.predic8.plugin.membrane_client.ImageKeys;
-import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
+import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.schema.restriction.BaseRestriction;
 
 
 public abstract class AbstractDateTimeCreator extends TextCreator {
 
-	public static final Image CALENDAR_IMAGE = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CALENDAR).createImage();
+	public static final Image CALENDAR_IMAGE = PluginUtil.createImage("icons/calendar.png", ImageKeys.IMAGE_CALENDAR);
 	
 	protected Shell createDateDialog() {
 		Shell parent = control.getShell();
@@ -42,7 +42,7 @@ public abstract class AbstractDateTimeCreator extends TextCreator {
 				dialog.open ();	
 			}
 		});
-		open.setLayoutData(gdata);
+		open.setLayoutData(gData);
 		return open;
 	}
 	

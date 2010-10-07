@@ -1,15 +1,12 @@
 package com.predic8.plugin.membrane_client.creator.typecreators;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 
 import com.predic8.membrane.client.core.SOAPConstants;
-import com.predic8.plugin.membrane_client.ImageKeys;
-import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.plugin.membrane_client.creator.CompositeCreatorContext;
 import com.predic8.plugin.membrane_client.creator.CreatorUtil;
 import com.predic8.plugin.membrane_client.ui.ControlUtil;
@@ -17,17 +14,15 @@ import com.predic8.schema.restriction.BaseRestriction;
 
 public abstract class SimpleTypeControlCreator extends TypeCreator {
 
-	protected GridData gdata;
-	
-	public static final Image INFO_IMAGE = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_INFO).createImage();
+	protected GridData gData;
 	
 	protected Control control;
 	
 	public SimpleTypeControlCreator() {
-		gdata = new GridData();
-		gdata.heightHint = 14;
-		gdata.widthHint = 14;
-		gdata.horizontalIndent = 15;
+		gData = new GridData();
+		gData.heightHint = 14;
+		gData.widthHint = 14;
+		gData.horizontalIndent = 15;
 	}
 
 	public void createControls(Composite parent, CompositeCreatorContext ctx, BaseRestriction restriction) {
@@ -45,7 +40,7 @@ public abstract class SimpleTypeControlCreator extends TypeCreator {
 	protected Control getAuxilaryControl(Composite parent, BaseRestriction restriction) {
 		Label label = new Label(parent, SWT.NONE);
 		label.setText(" ");
-		label.setLayoutData(gdata);
+		label.setLayoutData(gData);
 		return label;
 		
 	}

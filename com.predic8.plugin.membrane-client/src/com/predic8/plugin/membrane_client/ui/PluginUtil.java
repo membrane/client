@@ -1,6 +1,8 @@
 package com.predic8.plugin.membrane_client.ui;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -12,6 +14,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.plugin.membrane_client.views.RequestView;
 import com.predic8.schema.restriction.BaseRestriction;
 import com.predic8.wsdl.BindingOperation;
@@ -100,6 +103,14 @@ public class PluginUtil {
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	public static Image createImage(String path, String key) {
+		if (MembraneClientUIPlugin.getDefault() == null)
+			return ImageDescriptor.createFromFile(MembraneClientUIPlugin.class,path).createImage();
+	
+		return MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(key).createImage();
 	}
 	
 }

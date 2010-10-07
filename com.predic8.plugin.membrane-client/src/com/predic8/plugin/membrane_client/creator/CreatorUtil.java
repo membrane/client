@@ -16,20 +16,19 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
 import com.predic8.plugin.membrane_client.ImageKeys;
-import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.plugin.membrane_client.ui.LayoutUtil;
+import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.schema.Element;
 import com.predic8.schema.restriction.BaseRestriction;
 
 public class CreatorUtil {
-
-	public static final Image REMOVE_IMAGE = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CROSS_REMOVE).createImage();
-
-	public static final Image ADD_IMAGE = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_ADD_ELEMENT).createImage();
 	
-	public static final Image DELETE_IMAGE = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_DELETE).createImage();
-
+	public static final Image REMOVE_IMAGE = PluginUtil.createImage("icons/cross.png", ImageKeys.IMAGE_CROSS_REMOVE);
+	public static final Image ADD_IMAGE = PluginUtil.createImage("icons/add_element.png", ImageKeys.IMAGE_ADD_ELEMENT);
+	public static final Image DELETE_IMAGE = PluginUtil.createImage("icons/delete.png", ImageKeys.IMAGE_DELETE);
+	
 	private static final Color COLOR_PARENT = new Color(Display.getCurrent(), 222, 220, 230);
+	
 	
 	public static void createControls(Composite descendent, BaseRestriction restriction, CompositeCreatorContext ctx) {
 		SimpleTypeCreatorFactory.getCreator(ctx).createControls(descendent, ctx, restriction);

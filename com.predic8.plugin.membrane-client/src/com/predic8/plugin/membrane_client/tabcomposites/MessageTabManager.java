@@ -194,6 +194,10 @@ public class MessageTabManager {
 	private TabItem getSelectionTabItem() {
 		if (formTabComposite != null && formTabComposite.isDisplayed())
 			return formTabComposite.getTabItem();
+		
+		if (currentBodyTab != null && !currentBodyTab.isDisposed())
+		  return currentBodyTab.getTabItem();
+		
 		return headerTabComposite.getTabItem();
 	}
 	

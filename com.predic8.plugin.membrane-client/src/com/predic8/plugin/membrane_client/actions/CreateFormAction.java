@@ -3,6 +3,7 @@ package com.predic8.plugin.membrane_client.actions;
 import org.eclipse.jface.action.Action;
 
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
+import com.predic8.plugin.membrane_client.views.RequestView;
 import com.predic8.wsdl.BindingOperation;
 
 public class CreateFormAction extends Action {
@@ -18,7 +19,8 @@ public class CreateFormAction extends Action {
 	
 	@Override
 	public void run() {
-		PluginUtil.showRequestView(operation);
+		RequestView view = (RequestView)PluginUtil.showView(RequestView.VIEW_ID);
+		view.setOperation(operation);
 	}
 	
 	public void setOperation(BindingOperation selection) {

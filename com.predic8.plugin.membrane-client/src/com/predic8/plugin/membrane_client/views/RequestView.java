@@ -19,8 +19,6 @@ import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PlatformUI;
 
 import com.predic8.membrane.client.core.controller.ServiceParamsManager;
 import com.predic8.membrane.client.core.threads.ClientCallerJob;
@@ -31,6 +29,7 @@ import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.plugin.membrane_client.message.composite.RequestComposite;
+import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Port;
 
@@ -238,14 +237,8 @@ public class RequestView extends MessageView {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				try {
-					IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-					page.showView(ResponseView.VIEW_ID);
-					ResponseView view = (ResponseView) page.findView(ResponseView.VIEW_ID);
-					view.setMessage(response, bindingOperation);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				ResponseView view = (ResponseView)PluginUtil.showView(ResponseView.VIEW_ID);
+				view.setMessage(response, bindingOperation);
 			}
 		});
 	}

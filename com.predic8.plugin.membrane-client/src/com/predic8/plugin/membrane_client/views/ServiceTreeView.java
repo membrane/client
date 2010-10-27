@@ -21,6 +21,7 @@ import com.predic8.membrane.client.core.controller.ServiceParamsManager;
 import com.predic8.membrane.client.core.listeners.ServiceParamsChangeListener;
 import com.predic8.membrane.client.core.model.ServiceParams;
 import com.predic8.membrane.core.http.Request;
+import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.actions.AddNewWSDLActiion;
 import com.predic8.plugin.membrane_client.actions.CreateFormAction;
 import com.predic8.plugin.membrane_client.actions.ReloadServiceParamsActiion;
@@ -137,15 +138,31 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 	private void onDoubleClick(DoubleClickEvent event) {
 		ITreeSelection selection = (ITreeSelection)event.getSelection();
 		Object firstElement = selection.getFirstElement();
-		
+			
 		if (firstElement instanceof BindingOperation)  {
-			PluginUtil.showRequestView((BindingOperation)firstElement);
+			((RequestView)PluginUtil.showView(RequestView.VIEW_ID)).setOperation((BindingOperation)firstElement);
 			return;
 		}
 		
 		if (firstElement instanceof Request) {
-			PluginUtil.showRequestView((Request)firstElement);
+			((RequestView)PluginUtil.showView(RequestView.VIEW_ID)).setMessage((Request)firstElement, getAncestorBinding(selection));
 			return;
 		}
+		
+		if (firstElement instanceof Response) {
+			((ResponseView)PluginUtil.showView(ResponseView.VIEW_ID)).setMessage((Response)firstElement, getAncestorBinding(selection));
+		}
+		
 	}
+	private BindingOperation getAncestorBinding(ITreeSelection selection) {
+		TreePath path = selection.getPaths()[0];
+		int count = path.getSegmentCount();
+		for(int i = 0; i < count; i ++) {
+			Object segment = path.getSegment(i);
+			if (segment instanceof BindingOperation)
+				return (BindingOperation)segment;
+		}
+		return null;
+	}
+	
 }

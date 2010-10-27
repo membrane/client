@@ -10,15 +10,13 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-import com.predic8.membrane.core.http.Request;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
-import com.predic8.plugin.membrane_client.views.RequestView;
 import com.predic8.schema.restriction.BaseRestriction;
-import com.predic8.wsdl.BindingOperation;
 
 public class PluginUtil {
 
@@ -92,40 +90,22 @@ public class PluginUtil {
 		return label;
 	}
 	
-	public static void showRequestView(BindingOperation operation) {
-		if (operation == null)
-			return;
-		
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		try {
-			page.showView(RequestView.VIEW_ID);
-			RequestView view = (RequestView) page.findView(RequestView.VIEW_ID);
-			view.setOperation(operation);
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public static void showRequestView(Request request) {
-		if (request == null)
-			return;
-		
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		try {
-			page.showView(RequestView.VIEW_ID);
-			RequestView view = (RequestView) page.findView(RequestView.VIEW_ID);
-			view.setRequest(request);
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	
 	public static Image createImage(String path, String key) {
 		if (MembraneClientUIPlugin.getDefault() == null)
 			return ImageDescriptor.createFromFile(MembraneClientUIPlugin.class,path).createImage();
 	
 		return MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(key).createImage();
+	}
+	
+	public static IViewPart showView(String viewId) {
+		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		try {
+			page.showView(viewId);
+			return page.findView(viewId);
+		} catch (PartInitException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Unable to find view. View ID may be not correct: " + viewId);
+		}
 	}
 	
 }

@@ -108,4 +108,12 @@ public class PluginUtil {
 		}
 	}
 	
+	public static void closeView(String viewId) {
+		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		IViewPart view = page.findView(viewId);
+		if (page.isPartVisible(view)) {
+			page.hideView(view);
+		}
+	}
+	
 }

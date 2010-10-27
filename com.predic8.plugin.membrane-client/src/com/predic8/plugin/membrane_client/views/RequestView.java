@@ -251,4 +251,8 @@ public class RequestView extends MessageView {
 		return ((RequestComposite)baseComp);
 	}
 	
+	public BindingOperation getBindingOperation() {
+		return bindingOperation;
+	}
+	
 }

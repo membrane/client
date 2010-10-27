@@ -108,6 +108,11 @@ public class PluginUtil {
 		}
 	}
 	
+	public static IViewPart getView(String viewId) {
+		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(viewId);
+	}
+	
+	
 	public static void closeView(String viewId) {
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IViewPart view = page.findView(viewId);

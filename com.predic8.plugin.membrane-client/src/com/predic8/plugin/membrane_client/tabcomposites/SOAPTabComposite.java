@@ -46,6 +46,7 @@ public class SOAPTabComposite extends BodyTextTabComposite {
 
 	public void setBodyText(String string) {
 		bodyText.setText(string);
+		bodyText.redraw();
 	}
 	
 	public void beautify(byte[] content) {

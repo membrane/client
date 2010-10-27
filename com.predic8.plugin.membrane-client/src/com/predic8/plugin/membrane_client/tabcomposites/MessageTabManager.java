@@ -17,6 +17,8 @@ package com.predic8.plugin.membrane_client.tabcomposites;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,10 +30,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 
+import com.predic8.membrane.client.core.util.SOAModelUtil;
 import com.predic8.membrane.core.http.Message;
 import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.message.composite.MessageComposite;
 import com.predic8.plugin.membrane_client.message.composite.RequestComposite;
+import com.predic8.plugin.membrane_client.ui.PluginUtil;
+import com.predic8.plugin.membrane_client.views.RequestView;
 import com.predic8.wsdl.BindingOperation;
 
 public class MessageTabManager {
@@ -98,7 +103,7 @@ public class MessageTabManager {
 						headerTabComposite.update(baseComp.getMsg());
 						break;
 					} else if (tabItem.equals(getCurrentTabItem())) {
-						currentBodyTab.update(baseComp.getMsg());
+						resetBodyTabContent();
 						baseComp.setFormatEnabled(currentBodyTab.isFormatSupported());
 						baseComp.setSaveEnabled(currentBodyTab.isSaveSupported());
 					}
@@ -307,6 +312,24 @@ public class MessageTabManager {
 		if (item != null && item.equals(currentBodyTab.getTabItem()))
 			return true;
 		return false;
+	}
+
+	private void resetBodyTabContent() {
+		if(formTabComposite == null || formTabComposite.isDisposed()) {
+			currentBodyTab.update(baseComp.getMsg());
+			return;
+		}
+		
+		RequestView view = (RequestView)PluginUtil.getView(RequestView.VIEW_ID);
+		Map<String, String> formParams = formTabComposite.getFormParams();
+		
+		Set<String> keys = formParams.keySet();
+		for (String key : keys) {
+			System.out.println(key + "    " + formParams.get(key));
+		}
+		
+		String text = SOAModelUtil.getSOARequestBody(view.getBindingOperation(), formParams);
+		currentBodyTab.setBodyText(text);
 	}
 	
 }

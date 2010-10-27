@@ -44,4 +44,5 @@ public class ServiceParams {
 	public void setDefinitions(Definitions definitions) {
 		this.definitions = definitions;
 	}
+	
 }

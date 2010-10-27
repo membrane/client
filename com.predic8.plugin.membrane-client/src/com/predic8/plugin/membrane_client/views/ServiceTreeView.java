@@ -9,15 +9,18 @@ import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 
 import com.predic8.membrane.client.core.controller.ServiceParamsManager;
 import com.predic8.membrane.client.core.listeners.ServiceParamsChangeListener;
 import com.predic8.membrane.client.core.model.ServiceParams;
+import com.predic8.membrane.core.http.Request;
 import com.predic8.plugin.membrane_client.actions.AddNewWSDLActiion;
 import com.predic8.plugin.membrane_client.actions.CreateFormAction;
 import com.predic8.plugin.membrane_client.actions.ReloadServiceParamsActiion;
@@ -109,8 +112,13 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 	}
 
 	@Override
-	public void serviceParamsChanged(List<ServiceParams> params) {
-		treeViewer.setInput(params);
+	public void serviceParamsChanged(final List<ServiceParams> params) {
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				treeViewer.setInput(params);
+			}
+		});
 	}
 	
 	private void createActions() {
@@ -129,9 +137,15 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 	private void onDoubleClick(DoubleClickEvent event) {
 		ITreeSelection selection = (ITreeSelection)event.getSelection();
 		Object firstElement = selection.getFirstElement();
-		if ( !(firstElement instanceof BindingOperation)) 
-			return;
 		
-		PluginUtil.showRequestView((BindingOperation)firstElement);
+		if (firstElement instanceof BindingOperation)  {
+			PluginUtil.showRequestView((BindingOperation)firstElement);
+			return;
+		}
+		
+		if (firstElement instanceof Request) {
+			PluginUtil.showRequestView((Request)firstElement);
+			return;
+		}
 	}
 }

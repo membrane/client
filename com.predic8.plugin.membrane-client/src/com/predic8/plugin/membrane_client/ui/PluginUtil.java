@@ -14,6 +14,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import com.predic8.membrane.core.http.Request;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.plugin.membrane_client.views.RequestView;
 import com.predic8.schema.restriction.BaseRestriction;
@@ -100,6 +101,20 @@ public class PluginUtil {
 			page.showView(RequestView.VIEW_ID);
 			RequestView view = (RequestView) page.findView(RequestView.VIEW_ID);
 			view.setOperation(operation);
+		} catch (PartInitException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void showRequestView(Request request) {
+		if (request == null)
+			return;
+		
+		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		try {
+			page.showView(RequestView.VIEW_ID);
+			RequestView view = (RequestView) page.findView(RequestView.VIEW_ID);
+			view.setRequest(request);
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}

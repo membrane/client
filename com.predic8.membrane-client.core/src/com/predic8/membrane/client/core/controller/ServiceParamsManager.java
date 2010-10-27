@@ -1,7 +1,9 @@
 package com.predic8.membrane.client.core.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +16,9 @@ import com.predic8.membrane.client.core.model.ServiceParams;
 import com.predic8.membrane.client.core.store.ConfigFileStore;
 import com.predic8.membrane.client.core.store.ConfigStore;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
+import com.predic8.membrane.core.exchange.Exchange;
+import com.predic8.membrane.core.exchange.HttpExchange;
+import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Definitions;
 
 public class ServiceParamsManager {
@@ -30,6 +35,8 @@ public class ServiceParamsManager {
 
 	private Config config;
 
+	private Map<BindingOperation, List<Exchange>> excMap = new HashMap<BindingOperation, List<Exchange>>();   
+	
 	private ServiceParamsManager() {
 
 	}
@@ -120,7 +127,7 @@ public class ServiceParamsManager {
 			try {
 				listener.serviceParamsChanged(serviceParams);
 			} catch (Exception e) {
-				listeners.remove(listener);
+				e.printStackTrace();
 			}
 		}
 	}
@@ -143,4 +150,22 @@ public class ServiceParamsManager {
 		return System.getProperty("user.home") + System.getProperty("file.separator") + ".membrane-client.xml";
 	}
 
+	public void newExchangeArrived(BindingOperation op,  HttpExchange exc) {
+		if (exc == null || op == null)
+			return;
+		
+		if (excMap.containsKey(op)) {
+			excMap.get(op).add(exc);
+		} else {
+			List<Exchange> list = new ArrayList<Exchange>();
+			list.add(exc);
+			excMap.put(op, list);
+		}
+		notifyListenersOnChange();
+	}
+	
+	public List<Exchange> getExchangesFor(BindingOperation op) {
+		return excMap.get(op);
+	}
+	
 }

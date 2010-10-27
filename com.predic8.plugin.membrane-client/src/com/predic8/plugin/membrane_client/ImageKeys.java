@@ -28,4 +28,9 @@ public class ImageKeys {
 	
 	public static final String IMAGE_DELETE = "image delete";
 	
+	public static final String IMAGE_BLANK_MSG = "image blank msg";
+	
+	public static final String IMAGE_REQUEST = "image request";
+	
+	public static final String IMAGE_RESPONSE = "image response";
 }

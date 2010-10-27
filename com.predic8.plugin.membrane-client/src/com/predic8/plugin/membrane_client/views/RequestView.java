@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
+import com.predic8.membrane.client.core.controller.ServiceParamsManager;
 import com.predic8.membrane.client.core.threads.ClientCallerJob;
 import com.predic8.membrane.client.core.util.HttpUtil;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
@@ -195,7 +196,8 @@ public class RequestView extends MessageView {
 		callerJob.addJobChangeListener(new JobChangeAdapter() {
 			public void done(IJobChangeEvent event) {
 				if (event.getResult().isOK() && !callerJob.isCancelStatus()) {
-					showMessageInResponseView(callerJob.getResponse());
+					showMessageInResponseView(callerJob.getExchange().getResponse());
+					ServiceParamsManager.getInstance().newExchangeArrived(bindingOperation, callerJob.getExchange());
 				}
 				updateControlButtons(false, event.getJob());
 			}
@@ -211,6 +213,10 @@ public class RequestView extends MessageView {
 		setMessage(request, bindOp);
 	}
 
+	public void setRequest(Request request) {
+		this.request = request;
+	}
+	
 	private String getEndpointAddress(BindingOperation bindOp) {
 		List<Port> ports = bindOp.getDefinitions().getServices().get(0).getPorts();
 		for (Port port : ports) {

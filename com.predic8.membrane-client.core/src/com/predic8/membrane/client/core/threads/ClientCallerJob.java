@@ -7,23 +7,17 @@ import org.eclipse.core.runtime.jobs.Job;
 
 import com.predic8.membrane.core.exchange.HttpExchange;
 import com.predic8.membrane.core.http.Request;
-import com.predic8.membrane.core.http.Response;
 import com.predic8.membrane.core.transport.http.HttpClient;
 
 public class ClientCallerJob extends Job {
 
-	private String address;
-
-	private Response response;
-	
 	private boolean cancelStatus;
 	
-	private Request request;
+	private HttpExchange exc;
 	
 	public ClientCallerJob(String address, Request request) {
 		super("Client Call Job");
-		this.address = address;
-		this.request = request;
+		createExchange(address, request);
 	}
 
 	@Override
@@ -31,12 +25,8 @@ public class ClientCallerJob extends Job {
 		HttpClient client = new HttpClient();
 		client.setRouter(null);
 
-		HttpExchange exc = new HttpExchange();
-		exc.setRequest(request);
-		exc.getDestinations().add(address);
-
 		try {
-			response = client.call(exc);
+			exc.setResponse(client.call(exc));
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Status.CANCEL_STATUS;
@@ -45,8 +35,14 @@ public class ClientCallerJob extends Job {
 		return Status.OK_STATUS;
 	}
 
-	public Response getResponse() {
-		return response;
+	private void createExchange(String address, Request request) {
+		exc = new HttpExchange();
+		exc.setRequest(request);
+		exc.getDestinations().add(address);
+	}
+
+	public HttpExchange getExchange() {
+		return exc;
 	}
 	
 	@Override

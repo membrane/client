@@ -1,9 +1,15 @@
 package com.predic8.plugin.membrane_client.providers;
 
+import java.text.SimpleDateFormat;
+
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 import com.predic8.membrane.client.core.model.ServiceParams;
+import com.predic8.membrane.core.exchange.Exchange;
+import com.predic8.membrane.core.exchange.HttpExchange;
+import com.predic8.membrane.core.http.Request;
+import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.wsdl.BindingOperation;
@@ -21,6 +27,14 @@ public class ServiceTreeLabelProvider extends LabelProvider {
 	private Image wsdlErrorImage;
 	
 	private Image portImage;
+	
+	private Image excImage;
+	
+	private Image requestImage;
+	
+	private Image responseImage;
+	
+	private SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	
 	public ServiceTreeLabelProvider() {
 		
@@ -61,6 +75,13 @@ public class ServiceTreeLabelProvider extends LabelProvider {
 		return wsdlErrorImage;
 	}
 	
+	private Image getExcImage() {
+		if (excImage == null)
+			excImage = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_BLANK_MSG).createImage();
+	
+		return excImage;
+	}
+	
 	@Override
 	public String getText(Object element) {
 		
@@ -74,6 +95,18 @@ public class ServiceTreeLabelProvider extends LabelProvider {
 		
 		if (element instanceof BindingOperation) {
 			return ((BindingOperation)element).getName();
+		}
+		
+		if (element instanceof HttpExchange) {
+			return formatter.format(((Exchange)element).getTime().getTime());
+		}
+		
+		if (element instanceof Request) {
+			return "Request";
+		}
+		
+		if (element instanceof Response) {
+			return "Response";
 		}
 		
 		return super.getText(element);
@@ -99,7 +132,33 @@ public class ServiceTreeLabelProvider extends LabelProvider {
 			return sp.getDefinitions() == null ? getWSDLErrorImage() : getWSDLImage();
 		}
 		
+		if (element instanceof HttpExchange) {
+			return getExcImage();
+		}
+		
+		if (element instanceof Request) {
+			return getRequestImage();
+		}
+		
+		if (element instanceof Response) {
+			return getResponseImage();
+		}
+		
 		return super.getImage(element);
+	}
+
+	private Image getResponseImage() {
+		if (responseImage == null)
+			responseImage = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_RESPONSE).createImage();
+	
+		return responseImage;
+	}
+
+	private Image getRequestImage() {
+		if (requestImage == null)
+			requestImage = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_REQUEST).createImage();
+	
+		return requestImage;
 	}
 	
 }

@@ -58,9 +58,11 @@ public class MessageTabManager {
 
 	private NullBodyTabComposite nullBodyTabComposite;
 
-	private FormTabComposite formTabComposite; 
-	
+	private FormTabComposite formTabComposite;
+
 	private FormParamsExtractor extractor = new FormParamsExtractor();
+
+	private TabItem currentSelection;
 	
 	public MessageTabManager(final MessageComposite baseComp) {
 		this.baseComp = baseComp;
@@ -71,9 +73,8 @@ public class MessageTabManager {
 		headerTabComposite = new HeaderTabComposite(folder);
 		nullBodyTabComposite = new NullBodyTabComposite(folder);
 
-		
 		createFormComposite(baseComp);
-		
+
 		createBodyTabs();
 
 		currentBodyTab = new NullBodyTabComposite(folder);
@@ -92,6 +93,11 @@ public class MessageTabManager {
 	private void addSelectionListenerToFolder(final MessageComposite baseComp) {
 		folder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
+				if (currentSelection != null && currentSelection.equals(getCurrentBodyTabItem()))
+					onBodyTabDeselected(event);
+
+				currentSelection = folder.getSelection()[0];
+				
 				for (TabItem tabItem : folder.getSelection()) {
 					if (tabItem.equals(rawTabComposite.getTabItem())) {
 						baseComp.setFormatEnabled(false);
@@ -103,16 +109,11 @@ public class MessageTabManager {
 						baseComp.setSaveEnabled(false);
 						headerTabComposite.update(baseComp.getMsg());
 						break;
-					} else if (tabItem.equals(getCurrentTabItem())) {
+					} else if (tabItem.equals(getCurrentBodyTabItem())) {
 						resetBodyTabContent();
+						setBodyModified(false);
 						baseComp.setFormatEnabled(currentBodyTab.isFormatSupported());
 						baseComp.setSaveEnabled(currentBodyTab.isSaveSupported());
-					} else if (isFormCompositeToBeSet(tabItem)) {
-						try {
-							formTabComposite.setFormParams(extractor.extract(currentBodyTab.getBodyText()));
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
 					}
 				}
 			}
@@ -142,7 +143,7 @@ public class MessageTabManager {
 		bodyTabs.add(new ContentTabComposite(folder));
 	}
 
-	private TabItem getCurrentTabItem() {
+	private TabItem getCurrentBodyTabItem() {
 		return currentBodyTab.getTabItem();
 	}
 
@@ -177,7 +178,7 @@ public class MessageTabManager {
 
 		rawTabComposite.show();
 		rawTabComposite.update(msg);
-		
+
 		headerTabComposite.show();
 		headerTabComposite.update(msg);
 
@@ -191,11 +192,11 @@ public class MessageTabManager {
 		currentBodyTab.show();
 
 		currentBodyTab.setBodyModified(false);
-		
+
 		updateFormTabComposite(operation);
 
 		setSelectionForFolder();
-		
+
 		baseComp.setFormatEnabled(currentBodyTab.isFormatSupported());
 	}
 
@@ -207,13 +208,13 @@ public class MessageTabManager {
 	private TabItem getSelectionTabItem() {
 		if (formTabComposite != null && formTabComposite.isDisplayed())
 			return formTabComposite.getTabItem();
-		
+
 		if (currentBodyTab != null && !currentBodyTab.isDisposed())
-		  return currentBodyTab.getTabItem();
-		
+			return currentBodyTab.getTabItem();
+
 		return headerTabComposite.getTabItem();
 	}
-	
+
 	private void updateFormTabComposite(BindingOperation operation) {
 		if (formTabComposite != null && operation != null) {
 			formTabComposite.setBindingOperation(operation);
@@ -223,7 +224,7 @@ public class MessageTabManager {
 
 	private BodyTabComposite getCurrentBodyTab(Message msg) {
 		if (msg instanceof Response) {
-			if (((Response) msg).isRedirect() || ((Response) msg).hasNoContent() )
+			if (((Response) msg).isRedirect() || ((Response) msg).hasNoContent())
 				return nullBodyTabComposite;
 		}
 
@@ -314,7 +315,7 @@ public class MessageTabManager {
 	public FormTabComposite getFormTabComposite() {
 		return formTabComposite;
 	}
-	
+
 	public boolean isBodyTabSelected() {
 		TabItem item = folder.getItem(folder.getSelectionIndex());
 		if (item != null && item.equals(currentBodyTab.getTabItem()))
@@ -323,27 +324,26 @@ public class MessageTabManager {
 	}
 
 	private void resetBodyTabContent() {
-		if(formTabComposite == null || formTabComposite.isDisposed()) {
+		if (formTabComposite == null || formTabComposite.isDisposed()) {
 			currentBodyTab.update(baseComp.getMsg());
 			return;
 		}
-		
-		RequestView view = (RequestView)PluginUtil.getView(RequestView.VIEW_ID);
+
+		RequestView view = (RequestView) PluginUtil.getView(RequestView.VIEW_ID);
 		String text = SOAModelUtil.getSOARequestBody(view.getBindingOperation(), formTabComposite.getFormParams());
 		currentBodyTab.setBodyText(text);
 	}
 
-	private boolean isFormCompositeToBeSet(TabItem tabItem) {
-		if (formTabComposite == null)
-			return false;
-		
-		if (!tabItem.equals(formTabComposite.getTabItem()))
-			return false;
-		
-		if (!isBodyModified())
-			return false;
+	private void onBodyTabDeselected(SelectionEvent event) {
+		if (formTabComposite == null || formTabComposite.isDisposed() || !isBodyModified())
+			return;
 
-		return true;
+		try {
+			formTabComposite.setFormParams(extractor.extract(currentBodyTab.getBodyText()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
-	
+
 }

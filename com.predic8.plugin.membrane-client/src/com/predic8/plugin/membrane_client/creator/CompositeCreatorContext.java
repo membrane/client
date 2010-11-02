@@ -1,5 +1,7 @@
 package com.predic8.plugin.membrane_client.creator;
 
+import java.util.Map;
+
 import com.predic8.schema.Attribute;
 import com.predic8.schema.Declaration;
 import com.predic8.schema.Element;
@@ -19,6 +21,8 @@ public class CompositeCreatorContext extends CreatorContext {
 
 	private int index;
 
+	private Map<String, String> formParams;
+	
 	public Declaration getDeclaration() {
 		return declaration;
 	}
@@ -100,4 +104,12 @@ public class CompositeCreatorContext extends CreatorContext {
 		}
 	}
 
+	public void setFormParams(Map<String, String> formParams) {
+		this.formParams = formParams;
+	}
+
+	public Map<String, String> getFormParams() {
+		return formParams;
+	}
+	
 }

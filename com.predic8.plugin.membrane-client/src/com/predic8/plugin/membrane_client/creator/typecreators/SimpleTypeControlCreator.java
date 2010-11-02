@@ -16,8 +16,6 @@ public abstract class SimpleTypeControlCreator extends TypeCreator {
 
 	protected GridData gData;
 	
-	protected Control control;
-	
 	public SimpleTypeControlCreator() {
 		gData = new GridData();
 		gData.heightHint = 14;
@@ -27,15 +25,16 @@ public abstract class SimpleTypeControlCreator extends TypeCreator {
 
 	public void createControls(Composite parent, CompositeCreatorContext ctx, BaseRestriction restriction) {
 		createLabel(ctx.getLabel(), parent, ctx.getIndex());
-		control = getActiveControl(parent, restriction);
+		control = createActiveControl(parent, restriction);
 		ControlUtil.createDeco(control, getDescription(), SWT.RIGHT);
 		getAuxilaryControl(parent, restriction);
-		control.setData(SOAPConstants.PATH, getValue(ctx));
+		control.setData(SOAPConstants.PATH, getControlKey(ctx));
 		if (ctx.isOptional())
 			CreatorUtil.createAddRemoveButton(parent, control, false);
+		initControl(getControlValue(ctx));
 	}
 
-	protected abstract Control getActiveControl(Composite parent, BaseRestriction restriction);
+	protected abstract Control createActiveControl(Composite parent, BaseRestriction restriction);
 	
 	protected Control getAuxilaryControl(Composite parent, BaseRestriction restriction) {
 		Label label = new Label(parent, SWT.NONE);

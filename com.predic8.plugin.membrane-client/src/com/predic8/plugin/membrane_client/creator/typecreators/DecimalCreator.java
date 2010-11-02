@@ -10,7 +10,7 @@ public class DecimalCreator extends TextCreator {
 	
 	@Override
 	protected String getRegEx() {
-		return "(-)?[0-9]*((\\.)*[0-9]*)";
+		return "(-)?[0-9]*\\.?[0-9]*";
 	}
 	
 }

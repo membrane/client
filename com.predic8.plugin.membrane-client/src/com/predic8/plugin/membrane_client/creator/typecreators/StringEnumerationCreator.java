@@ -17,9 +17,10 @@ public class StringEnumerationCreator extends TypeCreator {
 	@Override
 	public void createControls(Composite parent, CompositeCreatorContext ctx, BaseRestriction rest) {
 		createLabel(ctx.getLabel(), parent, ctx.getIndex());
-		Combo control = createCombo(getValues(rest), parent, ctx);
+		control = createCombo(getValues(rest), parent, ctx);
 		if (ctx.isOptional())
 			CreatorUtil.createAddRemoveButton(parent, control, false);
+		initControl(getControlValue(ctx));
 	}
 	
 	
@@ -29,7 +30,7 @@ public class StringEnumerationCreator extends TypeCreator {
 
 	private Combo createCombo(List<String> values, Composite descendent, CompositeCreatorContext ctx) {
 		Combo combo = PluginUtil.createCombo(descendent, WIDGET_WIDTH, WIDGET_HEIGHT);
-		combo.setData(SOAPConstants.PATH, getValue(ctx));
+		combo.setData(SOAPConstants.PATH, getControlKey(ctx));
 		
 		if (values != null && !values.isEmpty()) {
 			for (String str : values) {
@@ -40,5 +41,11 @@ public class StringEnumerationCreator extends TypeCreator {
 		return combo;
 	}
 	
-	
+	@Override
+	public void initControl(String value) {
+		if (value == null)
+			return;
+		
+		((Combo)control).setText(value);
+	}
 }

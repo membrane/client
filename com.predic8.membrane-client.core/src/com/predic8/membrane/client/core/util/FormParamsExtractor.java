@@ -22,7 +22,6 @@ public class FormParamsExtractor {
         XMLEventReader reader = factory.createXMLEventReader(new ByteArrayInputStream(xml.getBytes("UTF-8")));
 		
     	Stack<String> stack = new Stack<String>();
-    	stack.push("xpath:/");
     	
     	String value = "";
     	
@@ -32,6 +31,15 @@ public class FormParamsExtractor {
         	
         	case XMLEvent.START_ELEMENT:
         		StartElement sE = event.asStartElement();
+        		if ("Envelope".equals(sE.getName().getLocalPart()))
+        			break;
+        		
+        		if ("Body".equals(sE.getName().getLocalPart()))
+        			break;
+        		
+        		if (stack.isEmpty())
+        			stack.push("xpath:/");
+        		
         		stack.push("/" + sE.getName().getLocalPart());
         		
         		Iterator iterat = sE.getAttributes();
@@ -44,6 +52,9 @@ public class FormParamsExtractor {
         		break;
         			
         	case XMLEvent.END_ELEMENT:
+        		if (stack.isEmpty())
+        			break;
+        		
         		stack.pop();
         		value = "";
         		break;

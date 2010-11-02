@@ -10,7 +10,7 @@ import com.predic8.schema.restriction.BaseRestriction;
 public class TimeCreator extends SimpleTypeControlCreator {
 
 	@Override
-	protected Control getActiveControl(Composite parent, BaseRestriction restriction) {
+	protected Control createActiveControl(Composite parent, BaseRestriction restriction) {
 		return new DateTime (parent, SWT.TIME | SWT.LONG);
 	}
 
@@ -20,4 +20,8 @@ public class TimeCreator extends SimpleTypeControlCreator {
 		return "The time datatype: 13:20:00.000, 13:20:00.000-05:00";
 	}
 	
+	@Override
+	public void initControl(String value) {
+		
+	}
 }

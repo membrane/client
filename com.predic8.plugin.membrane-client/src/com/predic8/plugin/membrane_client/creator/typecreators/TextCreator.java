@@ -16,11 +16,11 @@ public abstract class TextCreator extends SimpleTypeControlCreator {
 	private static final int MAX_WIDTH = 340; 
 	
 	@Override
-	public Control getActiveControl(Composite parent, BaseRestriction rest) {
+	public Control createActiveControl(Composite parent, BaseRestriction rest) {
 		Text text = new Text(parent, SWT.BORDER);
 		text.setLayoutData(getGridData(getWidgetWidth(rest, new GC(text).getFontMetrics())));
 		text.addVerifyListener(new RegexVerifierListener(getRegEx()));
-		return text;		
+		return text;
 	}
 
 	private GridData getGridData(int width) {
@@ -32,6 +32,14 @@ public abstract class TextCreator extends SimpleTypeControlCreator {
 	
 	protected int getWidgetWidth(BaseRestriction rest, FontMetrics fm) {
 		return WIDGET_WIDTH; 
+	}
+	
+	@Override
+	public void initControl(String value) {
+		if (value == null)
+			return;
+		
+		((Text)control).setText(value);
 	}
 	
 }

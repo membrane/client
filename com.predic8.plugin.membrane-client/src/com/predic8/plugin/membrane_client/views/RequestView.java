@@ -212,10 +212,6 @@ public class RequestView extends MessageView {
 		setMessage(request, bindOp);
 	}
 
-	public void setRequest(Request request) {
-		this.request = request;
-	}
-	
 	private String getEndpointAddress(BindingOperation bindOp) {
 		List<Port> ports = bindOp.getDefinitions().getServices().get(0).getPorts();
 		for (Port port : ports) {

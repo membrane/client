@@ -141,18 +141,19 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 			
 		if (firstElement instanceof BindingOperation)  {
 			PluginUtil.closeView(ResponseView.VIEW_ID);
-			((RequestView)PluginUtil.showView(RequestView.VIEW_ID)).setOperation((BindingOperation)firstElement);
+			((RequestView)PluginUtil.showView(RequestView.VIEW_ID)).updateView((BindingOperation)firstElement, null);
 			return;
 		}
 		
 		if (firstElement instanceof Request) {
 			PluginUtil.closeView(ResponseView.VIEW_ID);
-			((RequestView)PluginUtil.showView(RequestView.VIEW_ID)).setMessage((Request)firstElement, getAncestorBinding(selection));
+			((RequestView)PluginUtil.showView(RequestView.VIEW_ID)).updateView(getAncestorBinding(selection), (Request)firstElement);
 			return;
 		}
 		
 		if (firstElement instanceof Response) {
 			PluginUtil.closeView(ResponseView.VIEW_ID);
+			//TODO read sibling request in the tree and set it in request view
 			((ResponseView)PluginUtil.showView(ResponseView.VIEW_ID)).setMessage((Response)firstElement, getAncestorBinding(selection));
 			return;
 		}

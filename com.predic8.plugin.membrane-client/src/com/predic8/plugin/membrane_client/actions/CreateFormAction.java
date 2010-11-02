@@ -20,7 +20,7 @@ public class CreateFormAction extends Action {
 	@Override
 	public void run() {
 		RequestView view = (RequestView)PluginUtil.showView(RequestView.VIEW_ID);
-		view.setOperation(operation);
+		view.updateView(operation, null);
 	}
 	
 	public void setOperation(BindingOperation selection) {

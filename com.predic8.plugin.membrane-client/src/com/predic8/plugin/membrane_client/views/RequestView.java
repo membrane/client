@@ -205,10 +205,13 @@ public class RequestView extends MessageView {
 		callerJob.schedule();
 	}
 
-	public void setOperation(BindingOperation bindOp) {
+	public void updateView(BindingOperation bindOp, Request req) {
 		this.bindingOperation = bindOp;
 		textAddress.setText(getEndpointAddress(bindOp));
-		request = HttpUtil.getRequest(bindOp, textAddress.getText());
+		if (req == null)
+			request = HttpUtil.getRequest(bindOp, textAddress.getText());
+		else 
+			request = req;
 		setMessage(request, bindOp);
 	}
 

@@ -1,5 +1,8 @@
 package com.predic8.plugin.membrane_client.ui;
 
+import java.util.Map;
+import java.util.Set;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
@@ -15,6 +18,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+import com.predic8.membrane.core.Constants;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.schema.restriction.BaseRestriction;
 
@@ -119,6 +123,18 @@ public class PluginUtil {
 		if (page.isPartVisible(view)) {
 			page.hideView(view);
 		}
+	}
+	
+	public static String getMapContent(Map<String, String> map) {
+		StringBuffer buf = new StringBuffer();
+		Set<String> keys = map.keySet();
+		for (String key : keys) {
+			buf.append(key);
+			buf.append(": ");
+			buf.append(map.get(key));
+			buf.append(Constants.CRLF);
+		}
+		return buf.toString();
 	}
 	
 }

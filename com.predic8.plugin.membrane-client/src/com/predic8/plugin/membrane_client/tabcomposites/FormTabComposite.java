@@ -15,18 +15,23 @@
 package com.predic8.plugin.membrane_client.tabcomposites;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.Text;
 
+import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
 import com.predic8.plugin.membrane_client.creator.CompositeCreator;
+import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.wsdl.BindingOperation;
 
 public class FormTabComposite extends AbstractTabComposite {
@@ -84,10 +89,50 @@ public class FormTabComposite extends AbstractTabComposite {
 
 	private void dumpFormParams(Map<String, String> formParams) {
 		log.info("Dumping of generated form parameters.");
-		Set<String> keys = formParams.keySet();
-		for (String key : keys) {
-			log.info(key + ": " + formParams.get(key));
+		log.info(PluginUtil.getMapContent(formParams));
+	}
+
+
+	public void setFormParams(Map<String, String> paramsMap) {
+		setFormParams(paramsMap, composite);
+	}
+	
+	private void setFormParams(Map<String, String> paramsMap, Control control) {
+		if (control == null)
+			return;
+	
+		if (control instanceof Combo) {
+			Combo combo = (Combo)control;
+			if (paramsMap.containsKey(combo.getData(SOAPConstants.PATH)))
+				combo.setText(paramsMap.get(combo.getData(SOAPConstants.PATH)));
+			
+			return;
 		}
+		
+		if (control instanceof Composite) {
+			Control[] children = ((Composite) control).getChildren();
+			for (Control child : children) {
+				setFormParams(paramsMap, child);
+			}
+			return;
+		}
+	
+		if (control instanceof Text) {
+			Text text = (Text)control;
+			if (paramsMap.containsKey(text.getData(SOAPConstants.PATH)))
+				text.setText(paramsMap.get(text.getData(SOAPConstants.PATH)));
+			
+			return;
+		}
+		
+		if (control instanceof Button) {
+			Button button = (Button)control;
+			if (paramsMap.containsKey(button.getData(SOAPConstants.PATH)))
+				button.setSelection("true".equals(paramsMap.get(button.getData(SOAPConstants.PATH))));
+			
+			return;
+		}
+		
 	}
 	
 }

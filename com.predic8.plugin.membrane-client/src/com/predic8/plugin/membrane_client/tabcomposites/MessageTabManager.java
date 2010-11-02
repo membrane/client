@@ -17,8 +17,6 @@ package com.predic8.plugin.membrane_client.tabcomposites;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,6 +28,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 
+import com.predic8.membrane.client.core.util.FormParamsExtractor;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
 import com.predic8.membrane.core.http.Message;
 import com.predic8.membrane.core.http.Response;
@@ -60,6 +59,8 @@ public class MessageTabManager {
 	private NullBodyTabComposite nullBodyTabComposite;
 
 	private FormTabComposite formTabComposite; 
+	
+	private FormParamsExtractor extractor = new FormParamsExtractor();
 	
 	public MessageTabManager(final MessageComposite baseComp) {
 		this.baseComp = baseComp;
@@ -106,6 +107,12 @@ public class MessageTabManager {
 						resetBodyTabContent();
 						baseComp.setFormatEnabled(currentBodyTab.isFormatSupported());
 						baseComp.setSaveEnabled(currentBodyTab.isSaveSupported());
+					} else if (isFormCompositeToBeSet(tabItem)) {
+						try {
+							formTabComposite.setFormParams(extractor.extract(currentBodyTab.getBodyText()));
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -181,9 +188,10 @@ public class MessageTabManager {
 
 		currentBodyTab = getCurrentBodyTab(msg);
 		currentBodyTab.update(msg);
-		
 		currentBodyTab.show();
 
+		currentBodyTab.setBodyModified(false);
+		
 		updateFormTabComposite(operation);
 
 		setSelectionForFolder();
@@ -321,15 +329,21 @@ public class MessageTabManager {
 		}
 		
 		RequestView view = (RequestView)PluginUtil.getView(RequestView.VIEW_ID);
-		Map<String, String> formParams = formTabComposite.getFormParams();
-		
-		Set<String> keys = formParams.keySet();
-		for (String key : keys) {
-			System.out.println(key + "    " + formParams.get(key));
-		}
-		
-		String text = SOAModelUtil.getSOARequestBody(view.getBindingOperation(), formParams);
+		String text = SOAModelUtil.getSOARequestBody(view.getBindingOperation(), formTabComposite.getFormParams());
 		currentBodyTab.setBodyText(text);
+	}
+
+	private boolean isFormCompositeToBeSet(TabItem tabItem) {
+		if (formTabComposite == null)
+			return false;
+		
+		if (!tabItem.equals(formTabComposite.getTabItem()))
+			return false;
+		
+		if (!isBodyModified())
+			return false;
+
+		return true;
 	}
 	
 }

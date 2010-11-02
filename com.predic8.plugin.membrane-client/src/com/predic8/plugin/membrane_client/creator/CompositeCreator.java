@@ -431,7 +431,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	
 		return getDataFromWidgets(control, formParams);
 	}
-
+	
 	private Map<String, String> getDataFromWidgets(Control control, Map<String, String> formParams) {
 		if (control.getData(SOAPConstants.PATH) == null)
 			return formParams;

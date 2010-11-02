@@ -43,7 +43,6 @@ public class BodyTextTabComposite extends BodyTabComposite {
 				bodyText.redraw();
 			}
 		});
-		
 	}
 
 	@Override

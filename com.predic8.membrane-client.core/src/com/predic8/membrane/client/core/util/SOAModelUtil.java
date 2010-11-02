@@ -95,5 +95,4 @@ public class SOAModelUtil {
 		}
 		return null;
 	}
-	
 }

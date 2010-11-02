@@ -15,6 +15,7 @@ import javax.xml.stream.events.XMLEvent;
 
 public class FormParamsExtractor {
 
+	@SuppressWarnings("rawtypes")
 	public Map<String, String> extract(String xml) throws Exception {
 		Map<String, String> map = new HashMap<String, String>();
 		
@@ -38,7 +39,7 @@ public class FormParamsExtractor {
         			break;
         		
         		if (stack.isEmpty())
-        			stack.push("xpath:/");
+        			stack.push("xpath:");
         		
         		stack.push("/" + sE.getName().getLocalPart());
         		

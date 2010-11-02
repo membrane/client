@@ -1,0 +1,15 @@
+<s11:Envelope xmlns:s11='http://schemas.xmlsoap.org/soap/envelope/'>
+  <s11:Body>
+    <ns1:create xmlns:ns1='http://predic8.com/wsdl/material/ArticleService/1/'>
+      <article xmlns:ns1='http://predic8.com/material/1/' date="2010-11-01">
+        <name xmlns:ns1='http://predic8.com/material/1/'>Early Gray</name>
+        <description xmlns:ns1='http://predic8.com/material/1/'>Fine Tea</description>
+        <price xmlns:ns1='http://predic8.com/common/1/'>
+          <amount xmlns:ns1='http://predic8.com/common/1/'>23</amount>
+          <currency xmlns:ns1='http://predic8.com/common/1/'>EUR</currency>
+        </price>
+        <id xmlns:ns1='http://predic8.com/material/1/'>1</id>
+      </article>
+    </ns1:create>
+  </s11:Body>
+</s11:Envelope>

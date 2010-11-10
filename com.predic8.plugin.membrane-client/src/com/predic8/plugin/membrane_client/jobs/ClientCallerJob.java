@@ -4,6 +4,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 
 import com.predic8.membrane.core.exchange.HttpExchange;
 import com.predic8.membrane.core.http.Request;
@@ -28,8 +30,13 @@ public class ClientCallerJob extends Job {
 		
 		try {
 			exc.setResponse(client.call(exc));
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (final Exception e) {
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					MessageDialog.openError(Display.getDefault().getActiveShell(), "Errror", e.getMessage());
+				}
+			});
 			return Status.CANCEL_STATUS;
 		}
 		monitor.done();
@@ -62,7 +69,7 @@ public class ClientCallerJob extends Job {
 	
 	private void initClient(HttpClient client) {
 		client.setUseProxy(PreferencesData.isUseProxy());
-		client.setUseProxyAuth(PreferencesData.isProxyAuth());
+		client.setUseProxyAuth(PreferencesData.isUseProxyAuth());
 		client.setProxyHost(PreferencesData.getProxyHost());
 		client.setProxyPort(PreferencesData.getProxyPort());
 		client.setProxyUser(PreferencesData.getProxyUserName());

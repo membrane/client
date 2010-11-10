@@ -16,7 +16,7 @@ public class PreferencesData {
 	
 	public static final String PROXY_PASSWORD = "proxy password";
 	
-	public static boolean isProxyAuth() {
+	public static boolean isUseProxyAuth() {
 		return MembraneClientUIPlugin.getDefault().getPreferenceStore().getBoolean(USE_PROXY_AUTHENT);
 	}
 	

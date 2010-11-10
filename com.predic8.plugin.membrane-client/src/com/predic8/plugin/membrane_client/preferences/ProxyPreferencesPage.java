@@ -109,7 +109,7 @@ public class ProxyPreferencesPage extends PreferencePage implements IWorkbenchPr
 		if (PreferencesData.getProxyPassword() != null)
 			textPassword.setText(PreferencesData.getProxyPassword());
 
-		btUseProxyAuthent.setSelection(PreferencesData.isProxyAuth());
+		btUseProxyAuthent.setSelection(PreferencesData.isUseProxyAuth());
 		btUseProxyAuthent.notifyListeners(SWT.Selection, null);
 		btUseProxy.setSelection(PreferencesData.isUseProxy());
 		btUseProxy.notifyListeners(SWT.Selection, null);

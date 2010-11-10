@@ -21,13 +21,13 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
 import com.predic8.membrane.client.core.controller.ServiceParamsManager;
-import com.predic8.membrane.client.core.threads.ClientCallerJob;
 import com.predic8.membrane.client.core.util.HttpUtil;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
 import com.predic8.membrane.core.http.Request;
 import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
+import com.predic8.plugin.membrane_client.jobs.ClientCallerJob;
 import com.predic8.plugin.membrane_client.message.composite.RequestComposite;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.wsdl.BindingOperation;

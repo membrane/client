@@ -1,4 +1,4 @@
-package com.predic8.membrane.client.core.threads;
+package com.predic8.plugin.membrane_client.jobs;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -23,8 +23,8 @@ public class ClientCallerJob extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		HttpClient client = new HttpClient();
-		client.setRouter(null);
-
+		initClient(client);
+		
 		try {
 			exc.setResponse(client.call(exc));
 		} catch (Exception e) {
@@ -57,6 +57,10 @@ public class ClientCallerJob extends Job {
 
 	public void setCancelStatus(boolean status) {
 		this.cancelStatus = status;
+	}
+	
+	private void initClient(HttpClient client) {
+		
 	}
 	
 }

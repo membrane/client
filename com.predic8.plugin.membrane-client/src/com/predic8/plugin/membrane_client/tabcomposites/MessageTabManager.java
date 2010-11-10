@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.TabItem;
 import com.predic8.membrane.client.core.util.FormParamsExtractor;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
 import com.predic8.membrane.core.http.Message;
+import com.predic8.membrane.core.http.Request;
 import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.message.composite.MessageComposite;
 import com.predic8.plugin.membrane_client.message.composite.RequestComposite;
@@ -193,8 +194,8 @@ public class MessageTabManager {
 
 		currentBodyTab.setBodyModified(false);
 
-		updateFormTabComposite(operation);
-
+		updateFormTabComposite(operation, msg);
+		
 		setSelectionForFolder();
 
 		baseComp.setFormatEnabled(currentBodyTab.isFormatSupported());
@@ -215,9 +216,16 @@ public class MessageTabManager {
 		return headerTabComposite.getTabItem();
 	}
 
-	private void updateFormTabComposite(BindingOperation operation) {
+	private void updateFormTabComposite(BindingOperation operation, Message msg) {
 		if (formTabComposite != null && operation != null) {
 			formTabComposite.setBindingOperation(operation);
+			if (msg instanceof Request) {
+				try {
+					formTabComposite.setFormParams(extractor.extract(new String(msg.getBody().getContent())));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 			formTabComposite.show();
 		}
 	}

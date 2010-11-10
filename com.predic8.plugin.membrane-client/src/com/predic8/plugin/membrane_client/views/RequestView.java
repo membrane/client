@@ -20,9 +20,12 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
+import com.predic8.membrane.client.core.controller.ExchangeNode;
+import com.predic8.membrane.client.core.controller.ParamsMap;
 import com.predic8.membrane.client.core.controller.ServiceParamsManager;
 import com.predic8.membrane.client.core.util.HttpUtil;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
+import com.predic8.membrane.core.exchange.HttpExchange;
 import com.predic8.membrane.core.http.Request;
 import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.ImageKeys;
@@ -154,6 +157,7 @@ public class RequestView extends MessageView {
 					}
 					updateControlButtons(true, null);
 					executeClientCall(getRequestBody());
+					
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -187,7 +191,7 @@ public class RequestView extends MessageView {
 			return;
 		
 		request.setBodyContent(body.getBytes());
-		setMessage(request, bindingOperation);
+		//setMessage(request, bindingOperation);
 		
 		callerJob = new ClientCallerJob(textAddress.getText().trim(), request);
 		callerJob.setPriority(Job.SHORT);
@@ -196,7 +200,13 @@ public class RequestView extends MessageView {
 			public void done(IJobChangeEvent event) {
 				if (event.getResult().isOK() && !callerJob.isCancelStatus()) {
 					showMessageInResponseView(callerJob.getExchange().getResponse());
-					ServiceParamsManager.getInstance().newExchangeArrived(bindingOperation, callerJob.getExchange());
+					
+					HttpExchange exc = callerJob.getExchange();
+					ExchangeNode node = new ExchangeNode(exc.getTime());
+					node.setResponse(exc.getResponse());
+					node.setParamsMap(new ParamsMap());
+					
+					ServiceParamsManager.getInstance().newExchangeArrived(bindingOperation, node);
 				}
 				updateControlButtons(false, event.getJob());
 			}
@@ -205,14 +215,11 @@ public class RequestView extends MessageView {
 		callerJob.schedule();
 	}
 
-	public void updateView(BindingOperation bindOp, Request req) {
+	public void updateView(BindingOperation bindOp, ParamsMap paramsMap) {
 		this.bindingOperation = bindOp;
 		textAddress.setText(getEndpointAddress(bindOp));
-		if (req == null)
-			request = HttpUtil.getRequest(bindOp, textAddress.getText());
-		else 
-			request = req;
-		setMessage(request, bindOp);
+		request = HttpUtil.getRequest(bindOp, textAddress.getText());
+		setMessage(request, bindOp, paramsMap);
 	}
 
 	private String getEndpointAddress(BindingOperation bindOp) {
@@ -237,7 +244,7 @@ public class RequestView extends MessageView {
 			@Override
 			public void run() {
 				ResponseView view = (ResponseView)PluginUtil.showView(ResponseView.VIEW_ID);
-				view.setMessage(response, bindingOperation);
+				view.setMessage(response, bindingOperation, null);
 			}
 		});
 	}

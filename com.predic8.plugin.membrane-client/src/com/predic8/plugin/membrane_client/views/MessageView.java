@@ -6,6 +6,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
+import com.predic8.membrane.client.core.controller.ParamsMap;
 import com.predic8.membrane.core.exchange.Exchange;
 import com.predic8.membrane.core.http.Message;
 import com.predic8.plugin.membrane_client.message.composite.MessageComposite;
@@ -49,7 +50,7 @@ public abstract class MessageView extends ViewPart implements IBaseCompositeHost
 		baseComp.setFocus();
 	}
 	
-	public void setMessage(Message msg, BindingOperation operation) {
+	public void setMessage(Message msg, BindingOperation operation, ParamsMap map) {
 		baseComp.setMsg(msg, operation);
 	}
 	

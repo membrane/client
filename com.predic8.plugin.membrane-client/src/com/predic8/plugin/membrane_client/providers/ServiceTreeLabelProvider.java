@@ -5,10 +5,9 @@ import java.text.SimpleDateFormat;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+import com.predic8.membrane.client.core.controller.ExchangeNode;
+import com.predic8.membrane.client.core.controller.ParamsMap;
 import com.predic8.membrane.client.core.model.ServiceParams;
-import com.predic8.membrane.core.exchange.Exchange;
-import com.predic8.membrane.core.exchange.HttpExchange;
-import com.predic8.membrane.core.http.Request;
 import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
@@ -97,12 +96,12 @@ public class ServiceTreeLabelProvider extends LabelProvider {
 			return ((BindingOperation)element).getName();
 		}
 		
-		if (element instanceof HttpExchange) {
-			return formatter.format(((Exchange)element).getTime().getTime());
+		if (element instanceof ExchangeNode) {
+			return formatter.format(((ExchangeNode)element).getCalendar().getTime());
 		}
 		
-		if (element instanceof Request) {
-			return "Request";
+		if (element instanceof ParamsMap) {
+			return element.toString();
 		}
 		
 		if (element instanceof Response) {
@@ -132,11 +131,11 @@ public class ServiceTreeLabelProvider extends LabelProvider {
 			return sp.getDefinitions() == null ? getWSDLErrorImage() : getWSDLImage();
 		}
 		
-		if (element instanceof HttpExchange) {
+		if (element instanceof ExchangeNode) {
 			return getExcImage();
 		}
 		
-		if (element instanceof Request) {
+		if (element instanceof ParamsMap) {
 			return getRequestImage();
 		}
 		

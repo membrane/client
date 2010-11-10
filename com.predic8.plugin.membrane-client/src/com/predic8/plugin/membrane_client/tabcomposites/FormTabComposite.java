@@ -93,8 +93,14 @@ public class FormTabComposite extends AbstractTabComposite {
 	}
 
 
-	public void setFormParams(Map<String, String> paramsMap) {
-		setFormParams(paramsMap, composite);
+	public void setFormParams(final Map<String, String> paramsMap) {
+		Display.getCurrent().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				setFormParams(paramsMap, composite);
+				System.err.println(PluginUtil.getMapContent(paramsMap));
+			}
+		});
 	}
 	
 	private void setFormParams(Map<String, String> paramsMap, Control control) {

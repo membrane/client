@@ -17,10 +17,11 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
 
+import com.predic8.membrane.client.core.controller.ExchangeNode;
+import com.predic8.membrane.client.core.controller.ParamsMap;
 import com.predic8.membrane.client.core.controller.ServiceParamsManager;
 import com.predic8.membrane.client.core.listeners.ServiceParamsChangeListener;
 import com.predic8.membrane.client.core.model.ServiceParams;
-import com.predic8.membrane.core.http.Request;
 import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.actions.AddNewWSDLActiion;
 import com.predic8.plugin.membrane_client.actions.CreateFormAction;
@@ -145,16 +146,23 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 			return;
 		}
 		
-		if (firstElement instanceof Request) {
+		if (firstElement instanceof ParamsMap) {
 			PluginUtil.closeView(ResponseView.VIEW_ID);
-			((RequestView)PluginUtil.showView(RequestView.VIEW_ID)).updateView(getAncestorBinding(selection), (Request)firstElement);
+			((RequestView)PluginUtil.showView(RequestView.VIEW_ID)).updateView(getAncestorBinding(selection), (ParamsMap)firstElement);
 			return;
 		}
 		
 		if (firstElement instanceof Response) {
 			PluginUtil.closeView(ResponseView.VIEW_ID);
-			//TODO read sibling request in the tree and set it in request view
-			((ResponseView)PluginUtil.showView(ResponseView.VIEW_ID)).setMessage((Response)firstElement, getAncestorBinding(selection));
+			Response resp = (Response)firstElement;
+			BindingOperation ancestorBinding = getAncestorBinding(selection);
+			
+			ParamsMap request = getSiblingParamsMap(selection, resp);
+			if (request != null) {
+				((RequestView)PluginUtil.showView(RequestView.VIEW_ID)).updateView(ancestorBinding, request);
+			} 
+			
+			((ResponseView)PluginUtil.showView(ResponseView.VIEW_ID)).setMessage(resp, ancestorBinding, request);
 			return;
 		}
 		
@@ -166,6 +174,20 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 			Object segment = path.getSegment(i);
 			if (segment instanceof BindingOperation)
 				return (BindingOperation)segment;
+		}
+		return null;
+	}
+	
+	private ParamsMap getSiblingParamsMap(ITreeSelection selection, Response resp) {
+		TreePath path = selection.getPaths()[0];
+		int count = path.getSegmentCount();
+		for(int i = 0; i < count; i ++) {
+			Object segment = path.getSegment(i);
+			if (segment instanceof ExchangeNode) {
+				ExchangeNode exc = (ExchangeNode)segment;
+				if (resp.equals(exc.getResponse()))
+					return exc.getParamsMap();
+			}
 		}
 		return null;
 	}

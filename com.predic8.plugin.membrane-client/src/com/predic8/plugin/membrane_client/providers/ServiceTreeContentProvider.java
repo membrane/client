@@ -5,9 +5,9 @@ import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+import com.predic8.membrane.client.core.controller.ExchangeNode;
 import com.predic8.membrane.client.core.controller.ServiceParamsManager;
 import com.predic8.membrane.client.core.model.ServiceParams;
-import com.predic8.membrane.core.exchange.Exchange;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Definitions;
 import com.predic8.wsdl.Port;
@@ -40,16 +40,16 @@ public class ServiceTreeContentProvider implements ITreeContentProvider {
 		}
 		
 		if (parent instanceof BindingOperation) {
-			List<Exchange> excs = ServiceParamsManager.getInstance().getExchangesFor((BindingOperation)parent);
+			List<ExchangeNode> excs = ServiceParamsManager.getInstance().getExchangesFor((BindingOperation)parent);
 			if (excs == null)
 				return new Object[0];
 			
 			return excs.toArray();
 		}
 		
-		if (parent instanceof Exchange) {
-			Exchange exc = (Exchange)parent;
-			return new Object[] {exc.getRequest(), exc.getResponse()};
+		if (parent instanceof ExchangeNode) {
+			ExchangeNode exc = (ExchangeNode)parent;
+			return new Object[] {exc.getParamsMap(), exc.getResponse()};
 		}
 		
 		return null;
@@ -78,7 +78,7 @@ public class ServiceTreeContentProvider implements ITreeContentProvider {
 		if (element instanceof BindingOperation)
 			return true;
 		
-		if (element instanceof Exchange)
+		if (element instanceof ExchangeNode)
 			return true;
 		
 		return false;

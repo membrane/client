@@ -11,6 +11,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IViewPart;
@@ -46,6 +47,15 @@ public class PluginUtil {
 		return text;
 	}
 
+	public static Text createPasswordText(Composite comp, int width) {
+		Text text = new Text(comp, SWT.PASSWORD | SWT.BORDER);
+		GridData gData = new GridData();
+		gData.heightHint = 14;
+		gData.widthHint = width;
+		text.setLayoutData(gData);
+		return text;
+	}
+	
 	public static Text createText(Composite comp, int width, int height) {
 		Text text = new Text(comp, SWT.BORDER);
 		text.setLayoutData(LayoutUtil.createGridData(width, height));
@@ -135,6 +145,21 @@ public class PluginUtil {
 			buf.append(Constants.CRLF);
 		}
 		return buf.toString();
+	}
+	
+	public static Group createGroup(Composite composite, String title, int col, int margin) {
+		Group group = new Group(composite, SWT.NONE);
+		group.setText(title);
+		GridLayout layout = new GridLayout();
+		layout.marginTop = margin;
+		layout.marginLeft = margin;
+		layout.marginBottom = margin;
+		layout.marginRight = margin;
+		
+		layout.numColumns = col;
+		layout.verticalSpacing = 5;
+		group.setLayout(layout);
+		return group;
 	}
 	
 }

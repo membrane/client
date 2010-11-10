@@ -9,7 +9,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
@@ -30,7 +30,7 @@ public class ProxyPreferencesPage extends PreferencePage implements IWorkbenchPr
 	
 	private Text textPassword;
 	
-	private Button btUseAuthent;
+	private Button btUseProxyAuthent;
 	
 	private Button btUseProxy;
 	
@@ -51,107 +51,129 @@ public class ProxyPreferencesPage extends PreferencePage implements IWorkbenchPr
 	protected Control createContents(Composite parent) {
 		Composite composite = PluginUtil.createComposite(parent, 1);
 		
-		btUseProxy = new Button(composite, SWT.CHECK);
-		btUseProxy.setText("Use Proxy");
-		btUseProxy.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				Display.getDefault().asyncExec(new Runnable() {
-					@Override
-					public void run() {
-						enableWidgets(btUseProxy.getSelection());
-					}
-				});
-			}
-		});
+		btUseProxy = createUseProxyButton(composite);
 		
-		createControlComposite(composite);
-	
+		Group proxyGroup = PluginUtil.createGroup(composite, "Proxy Settings", 2, 5);
+
+		new Label(proxyGroup, SWT.NONE).setText("Host");
+		
+		textHost = PluginUtil.createText(proxyGroup, 200);
+		textHost.setEnabled(false);
+		
+		new Label(proxyGroup, SWT.NONE).setText("Port");
+
+		textPort = PluginUtil.createText(proxyGroup, 75);
+		textPort.setEnabled(false);
+		
+		new Label(proxyGroup, SWT.NONE).setText(" ");
+		
+		createAuthButton(proxyGroup);
+
+		Group groupAuth = PluginUtil.createGroup(proxyGroup, "Credentials", 2, 5);
+		GridData gdA = new GridData();
+		gdA.horizontalSpan = 2;
+		groupAuth.setLayoutData(gdA);
+		
+		new Label(groupAuth, SWT.NONE).setText("Username: ");
+		textUser = PluginUtil.createText(groupAuth, 200);
+		textUser.setEnabled(false);
+		
+		new Label(groupAuth, SWT.NONE).setText("Password: ");
+		textPassword = PluginUtil.createPasswordText(groupAuth, 200);
+		textPassword.setEnabled(false);
+		
+		setWidgets();
+
+		GridData gd = new GridData();
+		gd.verticalAlignment = GridData.FILL;
+		gd.grabExcessVerticalSpace = true;
+		
+		Label label = new Label(composite, SWT.NONE);
+		label.setText(" ");
+		label.setLayoutData(gd);
+			
 		return composite;
 	}
 
-	private void enableWidgets(boolean enabled) {
-		textPort.setText("");
-		textPort.setEnabled(enabled);
+	private void setWidgets() {
+		
+		if (PreferencesData.getProxyHost() != null) {
+			textHost.setText("" + PreferencesData.getProxyHost());
+		}
+
+		textPort.setText("" + PreferencesData.getProxyPort());
+			
+		if (PreferencesData.getProxyUserName() != null)
+			textUser.setText(PreferencesData.getProxyUserName());
+
+		if (PreferencesData.getProxyPassword() != null)
+			textPassword.setText(PreferencesData.getProxyPassword());
+
+		btUseProxyAuthent.setSelection(PreferencesData.isProxyAuth());
+		btUseProxyAuthent.notifyListeners(SWT.Selection, null);
+		btUseProxy.setSelection(PreferencesData.getUseProxy());
+		btUseProxy.notifyListeners(SWT.Selection, null);
+	}
 	
-		textHost.setText("");
+	private Button createUseProxyButton(Composite composite) {
+		final Button bt = new Button(composite, SWT.CHECK);
+		bt.setText("Use Proxy Server");
+		bt.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				enableWidgets(bt.getSelection());
+			}
+		});
+		
+		return bt;
+	}
+	
+	private void createAuthButton(Group proxyGroup) {
+		btUseProxyAuthent = new Button(proxyGroup, SWT.CHECK);
+		btUseProxyAuthent.setText("Use Proxy Authentification");
+		btUseProxyAuthent.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				enableAuthentificationWidgets(btUseProxyAuthent.getSelection());
+			};
+		});
+		GridData gd = new GridData();
+		gd.horizontalSpan = 2;
+		btUseProxyAuthent.setLayoutData(gd);
+	}
+	
+	private void enableWidgets(boolean enabled) {
+		btUseProxyAuthent.setEnabled(enabled);
 		textHost.setEnabled(enabled);
-		
-		
-		btUseAuthent.setSelection(false);
-		btUseAuthent.notifyListeners(SWT.Selection, null);
-		btUseAuthent.setEnabled(enabled);
+		textPort.setEnabled(enabled);
 	}
 	
 	private void enableAuthentificationWidgets(boolean enabled) {
-		textUser.setText("");
-		textUser.setEnabled(enabled);
-		
-		textPassword.setText("");
 		textPassword.setEnabled(enabled);
+		textUser.setEnabled(enabled);
 	}
 	
 	@Override
 	public void init(IWorkbench workbench) {
 		setPreferenceStore(MembraneClientUIPlugin.getDefault().getPreferenceStore());
 	}
-
-	private void createControlComposite(Composite parent) {
-		Composite composite = PluginUtil.createComposite(parent, 2);
-		
-		new Label(composite, SWT.NONE).setText("Port:");
-		textPort = PluginUtil.createText(composite, 220);
-		textPort.setEnabled(false);
-		
-		new Label(composite, SWT.NONE).setText("Host:");
-		textHost = PluginUtil.createText(composite, 220);
-		textHost.setEnabled(false);
-		
-		new Label(composite, SWT.NONE).setText("");
-		new Label(composite, SWT.NONE).setText("");
-		
-		btUseAuthent = new Button(composite, SWT.CHECK);
-		btUseAuthent.setText("Proxy Authentification");
-		GridData g = new GridData();
-		g.horizontalSpan = 2;
-		g.grabExcessHorizontalSpace = true;
-		btUseAuthent.setLayoutData(g);
-		btUseAuthent.setEnabled(false);
-		btUseAuthent.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				enableAuthentificationWidgets(btUseAuthent.getSelection());
-			}
-		});
-		
-		new Label(composite, SWT.NONE).setText("User:");
-		textUser = new Text(composite, SWT.BORDER);
-		textUser.setEnabled(false);
-		
-		new Label(composite, SWT.NONE).setText("Password:");
-		textPassword = new Text(composite, SWT.BORDER | SWT.PASSWORD);
-		textPassword.setEnabled(false);
-	}
-	
 	
 	@Override
+	protected void performApply() {
+		setAndSaveConfig();
+	}
+	
+	private void setAndSaveConfig() {
+		PreferencesData.setUseProxy(btUseProxy.getSelection());
+		PreferencesData.setUseProxyAuthent(btUseProxyAuthent.getSelection());
+		PreferencesData.setProxyHost(textHost.getText());
+		PreferencesData.setProxyPort(Integer.parseInt(textPort.getText()));
+		PreferencesData.setProxyUserName(textUser.getText());
+		PreferencesData.setProxyPassword(textPassword.getText());
+	}
+
+	@Override
 	public boolean performOk() {
-		if (btUseProxy.getSelection()) {
-			PreferencesData.setUseProxy(true);
-			PreferencesData.setProxyHost(textHost.getText());
-			PreferencesData.setProxyPort(Integer.parseInt(textPort.getText()));
-			
-			if (btUseAuthent.getSelection()) {
-				PreferencesData.setProxyUserName(textUser.getText());
-				PreferencesData.setProxyPassword(textPassword.getText());
-			}
-			
-		} else {
-			PreferencesData.setUseProxy(false);
-			PreferencesData.setProxyHost(null);
-			PreferencesData.setProxyPort(null);
-		}
-		
+		setAndSaveConfig();
 		return super.performOk();
 	}
 	

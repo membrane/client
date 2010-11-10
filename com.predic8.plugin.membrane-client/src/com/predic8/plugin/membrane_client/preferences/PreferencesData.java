@@ -16,8 +16,12 @@ public class PreferencesData {
 	
 	public static final String PROXY_PASSWORD = "proxy password";
 	
-	public static boolean getProxyAuth() {
+	public static boolean isProxyAuth() {
 		return MembraneClientUIPlugin.getDefault().getPreferenceStore().getBoolean(USE_PROXY_AUTHENT);
+	}
+	
+	public static void setUseProxyAuthent(boolean status) {
+		MembraneClientUIPlugin.getDefault().getPreferenceStore().setValue(USE_PROXY_AUTHENT, status);
 	}
 	
 	public static int getProxyPort() {
@@ -60,7 +64,7 @@ public class PreferencesData {
 	}
 	
 	public static void setProxyPassword(String user) {
-		MembraneClientUIPlugin.getDefault().getPreferenceStore().setValue(PROXY_USERNAME, user);
+		MembraneClientUIPlugin.getDefault().getPreferenceStore().setValue(PROXY_PASSWORD, user);
 	}
 	
 	

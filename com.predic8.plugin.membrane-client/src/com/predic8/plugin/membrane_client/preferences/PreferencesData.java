@@ -41,7 +41,7 @@ public class PreferencesData {
 	}
 	
 	
-	public static boolean getUseProxy() {
+	public static boolean isUseProxy() {
 		return MembraneClientUIPlugin.getDefault().getPreferenceStore().getBoolean(USE_PROXY);
 	}
 	

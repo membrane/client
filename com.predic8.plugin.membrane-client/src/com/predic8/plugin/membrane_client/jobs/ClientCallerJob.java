@@ -8,6 +8,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import com.predic8.membrane.core.exchange.HttpExchange;
 import com.predic8.membrane.core.http.Request;
 import com.predic8.membrane.core.transport.http.HttpClient;
+import com.predic8.plugin.membrane_client.preferences.PreferencesData;
 
 public class ClientCallerJob extends Job {
 
@@ -60,7 +61,12 @@ public class ClientCallerJob extends Job {
 	}
 	
 	private void initClient(HttpClient client) {
-		
+		client.setUseProxy(PreferencesData.isUseProxy());
+		client.setUseProxyAuth(PreferencesData.isProxyAuth());
+		client.setProxyHost(PreferencesData.getProxyHost());
+		client.setProxyPort(PreferencesData.getProxyPort());
+		client.setProxyUser(PreferencesData.getProxyUserName());
+		client.setProxyPassword(PreferencesData.getProxyPassword());
 	}
 	
 }

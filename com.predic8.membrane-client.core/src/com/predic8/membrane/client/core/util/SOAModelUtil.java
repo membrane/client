@@ -17,15 +17,10 @@ import com.predic8.wsdl.Definitions;
 import com.predic8.wsdl.WSDLParser;
 import com.predic8.wsdl.WSDLParserContext;
 import com.predic8.wstool.creator.RequestCreator;
-import com.predic8.wstool.creator.RequestTemplateCreator;
 import com.predic8.wstool.creator.SOARequestCreator;
 
 public class SOAModelUtil {
 	
-	public static String getRequestTemplateBody(BindingOperation bOperation) {
-		return createRequestBody(bOperation, new RequestTemplateCreator(), null);
-	}
-
 	public static String getSOARequestBody(BindingOperation bOperation, Map<String, String> result) {
 		return createRequestBody(bOperation, new RequestCreator(), result);
 	}

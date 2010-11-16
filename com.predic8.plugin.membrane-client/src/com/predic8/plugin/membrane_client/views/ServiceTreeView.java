@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -30,6 +31,7 @@ import com.predic8.plugin.membrane_client.actions.RemoveServiceParamsActiion;
 import com.predic8.plugin.membrane_client.providers.ServiceTreeContentProvider;
 import com.predic8.plugin.membrane_client.providers.ServiceTreeLabelProvider;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
+import com.predic8.wsdl.AbstractSOAPBinding;
 import com.predic8.wsdl.BindingOperation;
 
 public class ServiceTreeView extends ViewPart implements ServiceParamsChangeListener {
@@ -103,7 +105,7 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 				}
 			}
 		});
-	    
+	     
 	    createActions();
 	    treeViewer.getControl().setMenu(createContextMenu());
 	}
@@ -139,8 +141,14 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 	private void onDoubleClick(DoubleClickEvent event) {
 		ITreeSelection selection = (ITreeSelection)event.getSelection();
 		Object firstElement = selection.getFirstElement();
-			
+		
 		if (firstElement instanceof BindingOperation)  {
+			BindingOperation bOp = (BindingOperation)firstElement;
+			if (!(bOp.getBinding().getBinding() instanceof AbstractSOAPBinding)) {
+				MessageDialog.openWarning(Display.getDefault().getActiveShell(), "Warning", "This operation is not supported yet.");
+				return;
+			}
+			
 			PluginUtil.closeView(ResponseView.VIEW_ID);
 			((RequestView)PluginUtil.showView(RequestView.VIEW_ID)).updateView((BindingOperation)firstElement, null);
 			return;

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: MembraneClientCore
 Bundle-SymbolicName: com.predic8.membrane_client.core
-Bundle-Version: 1.3.0
+Bundle-Version: 1.2.1
 Bundle-Activator: com.predic8.membrane.client.core.CoreActivator
 Bundle-Vendor: predic8 GmbH
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport

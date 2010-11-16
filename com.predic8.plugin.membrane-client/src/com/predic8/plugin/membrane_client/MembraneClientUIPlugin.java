@@ -57,8 +57,11 @@ public class MembraneClientUIPlugin extends AbstractUIPlugin {
 	protected void initializeImageRegistry(ImageRegistry reg) {
 		reg.put(ImageKeys.IMAGE_ADD_ELEMENT, imageDescriptorFromPlugin(PLUGIN_ID, "icons/add_element.png"));
 		reg.put(ImageKeys.IMAGE_PORT, imageDescriptorFromPlugin(PLUGIN_ID, "icons/door_open.png"));
+		
 		reg.put(ImageKeys.IMAGE_SERVICE, imageDescriptorFromPlugin(PLUGIN_ID, "icons/config.png"));
 		reg.put(ImageKeys.IMAGE_OPERATION, imageDescriptorFromPlugin(PLUGIN_ID, "icons/lightbulb.png"));
+		reg.put(ImageKeys.IMAGE_OPERATION_DISABLED, imageDescriptorFromPlugin(PLUGIN_ID, "icons/lightbulb_off.png"));
+		
 		reg.put(ImageKeys.IMAGE_WSDL, imageDescriptorFromPlugin(PLUGIN_ID, "icons/page.png"));
 		
 		reg.put(ImageKeys.IMAGE_WSDL_ERROR, imageDescriptorFromPlugin(PLUGIN_ID, "icons/page_delete.png"));

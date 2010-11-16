@@ -6,10 +6,12 @@ public class ImageKeys {
 
 	public static final String IMAGE_OPERATION = "image operation";
 
+	public static final String IMAGE_OPERATION_DISABLED = "image operation disabled";
+	
 	public static final String IMAGE_SERVICE = "image service";
 	
 	public static final String IMAGE_PORT = "image port";
-
+	
 	public static final String IMAGE_WSDL = "image wsdl";
 
 	public static final String IMAGE_WSDL_ERROR = "image wsdl error";

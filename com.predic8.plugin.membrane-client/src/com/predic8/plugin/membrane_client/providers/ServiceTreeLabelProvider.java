@@ -11,6 +11,7 @@ import com.predic8.membrane.client.core.model.ServiceParams;
 import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
+import com.predic8.wsdl.AbstractSOAPBinding;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Port;
 import com.predic8.wsdl.Service;
@@ -20,6 +21,8 @@ public class ServiceTreeLabelProvider extends LabelProvider {
 	private Image serviceImage;
 	
 	private Image operationImage;
+	
+	private Image operationImageDisabled;
 	
 	private Image wsdlImage;
 	
@@ -58,6 +61,13 @@ public class ServiceTreeLabelProvider extends LabelProvider {
 			operationImage = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_OPERATION).createImage();
 	
 		return operationImage;
+	}
+	
+	private Image getOperationImageDisabled() {
+		if (operationImageDisabled == null)
+			operationImageDisabled = MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_OPERATION_DISABLED).createImage();
+	
+		return operationImageDisabled;
 	}
 	
 	private Image getWSDLImage() {
@@ -123,7 +133,11 @@ public class ServiceTreeLabelProvider extends LabelProvider {
 		}
 		
 		if (element instanceof BindingOperation) {
-			return getOperationImage();
+			BindingOperation bOp = (BindingOperation)element;
+			if (bOp.getBinding().getBinding() instanceof AbstractSOAPBinding)
+				return getOperationImage();
+				
+			return getOperationImageDisabled();
 		}
 		
 		if (element instanceof ServiceParams) {

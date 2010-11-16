@@ -157,12 +157,12 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 			Response resp = (Response)firstElement;
 			BindingOperation ancestorBinding = getAncestorBinding(selection);
 			
-			ParamsMap request = getSiblingParamsMap(selection, resp);
-			if (request != null) {
-				((RequestView)PluginUtil.showView(RequestView.VIEW_ID)).updateView(ancestorBinding, request);
+			ParamsMap reqMap = getSiblingParamsMap(selection, resp);
+			if (reqMap != null) {
+				((RequestView)PluginUtil.showView(RequestView.VIEW_ID)).updateView(ancestorBinding, reqMap);
 			} 
 			
-			((ResponseView)PluginUtil.showView(ResponseView.VIEW_ID)).setMessage(resp, ancestorBinding, request);
+			((ResponseView)PluginUtil.showView(ResponseView.VIEW_ID)).setMessage(resp, ancestorBinding, null);
 			return;
 		}
 		

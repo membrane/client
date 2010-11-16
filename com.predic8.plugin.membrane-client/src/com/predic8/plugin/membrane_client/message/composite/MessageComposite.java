@@ -19,6 +19,7 @@ import java.io.IOException;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
+import com.predic8.membrane.client.core.controller.ParamsMap;
 import com.predic8.membrane.core.exchange.Exchange;
 import com.predic8.membrane.core.http.Message;
 import com.predic8.plugin.membrane_client.tabcomposites.MessageTabManager;
@@ -73,9 +74,9 @@ public abstract class MessageComposite extends Composite {
 		return true;
 	}
 
-	public void setMsg(Message msg, BindingOperation operation) {
+	public void setMsg(Message msg, BindingOperation operation, ParamsMap map) {
 		this.msg = msg;
-		tabManager.doUpdate(msg, operation);
+		tabManager.doUpdate(msg, operation, map);
 	}
 
 	public void setMessageEditable(boolean bool) {
@@ -96,7 +97,7 @@ public abstract class MessageComposite extends Composite {
 	
 	public void handleError(String errorMessage) {
 		msg.setErrorMessage(errorMessage);
-		tabManager.doUpdate(msg, null);
+		tabManager.doUpdate(msg, null, null);
 	}
 
 	public abstract String getTabCompositeName();

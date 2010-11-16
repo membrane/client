@@ -28,6 +28,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 
+import com.predic8.membrane.client.core.controller.ParamsMap;
 import com.predic8.membrane.client.core.util.FormParamsExtractor;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
 import com.predic8.membrane.core.http.Message;
@@ -64,7 +65,7 @@ public class MessageTabManager {
 	private FormParamsExtractor extractor = new FormParamsExtractor();
 
 	private TabItem currentSelection;
-	
+
 	public MessageTabManager(final MessageComposite baseComp) {
 		this.baseComp = baseComp;
 		folder = createTabFolder(baseComp);
@@ -82,7 +83,7 @@ public class MessageTabManager {
 
 		addSelectionListenerToFolder(baseComp);
 
-		doUpdate(null, null);
+		doUpdate(null, null, null);
 
 	}
 
@@ -98,7 +99,7 @@ public class MessageTabManager {
 					onBodyTabDeselected(event);
 
 				currentSelection = folder.getSelection()[0];
-				
+
 				for (TabItem tabItem : folder.getSelection()) {
 					if (tabItem.equals(rawTabComposite.getTabItem())) {
 						baseComp.setFormatEnabled(false);
@@ -152,7 +153,7 @@ public class MessageTabManager {
 		currentBodyTab.setBodyModified(b);
 	}
 
-	public void doUpdate(Message msg, BindingOperation operation) {
+	public void doUpdate(Message msg, BindingOperation operation, ParamsMap map) {
 		if (msg == null) {
 			hideAllContentTabs();
 			errorTabComposite.hide();
@@ -194,8 +195,8 @@ public class MessageTabManager {
 
 		currentBodyTab.setBodyModified(false);
 
-		updateFormTabComposite(operation, msg);
-		
+		updateFormTabComposite(operation, msg, map);
+
 		setSelectionForFolder();
 
 		baseComp.setFormatEnabled(currentBodyTab.isFormatSupported());
@@ -216,18 +217,23 @@ public class MessageTabManager {
 		return headerTabComposite.getTabItem();
 	}
 
-	private void updateFormTabComposite(BindingOperation operation, Message msg) {
-		if (formTabComposite != null && operation != null) {
-			formTabComposite.setBindingOperation(operation);
-			if (msg instanceof Request) {
-				try {
+	private void updateFormTabComposite(BindingOperation operation, Message msg, ParamsMap map) {
+		if (formTabComposite == null || operation == null)
+			return;
+
+		formTabComposite.setBindingOperation(operation);
+		if (msg instanceof Request) {
+			try {
+				if (map == null || map.getMap() == null)
 					formTabComposite.setFormParams(extractor.extract(new String(msg.getBody().getContent())));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				else
+					formTabComposite.setFormParams(map.getMap());
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			formTabComposite.show();
 		}
+		formTabComposite.show();
+
 	}
 
 	private BodyTabComposite getCurrentBodyTab(Message msg) {

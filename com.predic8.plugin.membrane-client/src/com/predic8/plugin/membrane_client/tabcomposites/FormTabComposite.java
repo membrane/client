@@ -98,7 +98,6 @@ public class FormTabComposite extends AbstractTabComposite {
 			@Override
 			public void run() {
 				setFormParams(paramsMap, composite);
-				System.err.println(PluginUtil.getMapContent(paramsMap));
 			}
 		});
 	}

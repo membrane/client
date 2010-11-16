@@ -2,6 +2,7 @@ package com.predic8.plugin.membrane_client.views;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
@@ -23,8 +24,10 @@ import org.eclipse.swt.widgets.ToolItem;
 import com.predic8.membrane.client.core.controller.ExchangeNode;
 import com.predic8.membrane.client.core.controller.ParamsMap;
 import com.predic8.membrane.client.core.controller.ServiceParamsManager;
+import com.predic8.membrane.client.core.util.FormParamsExtractor;
 import com.predic8.membrane.client.core.util.HttpUtil;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
+import com.predic8.membrane.core.exchange.Exchange;
 import com.predic8.membrane.core.exchange.HttpExchange;
 import com.predic8.membrane.core.http.Request;
 import com.predic8.membrane.core.http.Response;
@@ -43,17 +46,19 @@ public class RequestView extends MessageView {
 	private Text textAddress;
 
 	private ClientCallerJob callerJob;
-	
+
 	private ProgressBar progressBar;
-	
+
 	private ToolItem itemSend;
-	
+
 	private ToolItem itemStop;
-	
+
 	private Request request;
-	
+
 	private BindingOperation bindingOperation;
-	
+
+	private FormParamsExtractor extractor = new FormParamsExtractor();
+
 	@Override
 	public void createPartControl(Composite parent) {
 		super.createPartControl(parent);
@@ -63,27 +68,27 @@ public class RequestView extends MessageView {
 		if ("".equals(textAddress.getText().trim()) && request == null) {
 			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Client Call Error", "Request and destination address is missing.");
 			return false;
-		} 
-		
+		}
+
 		if ("".equals(textAddress.getText().trim())) {
 			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Client Call Error", "Destination address is missing.");
 			return false;
 		}
-		
+
 		try {
 			new URL(textAddress.getText().trim());
 		} catch (Exception ex) {
 			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Client Call Error", "Destination address is not valid URL.");
 			return false;
 		}
-		
+
 		if (request == null) {
 			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Client Call Error", "Request is missing.");
 			return false;
-		} 
+		}
 		return true;
 	}
-	
+
 	@Override
 	protected void addTopWidgets() {
 
@@ -91,16 +96,15 @@ public class RequestView extends MessageView {
 		controls.setLayout(new RowLayout());
 
 		ToolBar toolBar = new ToolBar(controls, SWT.NONE);
-				
+
 		createSendItem(toolBar);
-		
+
 		createStopItem(toolBar);
 
 		new ToolItem(toolBar, SWT.SEPARATOR).setWidth(450);
 
 		createProgressBar(controls);
-		
-		
+
 		Composite composite = new Composite(partComposite, SWT.NONE);
 		composite.setLayout(new RowLayout());
 
@@ -111,7 +115,6 @@ public class RequestView extends MessageView {
 		new Label(partComposite, SWT.NONE).setText(" ");
 	}
 
-
 	private void createAddressTextField(Composite composite) {
 		textAddress = new Text(composite, SWT.BORDER);
 		RowData rd = new RowData();
@@ -119,17 +122,15 @@ public class RequestView extends MessageView {
 		textAddress.setLayoutData(rd);
 	}
 
-
 	private void createProgressBar(Composite firstRowControls) {
 		progressBar = new ProgressBar(firstRowControls, SWT.SMOOTH | SWT.INDETERMINATE);
 		progressBar.setVisible(false);
-		
+
 		RowData rd = new RowData();
 		rd.width = 32;
 		rd.height = 20;
 		progressBar.setLayoutData(rd);
 	}
-
 
 	private void createStopItem(ToolBar toolBar) {
 		itemStop = new ToolItem(toolBar, SWT.PUSH);
@@ -144,7 +145,6 @@ public class RequestView extends MessageView {
 		itemStop.setEnabled(false);
 	}
 
-
 	private void createSendItem(ToolBar toolBar) {
 		itemSend = new ToolItem(toolBar, SWT.PUSH);
 		itemSend.setImage(MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CONTROL_PLAY).createImage());
@@ -157,7 +157,7 @@ public class RequestView extends MessageView {
 					}
 					updateControlButtons(true, null);
 					executeClientCall(getRequestBody());
-					
+
 				} catch (Exception ex) {
 					ex.printStackTrace();
 				}
@@ -168,51 +168,65 @@ public class RequestView extends MessageView {
 	private String getRequestBody() {
 		if (getRequestComposite().isBodyTabSelected())
 			return getRequestComposite().getBodyText();
-		else 
+		else
 			return SOAModelUtil.getSOARequestBody(bindingOperation, getRequestComposite().getFormParams());
 	}
-	
+
 	private void updateControlButtons(final boolean status, final Job job) {
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
 				if (otherJobStarted(job))
 					return;
-				
+
 				itemSend.setEnabled(!status);
 				itemStop.setEnabled(status);
 				progressBar.setVisible(status);
 			}
 		});
 	}
-	
-	private void executeClientCall(String body) throws Exception {
+
+	private void executeClientCall(final String body) throws Exception {
 		if (request == null)
 			return;
-		
+
 		request.setBodyContent(body.getBytes());
-		//setMessage(request, bindingOperation);
-		
+		// setMessage(request, bindingOperation);
+
 		callerJob = new ClientCallerJob(textAddress.getText().trim(), request);
 		callerJob.setPriority(Job.SHORT);
-		
+
 		callerJob.addJobChangeListener(new JobChangeAdapter() {
 			public void done(IJobChangeEvent event) {
 				if (event.getResult().isOK() && !callerJob.isCancelStatus()) {
 					showMessageInResponseView(callerJob.getExchange().getResponse());
-					
+
 					HttpExchange exc = callerJob.getExchange();
 					ExchangeNode node = new ExchangeNode(exc.getTime());
 					node.setResponse(exc.getResponse());
-					node.setParamsMap(new ParamsMap());
-					
+
+					ParamsMap paramsMap = new ParamsMap();
+					try {
+						paramsMap.setMap(getRequestMap(exc));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					node.setParamsMap(paramsMap);
 					ServiceParamsManager.getInstance().newExchangeArrived(bindingOperation, node);
 				}
 				updateControlButtons(false, event.getJob());
 			}
 		});
-		
+
 		callerJob.schedule();
+	}
+
+	private Map<String, String> getRequestMap(Exchange exc) throws Exception {
+		byte[] content = exc.getRequest().getBody().getContent();
+		if (content == null || content.length == 0)
+			return null;
+		
+		return extractor.extract(new String(content));
 	}
 
 	public void updateView(BindingOperation bindOp, ParamsMap paramsMap) {
@@ -239,11 +253,11 @@ public class RequestView extends MessageView {
 	private void showMessageInResponseView(final Response response) {
 		if (response == null)
 			return;
-		
+
 		Display.getDefault().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				ResponseView view = (ResponseView)PluginUtil.showView(ResponseView.VIEW_ID);
+				ResponseView view = (ResponseView) PluginUtil.showView(ResponseView.VIEW_ID);
 				view.setMessage(response, bindingOperation, null);
 			}
 		});
@@ -254,11 +268,11 @@ public class RequestView extends MessageView {
 	}
 
 	private RequestComposite getRequestComposite() {
-		return ((RequestComposite)baseComp);
+		return ((RequestComposite) baseComp);
 	}
-	
+
 	public BindingOperation getBindingOperation() {
 		return bindingOperation;
 	}
-	
+
 }

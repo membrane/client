@@ -51,7 +51,7 @@ public abstract class MessageView extends ViewPart implements IBaseCompositeHost
 	}
 	
 	public void setMessage(Message msg, BindingOperation operation, ParamsMap map) {
-		baseComp.setMsg(msg, operation);
+		baseComp.setMsg(msg, operation, map);
 	}
 	
 	@Override

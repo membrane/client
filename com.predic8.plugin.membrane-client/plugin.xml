@@ -55,7 +55,7 @@
       </view>
       <view
             class="com.predic8.plugin.membrane_client.views.ResponseView"
-            icon="icons/message.png"
+            icon="icons/message_in.png"
             id="com.predic8.plugin.membrane_client.views.ResponseView"
             name="Response"
             restorable="true">

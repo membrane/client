@@ -191,8 +191,7 @@ public class RequestView extends MessageView {
 			return;
 
 		request.setBodyContent(body.getBytes());
-		// setMessage(request, bindingOperation);
-
+		
 		callerJob = new ClientCallerJob(textAddress.getText().trim(), request);
 		callerJob.setPriority(Job.SHORT);
 
@@ -200,19 +199,8 @@ public class RequestView extends MessageView {
 			public void done(IJobChangeEvent event) {
 				if (event.getResult().isOK() && !callerJob.isCancelStatus()) {
 					showMessageInResponseView(callerJob.getExchange().getResponse());
-
 					HttpExchange exc = callerJob.getExchange();
-					ExchangeNode node = new ExchangeNode(exc.getTime());
-					node.setResponse(exc.getResponse());
-
-					ParamsMap paramsMap = new ParamsMap();
-					try {
-						paramsMap.setMap(getRequestMap(exc));
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					node.setParamsMap(paramsMap);
-					ServiceParamsManager.getInstance().newExchangeArrived(bindingOperation, node);
+					ServiceParamsManager.getInstance().newExchangeArrived(bindingOperation, createExchangeNode(exc));
 				}
 				updateControlButtons(false, event.getJob());
 			}
@@ -273,6 +261,20 @@ public class RequestView extends MessageView {
 
 	public BindingOperation getBindingOperation() {
 		return bindingOperation;
+	}
+
+	private ExchangeNode createExchangeNode(HttpExchange exc) {
+		ExchangeNode node = new ExchangeNode(exc.getTime());
+		node.setResponse(exc.getResponse());
+
+		ParamsMap paramsMap = new ParamsMap();
+		try {
+			paramsMap.setMap(getRequestMap(exc));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		node.setParamsMap(paramsMap);
+		return node;
 	}
 
 }

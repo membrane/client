@@ -83,7 +83,8 @@ public class MessageTabManager {
 
 		addSelectionListenerToFolder(baseComp);
 
-		doUpdate(null, null, null);
+		hideAllContentTabs();
+		errorTabComposite.hide();
 
 	}
 
@@ -96,7 +97,7 @@ public class MessageTabManager {
 		folder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				if (currentSelection != null && currentSelection.equals(getCurrentBodyTabItem()))
-					onBodyTabDeselected(event);
+					onBodyTabDeselected();
 
 				currentSelection = folder.getSelection()[0];
 
@@ -225,7 +226,7 @@ public class MessageTabManager {
 		if (msg instanceof Request) {
 			try {
 				if (map == null || map.getMap() == null)
-					formTabComposite.setFormParams(extractor.extract(new String(msg.getBody().getContent())));
+					refreshFormTab(new String(msg.getBody().getContent()));
 				else
 					formTabComposite.setFormParams(map.getMap());
 			} catch (Exception e) {
@@ -236,6 +237,22 @@ public class MessageTabManager {
 
 	}
 
+	private void onBodyTabDeselected() {
+		if (formTabComposite == null || formTabComposite.isDisposed() || !isBodyModified())
+			return;
+		
+		refreshFormTab(currentBodyTab.getBodyText());
+	}
+
+	
+	private void refreshFormTab(String xml) {
+		try {
+			formTabComposite.setFormParams(extractor.extract(xml));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	private BodyTabComposite getCurrentBodyTab(Message msg) {
 		if (msg instanceof Response) {
 			if (((Response) msg).isRedirect() || ((Response) msg).hasNoContent())
@@ -296,7 +313,6 @@ public class MessageTabManager {
 	public void copyBodyFromGUIToModel() {
 		try {
 			baseComp.getMsg().setBodyContent(getBodyText().getBytes());
-			// TODO header view must be refreshed
 			log.debug("Body copied from GUI to model");
 		} catch (RuntimeException e) {
 			e.printStackTrace();
@@ -347,17 +363,4 @@ public class MessageTabManager {
 		String text = SOAModelUtil.getSOARequestBody(view.getBindingOperation(), formTabComposite.getFormParams());
 		currentBodyTab.setBodyText(text);
 	}
-
-	private void onBodyTabDeselected(SelectionEvent event) {
-		if (formTabComposite == null || formTabComposite.isDisposed() || !isBodyModified())
-			return;
-
-		try {
-			formTabComposite.setFormParams(extractor.extract(currentBodyTab.getBodyText()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-
 }

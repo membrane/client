@@ -7,7 +7,11 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.runtime.ILog;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 
+import com.predic8.membrane.client.core.CoreActivator;
 import com.predic8.membrane.client.core.configuration.Config;
 import com.predic8.membrane.client.core.configuration.URL;
 import com.predic8.membrane.client.core.configuration.WSDL;
@@ -35,8 +39,15 @@ public class ServiceParamsManager {
 
 	private Map<BindingOperation, List<ExchangeNode>> excMap = new HashMap<BindingOperation, List<ExchangeNode>>();   
 	
+	private static ILog pluginLogger;
+	
+	static {
+		pluginLogger = CoreActivator.getDefault().getLog();
+	}
+	
+	
 	private ServiceParamsManager() {
-
+		
 	}
 
 	public void init() {
@@ -62,6 +73,7 @@ public class ServiceParamsManager {
 		try {
 			config = configStore.read(getDefaultConfigurationFile());
 		} catch (Exception e) {
+			pluginLogger.log(new Status(IStatus.ERROR, CoreActivator.PLUGIN_ID, "Unable to load Conf: " + e.getMessage()));
 			log.warn("Unable to get read configuration from store. dedfault configuration will be used instead.");
 			config = new Config();
 		}
@@ -81,14 +93,15 @@ public class ServiceParamsManager {
 		serviceParams.remove(params);
 		notifyListenersOnChange();
 
-		removeUrlAndAaveConfig(params.getLocation());
+		removeUrlAndSaveConfig(params.getLocation());
 	}
 
-	private void removeUrlAndAaveConfig(String url) {
+	private void removeUrlAndSaveConfig(String url) {
 		config.getWsdls().removeWSDLWith(url);
 		try {
 			configStore.write(config, getDefaultConfigurationFile());
 		} catch (Exception e) {
+			pluginLogger.log(new Status(IStatus.ERROR, CoreActivator.PLUGIN_ID, "Unable to save Conf: " + e.getMessage()));
 			e.printStackTrace();
 		}
 	}
@@ -116,6 +129,7 @@ public class ServiceParamsManager {
 		try {
 			configStore.write(config, getDefaultConfigurationFile());
 		} catch (Exception e) {
+			pluginLogger.log(new Status(IStatus.ERROR, CoreActivator.PLUGIN_ID, "Unable to save Conf: " + e.getMessage()));
 			e.printStackTrace();
 		}
 	}

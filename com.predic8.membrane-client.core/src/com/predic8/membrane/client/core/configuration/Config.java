@@ -4,6 +4,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import com.predic8.membrane.client.core.SOAPConstants;
 import com.predic8.membrane.core.config.AbstractXMLElement;
 
 public class Config extends AbstractXMLElement {
@@ -27,7 +28,7 @@ public class Config extends AbstractXMLElement {
 	
 	@Override
 	public void write(XMLStreamWriter out) throws XMLStreamException {
-		out.writeStartDocument("UTF-8", "1.1");
+		out.writeStartDocument(SOAPConstants.ENCOUDING_UTF_8, SOAPConstants.VERSION_XML);
 		out.writeStartElement(ELEMENT_NAME);
 		if (wsdls != null)
 			wsdls.write(out);
@@ -39,5 +40,5 @@ public class Config extends AbstractXMLElement {
 	public WSDLs getWsdls() {
 		return wsdls;
 	}
-	
+
 }

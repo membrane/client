@@ -29,7 +29,7 @@ public class ConfigFileStore implements ConfigStore {
 	public Config read(String fileName) throws Exception {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 	    FileInputStream fis = new FileInputStream(fileName);
-	    XMLStreamReader reader = factory.createXMLStreamReader(fis, SOAPConstants.ENCOUDING_UTF_8);
+	    XMLStreamReader reader = factory.createXMLStreamReader(fis, SOAPConstants.ENCODING_UTF_8);
 	    
 	    return (Config)new Config().parse(reader);
 	}
@@ -44,7 +44,7 @@ public class ConfigFileStore implements ConfigStore {
 		
 		try {
 			XMLOutputFactory factory = XMLOutputFactory.newInstance();
-			XMLStreamWriter writer = factory.createXMLStreamWriter(new FileOutputStream(path), SOAPConstants.ENCOUDING_UTF_8);
+			XMLStreamWriter writer = factory.createXMLStreamWriter(new FileOutputStream(path), SOAPConstants.ENCODING_UTF_8);
 			config.write(writer);
 		} catch (FactoryConfigurationError e) {
 			pluginLogger.log(new Status(IStatus.ERROR, CoreActivator.PLUGIN_ID, "Unable to write Conf: " + e.getMessage()));

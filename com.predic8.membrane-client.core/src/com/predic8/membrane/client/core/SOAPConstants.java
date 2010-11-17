@@ -10,7 +10,7 @@ public class SOAPConstants {
 	
 	public static final String PATH = "path";
 	
-	public static final String ENCOUDING_UTF_8 = "UTF-8";
+	public static final String ENCODING_UTF_8 = "UTF-8";
 	
 	public static final String XML_VERSION = "1.1";
 	

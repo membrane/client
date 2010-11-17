@@ -28,7 +28,7 @@ public class Config extends AbstractXMLElement {
 	
 	@Override
 	public void write(XMLStreamWriter out) throws XMLStreamException {
-		out.writeStartDocument(SOAPConstants.ENCOUDING_UTF_8, SOAPConstants.XML_VERSION);
+		out.writeStartDocument(SOAPConstants.ENCODING_UTF_8, SOAPConstants.XML_VERSION);
 		out.writeStartElement(ELEMENT_NAME);
 		if (wsdls != null)
 			wsdls.write(out);

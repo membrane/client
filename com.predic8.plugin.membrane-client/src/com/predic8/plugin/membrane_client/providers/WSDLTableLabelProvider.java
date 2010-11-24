@@ -9,13 +9,11 @@ import com.predic8.wsdl.Definitions;
 
 public class WSDLTableLabelProvider extends LabelProvider implements ITableLabelProvider {
 
-	@Override
 	public Image getColumnImage(Object element, int columnIndex) {
 		
 		return null;
 	}
 
-	@Override
 	public String getColumnText(Object element, int columnIndex) {
 		ServiceParams params = (ServiceParams)element;
 		if (columnIndex == 0)

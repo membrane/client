@@ -54,31 +54,26 @@ public abstract class MessageView extends ViewPart implements IBaseCompositeHost
 		baseComp.setMsg(msg, operation, map);
 	}
 	
-	@Override
 	public Exchange getExchange() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public void setRequestFormatEnabled(boolean status) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void setRequestSaveEnabled(boolean status) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void setResponseFormatEnabled(boolean status) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void setResponseSaveEnabled(boolean status) {
 		// TODO Auto-generated method stub
 		

@@ -23,7 +23,6 @@ public class RequestCreatorTest extends TestCase {
 	
 	private Schema priceListSchema;
 	
-	@Override
 	protected void setUp() throws Exception {
 		ResourceResolver resolver =  new ClasspathResolver();
 		

@@ -16,7 +16,6 @@ public class ExchangeNode {
 		this.calendar = cal;
 	}
 	
-	@Override
 	public String toString() {
 		return super.toString();
 	}

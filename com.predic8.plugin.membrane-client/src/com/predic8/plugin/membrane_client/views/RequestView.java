@@ -174,7 +174,6 @@ public class RequestView extends MessageView {
 
 	private void updateControlButtons(final boolean status, final Job job) {
 		Display.getDefault().asyncExec(new Runnable() {
-			@Override
 			public void run() {
 				if (otherJobStarted(job))
 					return;
@@ -243,7 +242,6 @@ public class RequestView extends MessageView {
 			return;
 
 		Display.getDefault().asyncExec(new Runnable() {
-			@Override
 			public void run() {
 				ResponseView view = (ResponseView) PluginUtil.showView(ResponseView.VIEW_ID);
 				view.setMessage(response, bindingOperation, null);

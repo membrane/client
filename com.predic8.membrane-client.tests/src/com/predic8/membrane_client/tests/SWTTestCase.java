@@ -21,11 +21,9 @@ public class SWTTestCase extends TestCase {
 		createShell();
 	}
 	
-	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		display.syncExec(new Runnable() {
-			@Override
 			public void run() {
 				disposeShell();
 			}

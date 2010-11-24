@@ -36,7 +36,6 @@ public class ServiceParams {
 		return definitions;
 	}
 	
-	@Override
 	public String toString() {
 		return location;
 	}

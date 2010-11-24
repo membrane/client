@@ -12,19 +12,16 @@ public class WSDL extends AbstractXMLElement {
 
 	private URL url;
 	
-	@Override
 	protected String getElementName() {
 		return ELEMENT_NAME;
 	}
 	
-	@Override
 	protected void parseChildren(XMLStreamReader token, String child) throws XMLStreamException {
 		if (URL.ELEMENT_NAME.equals(child)) {
 			url = (((URL)new URL().parse(token)));
 		}
 	}
 	
-	@Override
 	public void write(XMLStreamWriter out) throws XMLStreamException {
 		out.writeStartElement(ELEMENT_NAME);
 		if (url != null)

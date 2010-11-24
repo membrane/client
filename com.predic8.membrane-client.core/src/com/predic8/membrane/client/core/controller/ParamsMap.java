@@ -5,8 +5,7 @@ import java.util.Map;
 public class ParamsMap {
 
 	private Map<String, String> map;
-	
-	@Override
+
 	public String toString() {
 		return "Request";
 	}

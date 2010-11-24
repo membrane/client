@@ -152,8 +152,7 @@ public class ProxyPreferencesPage extends PreferencePage implements IWorkbenchPr
 		textPassword.setEnabled(enabled);
 		textUser.setEnabled(enabled);
 	}
-	
-	@Override
+
 	public void init(IWorkbench workbench) {
 		setPreferenceStore(MembraneClientUIPlugin.getDefault().getPreferenceStore());
 	}

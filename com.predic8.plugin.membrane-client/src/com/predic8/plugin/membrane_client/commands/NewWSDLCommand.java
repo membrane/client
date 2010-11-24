@@ -11,7 +11,6 @@ public class NewWSDLCommand extends AbstractHandler {
 
 	public static final String COMMAND_ID = "newWSDL";
 	
-	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		
 		NewWSDLDialog dialog = new NewWSDLDialog(Display.getDefault().getActiveShell());

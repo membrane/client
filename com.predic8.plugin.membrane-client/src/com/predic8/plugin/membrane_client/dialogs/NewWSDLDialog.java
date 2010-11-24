@@ -125,7 +125,6 @@ public class NewWSDLDialog extends Dialog {
 
 	private void onWSDLSourceSelection() {
 		Display.getCurrent().asyncExec(new Runnable() {
-			@Override
 			public void run() {
 				if (btLocation.getSelection()) {
 					enableWidgets(true);

@@ -11,8 +11,7 @@ import com.predic8.plugin.membrane_client.views.ServiceTreeView;
 public class MembraneClientPerspective implements IPerspectiveFactory {
 
 	public static final String PERSPECTIVE_ID = "com.predic8.plugin.membrane_client.perspectives.MembraneClientPerspective";
-	
-	@Override
+
 	public void createInitialLayout(IPageLayout layout) {
 
 		layout.setEditorAreaVisible(false);

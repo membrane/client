@@ -33,7 +33,6 @@ public class CompositeCreatorTest extends SWTTestCase {
 	
 	private Schema schema;
 	
-	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		Composite base = new Composite(shell, SWT.NONE);

@@ -60,7 +60,7 @@ public class FormTabComposite extends AbstractTabComposite {
 		creator.setDefinitions(operation.getDefinitions());
 		
 		Display.getCurrent().asyncExec(new Runnable() {
-			@Override
+			
 			public void run() {
 				creator.setVisible(false);
 				creator.buildComposite(SOAModelUtil.getPortTypeName(operation), operation.getName(), operation.getBinding().getName());
@@ -95,7 +95,6 @@ public class FormTabComposite extends AbstractTabComposite {
 
 	public void setFormParams(final Map<String, String> paramsMap) {
 		Display.getCurrent().asyncExec(new Runnable() {
-			@Override
 			public void run() {
 				setFormParams(paramsMap, composite);
 			}

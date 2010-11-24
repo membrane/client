@@ -72,7 +72,6 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 		treeViewer.setLabelProvider(new ServiceTreeLabelProvider());
 	
 	    treeViewer.addDoubleClickListener(new IDoubleClickListener() {
-			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				onDoubleClick(event);
 			}
@@ -80,7 +79,6 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 	    
 	    treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			
-			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				ITreeSelection selection = (ITreeSelection)event.getSelection();
 				Object firstElement = selection.getFirstElement();
@@ -114,11 +112,9 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 	public void setFocus() {
 		treeViewer.getTree().setFocus();
 	}
-
-	@Override
+	
 	public void serviceParamsChanged(final List<ServiceParams> params) {
 		Display.getDefault().asyncExec(new Runnable() {
-			@Override
 			public void run() {
 				treeViewer.setInput(params);
 			}

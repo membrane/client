@@ -25,7 +25,6 @@ public class ConfigFileStore implements ConfigStore {
 		pluginLogger = CoreActivator.getDefault().getLog();
 	}
 	
-	@Override
 	public Config read(String fileName) throws Exception {
 		XMLInputFactory factory = XMLInputFactory.newInstance();
 	    FileInputStream fis = new FileInputStream(fileName);
@@ -34,7 +33,6 @@ public class ConfigFileStore implements ConfigStore {
 	    return (Config)new Config().parse(reader);
 	}
 
-	@Override
 	public void write(Config config, String path) throws Exception {
 		if (config == null) 
 			throw new IllegalArgumentException("Configuration object to be stored can not be null.");

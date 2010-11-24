@@ -13,20 +13,16 @@ public class Config extends AbstractXMLElement {
 	
 	private WSDLs wsdls = new WSDLs(); 
 	
-	@Override
 	protected String getElementName() {
 		return ELEMENT_NAME;
 	}
 	
-	
-	@Override
 	protected void parseChildren(XMLStreamReader token, String child) throws XMLStreamException {
 		if (WSDLs.ELEMENT_NAME.equals(child)) {
 			wsdls = (((WSDLs)new WSDLs().parse(token)));
 		}
 	}
-	
-	@Override
+
 	public void write(XMLStreamWriter out) throws XMLStreamException {
 		out.writeStartDocument(SOAPConstants.ENCODING_UTF_8, SOAPConstants.XML_VERSION);
 		out.writeStartElement(ELEMENT_NAME);

@@ -15,20 +15,16 @@ public class WSDLs extends AbstractXMLElement {
 	
 	private List<WSDL> wsdls = new ArrayList<WSDL>();
 	
-	@Override
 	protected String getElementName() {
 		return ELEMENT_NAME;
 	}
 	
-	
-	@Override
 	protected void parseChildren(XMLStreamReader token, String child) throws XMLStreamException {
 		if (WSDL.ELEMENT_NAME.equals(child)) {
 			wsdls.add(((WSDL)new WSDL().parse(token)));
 		}
 	}
 	
-	@Override
 	public void write(XMLStreamWriter out) throws XMLStreamException {
 		out.writeStartElement(ELEMENT_NAME);
 		for (WSDL wsdl : wsdls) {

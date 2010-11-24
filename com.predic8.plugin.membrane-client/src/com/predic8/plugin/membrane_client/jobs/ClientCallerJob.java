@@ -32,7 +32,6 @@ public class ClientCallerJob extends Job {
 			exc.setResponse(client.call(exc));
 		} catch (final Exception e) {
 			Display.getDefault().asyncExec(new Runnable() {
-				@Override
 				public void run() {
 					MessageDialog.openError(Display.getDefault().getActiveShell(), "Errror", e.getMessage());
 				}

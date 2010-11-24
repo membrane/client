@@ -12,7 +12,6 @@ public class RegexVerifierListener implements VerifyListener {
 		this.regex = regex;
 	}
 	
-	@Override
 	public void verifyText(VerifyEvent e) {
 		boolean check=e.text.matches(regex);
 		e.doit=check;

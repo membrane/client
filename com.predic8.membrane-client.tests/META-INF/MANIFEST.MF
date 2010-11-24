@@ -2,12 +2,12 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Tests
 Bundle-SymbolicName: com.predic8.membrane-client.tests
-Bundle-Version: 1.2.1
+Bundle-Version: 1.2.2
 Bundle-Activator: com.predic8.membrane_client.tests.Activator
 Bundle-Vendor: PREDIC8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: lib/junit-4.5.jar,
  .,
  resources/
-Require-Bundle: com.predic8.plugin.membrane_client;bundle-version="1.2.1"
+Require-Bundle: com.predic8.plugin.membrane_client;bundle-version="1.2.2"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

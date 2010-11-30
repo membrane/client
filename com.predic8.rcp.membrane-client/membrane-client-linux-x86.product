@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Membrane-SOAP-Client" id="com.predic8.rcp.membrane_client.MembraneClientId" application="com.predic8.rcp.membrane_client.application" version="1.2.2" useFeatures="false" includeLaunchers="true">
+<product name="Membrane-SOAP-Client" id="com.predic8.rcp.membrane_client.MembraneClientId" application="com.predic8.rcp.membrane_client.application" version="1.2.3" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="icons/logo128.png"/>
       <text>
-         Membrane SOAP Client Version 1.2.2
+         Membrane SOAP Client Version 1.2.3
   Copyright @  2010 by predic8 GmbH
   Moltkestr. 40  53173 Bonn Germany 
   www.predic8.com 

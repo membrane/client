@@ -25,7 +25,7 @@ public class CompositeCreatorContext extends CreatorContext {
 
 	public static final String CONTEXT_DATA = "context data";
 
-	private String path;
+	private String path = "xpath:";
 
 	private Declaration declaration;
 
@@ -36,7 +36,10 @@ public class CompositeCreatorContext extends CreatorContext {
 	private int index;
 
 	private Map<String, String> formParams;
-	
+
+	public CompositeCreatorContext() {
+	}
+
 	public Declaration getDeclaration() {
 		return declaration;
 	}
@@ -56,21 +59,21 @@ public class CompositeCreatorContext extends CreatorContext {
 	public boolean isOptional() {
 		if (getDeclaration() == null)
 			return false;
-		
+
 		if (declaration instanceof Attribute)
 			return false;
-		
-		return "0".equals(((Element)getDeclaration()).getMinOccurs());
+
+		return "0".equals(((Element) getDeclaration()).getMinOccurs());
 	}
 
 	public boolean isElementUnbounded() {
 		if (getDeclaration() == null)
 			return false;
-		
+
 		if (declaration instanceof Attribute)
 			return false;
-		
-		return "unbounded".equals(((Element)getDeclaration()).getMaxOccurs());
+
+		return "unbounded".equals(((Element) getDeclaration()).getMaxOccurs());
 	}
 
 	public String getLabel() {
@@ -112,7 +115,7 @@ public class CompositeCreatorContext extends CreatorContext {
 
 	public CompositeCreatorContext cloneExCatched() {
 		try {
-			return (CompositeCreatorContext)clone();
+			return (CompositeCreatorContext) clone();
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException("Creator context supports clone operation.");
 		}
@@ -125,5 +128,5 @@ public class CompositeCreatorContext extends CreatorContext {
 	public Map<String, String> getFormParams() {
 		return formParams;
 	}
-	
+
 }

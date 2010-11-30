@@ -67,9 +67,7 @@ public class CompositeCreatorTest extends SWTTestCase {
 	}
 	
 	public void testEmployeeSchema() throws Exception {
-		CompositeCreatorContext ctx = new CompositeCreatorContext();
-		ctx.setPath("xpath:");
-		creator.createElement(schema.getElement("employee"), ctx);
+		creator.createElement(schema.getElement("employee"), new CompositeCreatorContext());
 		
 		Control[] children = creator.getRoot().getChildren();
 		
@@ -95,9 +93,7 @@ public class CompositeCreatorTest extends SWTTestCase {
 	
 	public void testEmployeeSchemaWithFormParams() throws Exception {
 		CompositeCreatorContext ctx = new CompositeCreatorContext();
-		ctx.setFormParams(getEmployeeParams());
-		
-		ctx.setPath("xpath:");
+		ctx.setFormParams(getEmployeeParams());		
 		creator.createElement(schema.getElement("employee"), ctx);
 		
 		Control[] children = creator.getRoot().getChildren();

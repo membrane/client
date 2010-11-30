@@ -16,6 +16,11 @@ package com.predic8.plugin.membrane_client.ui;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 public class ControlUtil {
@@ -26,5 +31,16 @@ public class ControlUtil {
 		deco.setImage(FieldDecorationRegistry.getDefault().getFieldDecoration(FieldDecorationRegistry.DEC_INFORMATION).getImage());
 		deco.setShowOnlyOnFocus(false);
 		deco.setMarginWidth(5);
+	}
+	
+	public static Button createButton(Composite parent, Image image, int w, int h, int indent) {
+		Button bt = new Button(parent, SWT.PUSH);
+		bt.setImage(image);
+		GridData gdBt = new GridData();
+		gdBt.widthHint = w;
+		gdBt.heightHint = h;
+		gdBt.horizontalIndent = indent;
+		bt.setLayoutData(gdBt);
+		return bt;
 	}
 }

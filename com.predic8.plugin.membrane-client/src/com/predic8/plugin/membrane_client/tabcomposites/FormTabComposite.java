@@ -123,9 +123,9 @@ public class FormTabComposite extends AbstractTabComposite {
 	
 		if (control instanceof Text) {
 			Text text = (Text)control;
-			if (paramsMap.containsKey(text.getData(SOAPConstants.PATH)))
+			if (paramsMap.containsKey(text.getData(SOAPConstants.PATH))) {
 				text.setText(paramsMap.get(text.getData(SOAPConstants.PATH)));
-			
+			}
 			return;
 		}
 		

@@ -30,6 +30,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
 import com.predic8.plugin.membrane_client.ImageKeys;
+import com.predic8.plugin.membrane_client.ui.ControlUtil;
 import com.predic8.plugin.membrane_client.ui.LayoutUtil;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.schema.Element;
@@ -49,20 +50,12 @@ public class CreatorUtil {
 	}
 
 	public static void updateControl(Control control, boolean status, boolean visible) {
-		if (control == null)
-			return;
-		
 		control.setEnabled(status);
 		if (visible) 
 			control.setVisible(status);
-		
-
 	}
 
 	public static void updateButtonControlEnable(final Control control, Button source, boolean visible) {
-		if (control == null)
-			return;
-
 		if (source.getImage().equals(REMOVE_IMAGE)) {
 			source.setImage(ADD_IMAGE);
 			updateControl(control, false, visible);
@@ -72,42 +65,23 @@ public class CreatorUtil {
 		}
 	}
 
-	public static void createAddRemoveButton(Composite descendent, final Control control, final boolean visible) {
-		Button bt = new Button(descendent, SWT.PUSH);
-		bt.setImage(REMOVE_IMAGE);
-		GridData gdBt = new GridData();
-		gdBt.widthHint = 10;
-		gdBt.heightHint = 10;
-		gdBt.horizontalIndent = 30;
-		bt.setLayoutData(gdBt);
+	public static void createAddRemoveButton(final Control control) {
+		Button bt = ControlUtil.createButton(control.getParent(), REMOVE_IMAGE, 10, 10, 30);
 		bt.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				updateButtonControlEnable(control, (Button) e.getSource(), visible);
+				updateButtonControlEnable(control, (Button) e.getSource(), false);
 			}
 		});
 	}
-
+	
+	
 	public static Button createAddButton(Composite parent) {
-		Button bt = new Button(parent, SWT.PUSH);
-		bt.setImage(ADD_IMAGE);
-		GridData gdBt = new GridData();
-		gdBt.widthHint = 10;
-		gdBt.heightHint = 10;
-		gdBt.horizontalIndent = 30;
-		bt.setLayoutData(gdBt);
-		return bt;
+		return ControlUtil.createButton(parent, ADD_IMAGE, 10, 10, 30);
 	}
 
 	public static Button createDeleteButton(Composite parent) {
-		Button bt = new Button(parent, SWT.PUSH);
-		bt.setImage(DELETE_IMAGE);
-		GridData gdBt = new GridData();
-		gdBt.widthHint = 10;
-		gdBt.heightHint = 10;
-		gdBt.horizontalIndent = 30;
-		bt.setLayoutData(gdBt);
-		return bt;
+		return ControlUtil.createButton(parent, DELETE_IMAGE, 10, 10, 30);
 	}
 	
 	public static ScrolledComposite createScrollComposite(Composite parent) {

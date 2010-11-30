@@ -51,10 +51,11 @@ public class CreatorUtil {
 	public static void updateControl(Control control, boolean status, boolean visible) {
 		if (control == null)
 			return;
-		if (visible)
+		
+		control.setEnabled(status);
+		if (visible) 
 			control.setVisible(status);
-		else
-			control.setEnabled(status);
+		
 
 	}
 

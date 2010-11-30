@@ -428,7 +428,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	
 	public Map<String, String> getFormParams(Control control) {
 		Map<String, String> formParams = new HashMap<String, String>();
-		if (control == null)
+		if (control == null || !control.isEnabled())
 			return formParams;
 	
 		if (control instanceof Combo) {
@@ -447,7 +447,7 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	}
 	
 	private Map<String, String> getDataFromWidgets(Control control, Map<String, String> formParams) {
-		if (control.getData(SOAPConstants.PATH) == null)
+		if (!control.isEnabled() || control.getData(SOAPConstants.PATH) == null)
 			return formParams;
 	
 		formParams.put(control.getData(SOAPConstants.PATH).toString(), getValue(control));

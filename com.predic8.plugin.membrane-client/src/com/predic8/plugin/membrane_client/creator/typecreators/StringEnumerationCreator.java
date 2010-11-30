@@ -19,7 +19,7 @@ public class StringEnumerationCreator extends TypeCreator {
 		createLabel(ctx.getLabel(), parent, ctx.getIndex());
 		control = createCombo(getValues(rest), parent, ctx);
 		if (ctx.isOptional())
-			CreatorUtil.createAddRemoveButton(parent, control, false);
+			CreatorUtil.createAddRemoveButton(control);
 		initControl(getControlValue(ctx));
 	}
 	

@@ -30,7 +30,7 @@ public abstract class SimpleTypeControlCreator extends TypeCreator {
 		getAuxilaryControl(parent, restriction);
 		control.setData(SOAPConstants.PATH, getControlKey(ctx));
 		if (ctx.isOptional())
-			CreatorUtil.createAddRemoveButton(parent, control, false);
+			CreatorUtil.createAddRemoveButton(control);
 		initControl(getControlValue(ctx));
 	}
 

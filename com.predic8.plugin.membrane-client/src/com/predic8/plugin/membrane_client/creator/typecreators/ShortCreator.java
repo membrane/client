@@ -5,7 +5,7 @@ public class ShortCreator extends TextCreator {
 
 	@Override
 	protected String getRegEx() {
-		return "(-)?[0-9]?";
+		return "(-)?[0-9]*";
 	}
 	
 	@Override

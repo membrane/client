@@ -5,7 +5,7 @@ public class PositiveIntegerCreator extends TextCreator {
 
 	@Override
 	protected String getRegEx() {
-		return "[1-9]?";
+		return "[1-9]*";
 	}
 	
 	@Override

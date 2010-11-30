@@ -46,6 +46,7 @@ public class FormParamsExtractor {
         	
         	case XMLEvent.START_ELEMENT:
         		StartElement sE = event.asStartElement();
+        		
         		if ("Envelope".equals(sE.getName().getLocalPart()))
         			break;
         		
@@ -67,15 +68,15 @@ public class FormParamsExtractor {
         		break;
         			
         	case XMLEvent.END_ELEMENT:
+        		value = "";
         		if (stack.isEmpty())
         			break;
         		
         		stack.pop();
-        		value = "";
         		break;
         			
         	case XMLEvent.CHARACTERS:
-        		value = event.asCharacters().toString().trim();
+        		value = event.asCharacters().getData().trim(); //trim necessary
         		if (!"".equals(value))
         			map.put(getStackContent(stack), value);
         		break;

@@ -9,10 +9,25 @@ Require-Bundle: org.eclipse.ui;visibility:=reexport,
  com.predic8.membrane_client.core;bundle-version="1.2.3";visibility:=reexport
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Export-Package: com.predic8.plugin.membrane_client,
- com.predic8.plugin.membrane_client.creator,
- com.predic8.plugin.membrane_client.creator.typecreators,
- com.predic8.plugin.membrane_client.perspectives
+Export-Package: com.predic8.plugin.membrane_client;uses:="org.eclipse.jface.resource,org.eclipse.ui.plugin,org.osgi.framework",
+ com.predic8.plugin.membrane_client.creator;
+  uses:="com.predic8.wsdl,
+   com.predic8.plugin.membrane_client.creator.typecreators,
+   com.predic8.schema,
+   org.eclipse.swt.custom,
+   org.eclipse.swt.graphics,
+   com.predic8.schema.restriction,
+   com.predic8.schema.creator,
+   com.predic8.schema.restriction.facet,
+   org.eclipse.swt.widgets,
+   com.predic8.soamodel",
+ com.predic8.plugin.membrane_client.creator.typecreators;
+  uses:="org.eclipse.swt.graphics,
+   com.predic8.schema.restriction,
+   org.eclipse.swt.widgets,
+   org.eclipse.swt.layout,
+   com.predic8.plugin.membrane_client.creator",
+ com.predic8.plugin.membrane_client.perspectives;uses:="org.eclipse.ui"
 Bundle-ClassPath: .,
  lib/commons-logging-1.1.1.jar,
  resources/,

@@ -1,0 +1,22 @@
+#This is a simple instruction how to export membrane soap client application
+
+1. open membrane-client.product
+2. select the overview tab
+3. click on "Eclipse Product export wizard" (bottom-right corner)
+	3.1 Configuration: /com.predic8.rcp.membrane-client/membrane-client.product
+	3.2 Destination: your destination path to export the product
+	3.3 Finish
+
+In order to export membrane soap client for multiple target platforms you need to
+install the "delta pack". You can find the latest version at http://download.eclipse.org/eclipse/downloads/.
+You can add delta pack with following steps:
+
+1. Window > Preferences > Plug-in Development > Target Platform
+2. Select "Running Platform (Active)" and click "Edit"
+3. Select "Locations" tab and click "add"
+4. Select "Directory"
+5. put the location of delta pack
+6. finish
+
+Now you are able to export membrane soap client for different target platforms. 
+If you export the product with wizard you will have a additional checkbox "Export for multiple platforms".

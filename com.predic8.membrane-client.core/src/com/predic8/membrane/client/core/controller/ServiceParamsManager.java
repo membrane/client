@@ -14,6 +14,7 @@
 
 package com.predic8.membrane.client.core.controller;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,8 @@ import com.predic8.wsdl.Definitions;
 
 public class ServiceParamsManager {
 
-	private static Log log = LogFactory.getLog(ServiceParamsManager.class.getName());
+	private static Log log = LogFactory.getLog(ServiceParamsManager.class
+			.getName());
 
 	private static ServiceParamsManager instance = new ServiceParamsManager();
 
@@ -51,35 +53,42 @@ public class ServiceParamsManager {
 
 	private Config config;
 
-	private Map<BindingOperation, List<ExchangeNode>> excMap = new HashMap<BindingOperation, List<ExchangeNode>>();   
-	
+	private Map<BindingOperation, List<ExchangeNode>> excMap = new HashMap<BindingOperation, List<ExchangeNode>>();
+
 	private static ILog pluginLogger;
-	
+
 	static {
 		pluginLogger = CoreActivator.getDefault().getLog();
 	}
-	
-	
+
 	private ServiceParamsManager() {
-		
+
 	}
 
 	public void init() {
 		createConfiguration();
-		loadServiceParams();
+		try {
+			loadServiceParams();
+		} catch (FileNotFoundException e) {
+			log.error("The WSDL file could not be found");
+		}
 		log.info("Service params manager initialization completed.");
 	}
 
-	private void loadServiceParams() {
+	private void loadServiceParams() throws FileNotFoundException {
 		List<WSDL> wsdls = config.getWsdls().getWSDLList();
 		for (WSDL wsdl : wsdls) {
 			Definitions definitions = null;
 			try {
-				definitions = SOAModelUtil.getDefinitions(wsdl.getUrl().getValue());
+				definitions = SOAModelUtil.getDefinitions(wsdl.getUrl()
+						.getValue());
 			} catch (RuntimeException e) {
-				log.warn("Unable to get definitions for " + wsdl.getUrl() + ": " + e.getMessage());
+				log.warn("Unable to get definitions for " + wsdl.getUrl()
+						+ ": " + e.getMessage());
+			} finally {
+				addNewServiceParams(new ServiceParams(wsdl.getUrl().getValue(),
+						definitions), false);
 			}
-			addNewServiceParams(new ServiceParams(wsdl.getUrl().getValue(), definitions), false);
 		}
 	}
 
@@ -87,7 +96,8 @@ public class ServiceParamsManager {
 		try {
 			config = configStore.read(getDefaultConfigurationFile());
 		} catch (Exception e) {
-			pluginLogger.log(new Status(IStatus.ERROR, CoreActivator.PLUGIN_ID, "Unable to load Conf: " + e.getMessage()));
+			pluginLogger.log(new Status(IStatus.ERROR, CoreActivator.PLUGIN_ID,
+					"Unable to load Conf: " + e.getMessage()));
 			log.warn("Unable to get read configuration from store. dedfault configuration will be used instead.");
 			config = new Config();
 		}
@@ -115,7 +125,8 @@ public class ServiceParamsManager {
 		try {
 			configStore.write(config, getDefaultConfigurationFile());
 		} catch (Exception e) {
-			pluginLogger.log(new Status(IStatus.ERROR, CoreActivator.PLUGIN_ID, "Unable to save Conf: " + e.getMessage()));
+			pluginLogger.log(new Status(IStatus.ERROR, CoreActivator.PLUGIN_ID,
+					"Unable to save Conf: " + e.getMessage()));
 			e.printStackTrace();
 		}
 	}
@@ -143,7 +154,8 @@ public class ServiceParamsManager {
 		try {
 			configStore.write(config, getDefaultConfigurationFile());
 		} catch (Exception e) {
-			pluginLogger.log(new Status(IStatus.ERROR, CoreActivator.PLUGIN_ID, "Unable to save Conf: " + e.getMessage()));
+			pluginLogger.log(new Status(IStatus.ERROR, CoreActivator.PLUGIN_ID,
+					"Unable to save Conf: " + e.getMessage()));
 			e.printStackTrace();
 		}
 	}
@@ -158,7 +170,8 @@ public class ServiceParamsManager {
 		}
 	}
 
-	public void registerServiceParamsChangeListener(ServiceParamsChangeListener listener) {
+	public void registerServiceParamsChangeListener(
+			ServiceParamsChangeListener listener) {
 		if (listener == null)
 			return;
 
@@ -166,20 +179,22 @@ public class ServiceParamsManager {
 		listener.serviceParamsChanged(serviceParams);
 	}
 
-	public void removeServiceParamsChangeListener(ServiceParamsChangeListener listener) {
+	public void removeServiceParamsChangeListener(
+			ServiceParamsChangeListener listener) {
 		if (listener == null)
 			return;
 		listeners.remove(listener);
 	}
 
 	public String getDefaultConfigurationFile() {
-		return System.getProperty("user.home") + System.getProperty("file.separator") + ".membrane-client.xml";
+		return System.getProperty("user.home")
+				+ System.getProperty("file.separator") + ".membrane-client.xml";
 	}
 
-	public void newExchangeArrived(BindingOperation op,  ExchangeNode exc) {
+	public void newExchangeArrived(BindingOperation op, ExchangeNode exc) {
 		if (exc == null || op == null)
 			return;
-		
+
 		if (excMap.containsKey(op)) {
 			excMap.get(op).add(exc);
 		} else {
@@ -189,9 +204,9 @@ public class ServiceParamsManager {
 		}
 		notifyListenersOnChange();
 	}
-	
+
 	public List<ExchangeNode> getExchangesFor(BindingOperation op) {
 		return excMap.get(op);
 	}
-	
+
 }

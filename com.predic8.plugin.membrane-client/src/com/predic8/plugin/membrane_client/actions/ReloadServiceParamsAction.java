@@ -20,13 +20,13 @@ import org.eclipse.jface.viewers.TreeViewer;
 import com.predic8.membrane.client.core.model.ServiceParams;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
 
-public class ReloadServiceParamsActiion extends Action {
+public class ReloadServiceParamsAction extends Action {
 
 	public static final String ID = "reload WSDL action";
 	
 	private TreeViewer treeViewer;
 
-	public ReloadServiceParamsActiion(TreeViewer viewer) {
+	public ReloadServiceParamsAction(TreeViewer viewer) {
 		setText("reload");
 		setId(ID);
 		this.treeViewer = viewer;

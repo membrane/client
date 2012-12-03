@@ -40,8 +40,8 @@ import com.predic8.membrane.client.core.model.ServiceParams;
 import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.actions.AddNewWSDLActiion;
 import com.predic8.plugin.membrane_client.actions.CreateFormAction;
-import com.predic8.plugin.membrane_client.actions.ReloadServiceParamsActiion;
-import com.predic8.plugin.membrane_client.actions.RemoveServiceParamsActiion;
+import com.predic8.plugin.membrane_client.actions.ReloadServiceParamsAction;
+import com.predic8.plugin.membrane_client.actions.RemoveServiceParamsAction;
 import com.predic8.plugin.membrane_client.providers.ServiceTreeContentProvider;
 import com.predic8.plugin.membrane_client.providers.ServiceTreeLabelProvider;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
@@ -98,21 +98,21 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 				Object firstElement = selection.getFirstElement();
 				if (firstElement instanceof ServiceParams) {
 					menuManager.remove(CreateFormAction.ID);
-					if (menuManager.find(ReloadServiceParamsActiion.ID) == null) 
+					if (menuManager.find(ReloadServiceParamsAction.ID) == null) 
 						menuManager.add(reloadAction);
 					
-					if (menuManager.find(RemoveServiceParamsActiion.ID) == null) 
+					if (menuManager.find(RemoveServiceParamsAction.ID) == null) 
 						menuManager.add(removeAction);
 					
 				} else if (firstElement instanceof BindingOperation) {
-					menuManager.remove(ReloadServiceParamsActiion.ID);
-					menuManager.remove(RemoveServiceParamsActiion.ID);
+					menuManager.remove(ReloadServiceParamsAction.ID);
+					menuManager.remove(RemoveServiceParamsAction.ID);
 					createFormAction.setOperation((BindingOperation)firstElement);
 					if (menuManager.find(CreateFormAction.ID) == null) 
 						menuManager.add(createFormAction);
 				} else {
-					menuManager.remove(ReloadServiceParamsActiion.ID);
-					menuManager.remove(RemoveServiceParamsActiion.ID);
+					menuManager.remove(ReloadServiceParamsAction.ID);
+					menuManager.remove(RemoveServiceParamsAction.ID);
 					menuManager.remove(CreateFormAction.ID);
 				}
 			}
@@ -136,8 +136,8 @@ public class ServiceTreeView extends ViewPart implements ServiceParamsChangeList
 	}
 	
 	private void createActions() {
-		removeAction = new RemoveServiceParamsActiion(treeViewer);
-		reloadAction = new ReloadServiceParamsActiion(treeViewer);
+		removeAction = new RemoveServiceParamsAction(treeViewer);
+		reloadAction = new ReloadServiceParamsAction(treeViewer);
 		addNewWSDLAction = new AddNewWSDLActiion();
 		createFormAction = new CreateFormAction();
 	}

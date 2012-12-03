@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Membrane-SOAP-Client" id="com.predic8.rcp.membrane_client.MembraneClientId" application="com.predic8.rcp.membrane_client.application" version="1.3.0" useFeatures="false" includeLaunchers="true">
+<product name="Membrane-SOAP-Client" id="com.predic8.rcp.membrane_client.MembraneClientId" application="com.predic8.rcp.membrane_client.application" version="1.3.2" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/com.predic8.rcp.membrane-client/icons/logo128.png"/>
       <text>
-         Membrane SOAP Client Version 1.3.0
+         Membrane SOAP Client Version 1.3.2
   Copyright @  2012 by predic8 GmbH
   Moltkestr. 40  53173 Bonn Germany 
   www.predic8.com 
@@ -26,7 +26,10 @@
    <windowImages i32="/com.predic8.rcp.membrane-client/icons/logo32.png"/>
 
    <splash
-      location="com.predic8.rcp.membrane_client" />
+      location="com.predic8.rcp.membrane_client"
+      startupProgressRect="0,0,0,0"
+      startupMessageRect="0,0,0,0"
+      startupForegroundColor="000000" />
    <launcher name="membrane-client">
       <solaris/>
       <win useIco="true">
@@ -34,6 +37,7 @@
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -257,6 +261,7 @@
       <plugin id="org.apache.batik.css"/>
       <plugin id="org.apache.batik.util"/>
       <plugin id="org.apache.batik.util.gui"/>
+      <plugin id="org.codehaus.groovy.frameworkadapter" fragment="true"/>
       <plugin id="org.eclipse.ant.core"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>

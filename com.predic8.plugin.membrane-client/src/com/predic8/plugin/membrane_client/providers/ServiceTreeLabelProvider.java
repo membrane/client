@@ -132,6 +132,10 @@ public class ServiceTreeLabelProvider extends LabelProvider {
 			return "Response";
 		}
 		
+		if(((ServiceParams) element).getDefinitions() == null){
+			return super.getText(element) + " (Not found)";
+		}
+		
 		return super.getText(element);
 	}
 	

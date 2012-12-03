@@ -21,13 +21,13 @@ import org.eclipse.jface.viewers.TreeViewer;
 import com.predic8.membrane.client.core.controller.ServiceParamsManager;
 import com.predic8.membrane.client.core.model.ServiceParams;
 
-public class RemoveServiceParamsActiion extends Action {
+public class RemoveServiceParamsAction extends Action {
 
 	public static final String ID = "remove WSDL action";
 	
 	private TreeViewer treeViewer;
 	
-	public RemoveServiceParamsActiion(TreeViewer viewer) {
+	public RemoveServiceParamsAction(TreeViewer viewer) {
 		setText("remove");
 		setId(ID);
 		this.treeViewer = viewer;

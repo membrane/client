@@ -21,7 +21,8 @@ import com.predic8.schema.Declaration;
 import com.predic8.schema.Element;
 import com.predic8.schema.creator.SchemaCreatorContext;
 
-public class CompositeCreatorContext extends SchemaCreatorContext {
+
+public class CompositeCreatorContext extends SchemaCreatorContext implements Cloneable{
 
 	public static final String CONTEXT_DATA = "context data";
 
@@ -38,6 +39,7 @@ public class CompositeCreatorContext extends SchemaCreatorContext {
 	private Map<String, String> formParams;
 
 	public CompositeCreatorContext() {
+		
 	}
 
 	public Declaration getDeclaration() {
@@ -116,6 +118,27 @@ public class CompositeCreatorContext extends SchemaCreatorContext {
 	public CompositeCreatorContext cloneExCatched() {
 		return (CompositeCreatorContext) clone();
 	}
+	
+	
+	public CompositeCreatorContext clone(){
+		CompositeCreatorContext result = new CompositeCreatorContext();
+		result.setError(this.getError());
+		result.setDeclNS(this.getDeclNS());
+		result.setCreateLinks(this.getCreateLinks());
+		result.setTypeName(this.getTypeName());
+		result.setIndex(this.getIndex());
+		result.setLabel(this.getLabel());
+		result.setDeclaration(this.getDeclaration());
+		result.setPath(this.getPath());
+		result.setFormParams(this.getFormParams());
+		
+		
+		return result;
+	}
+	
+	
+	
+	
 
 	public void setFormParams(Map<String, String> formParams) {
 		this.formParams = formParams;
@@ -124,5 +147,6 @@ public class CompositeCreatorContext extends SchemaCreatorContext {
 	public Map<String, String> getFormParams() {
 		return formParams;
 	}
+	
 
 }

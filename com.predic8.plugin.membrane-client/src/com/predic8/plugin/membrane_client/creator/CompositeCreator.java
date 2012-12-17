@@ -127,7 +127,10 @@ public class CompositeCreator extends
 		CompositeCreatorContext ctx = oldContext;
 
 		CompositeCreatorContext newCtx = ctx.cloneExCatched();
-		newCtx.setPath(ctx.getPath() + "/" + ctx.getDeclaration().getName());
+		if (ctx.getDeclaration() != null
+				|| ctx.getDeclaration().getName() != null) {
+			newCtx.setPath(ctx.getPath() + "/" + ctx.getDeclaration().getName());
+		}
 
 		if (cType.getQname() == null) {
 			createAttributesAndCreateModel(cType, newCtx);

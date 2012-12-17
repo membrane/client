@@ -20,8 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import com.predic8.membrane.core.Router;
 import com.predic8.membrane.core.exchange.Exchange;
-import com.predic8.membrane.core.exchange.HttpExchange;
-import com.predic8.membrane.core.transport.http.HttpResendThread;
+import com.predic8.membrane.core.transport.http.HttpResendHandler;
 import com.predic8.membrane.core.transport.http.HttpTransport;
 
 
@@ -47,7 +46,7 @@ public class RequestComposite extends MessageComposite {
 				tabManager.setBodyModified(false);
 				copyBodyFromGUIToModel();
 			}
-			(new HttpResendThread((HttpExchange)getCompositeHost().getExchange(), (HttpTransport)Router.getInstance().getTransport())).start();
+			(new HttpResendHandler((Exchange)getCompositeHost().getExchange(), (HttpTransport)Router.getInstance().getTransport())).run();
 		}
 	}
 

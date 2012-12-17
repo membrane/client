@@ -42,7 +42,6 @@ import com.predic8.membrane.client.core.util.FormParamsExtractor;
 import com.predic8.membrane.client.core.util.HttpUtil;
 import com.predic8.membrane.client.core.util.SOAModelUtil;
 import com.predic8.membrane.core.exchange.Exchange;
-import com.predic8.membrane.core.exchange.HttpExchange;
 import com.predic8.membrane.core.http.Request;
 import com.predic8.membrane.core.http.Response;
 import com.predic8.plugin.membrane_client.ImageKeys;
@@ -212,7 +211,7 @@ public class RequestView extends MessageView {
 			public void done(IJobChangeEvent event) {
 				if (event.getResult().isOK() && !callerJob.isCancelStatus()) {
 					showMessageInResponseView(callerJob.getExchange().getResponse());
-					HttpExchange exc = callerJob.getExchange();
+					Exchange exc = callerJob.getExchange();
 					ServiceParamsManager.getInstance().newExchangeArrived(bindingOperation, createExchangeNode(exc));
 				}
 				updateControlButtons(false, event.getJob());
@@ -241,7 +240,7 @@ public class RequestView extends MessageView {
 		List<Port> ports = bindOp.getDefinitions().getServices().get(0).getPorts();
 		for (Port port : ports) {
 			if (port.getBinding().getName().equals(bindOp.getBinding().getName()))
-				return port.getLocation();
+				return port.getAddress().getLocation();
 		}
 		throw new RuntimeException("No corresponding endpoint address found.");
 	}
@@ -275,7 +274,7 @@ public class RequestView extends MessageView {
 		return bindingOperation;
 	}
 
-	private ExchangeNode createExchangeNode(HttpExchange exc) {
+	private ExchangeNode createExchangeNode(Exchange exc) {
 		ExchangeNode node = new ExchangeNode(exc.getTime());
 		node.setResponse(exc.getResponse());
 

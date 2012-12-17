@@ -61,7 +61,8 @@ import com.predic8.wsdl.Message;
 import com.predic8.wsdl.Operation;
 import com.predic8.wsdl.Part;
 
-public class CompositeCreator extends AbstractSchemaCreator {
+public class CompositeCreator extends
+		AbstractSchemaCreator<CompositeCreatorContext> {
 
 	private ScrolledComposite scrollComp;
 
@@ -81,20 +82,24 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		ancestors.push(root);
 	}
 
-	public void buildComposite(String portTypeName, String operationName, String bindingName) {
+	public void buildComposite(String portTypeName, String operationName,
+			String bindingName) {
 
 		ancestors.clear();
 		ancestors.push(root);
 
-		Operation operation = definitions.getOperation(operationName, portTypeName);
-		BindingOperation bindingOperation = definitions.getBinding(bindingName).getOperation(operationName);
+		Operation operation = definitions.getOperation(operationName,
+				portTypeName);
+		BindingOperation bindingOperation = definitions.getBinding(bindingName)
+				.getOperation(operationName);
 
 		createHeaders(bindingOperation, operation.getInput().getMessage());
 
-		for (BindingElement object : bindingOperation.getInput().getBindingElements()) {
+		for (BindingElement object : bindingOperation.getInput()
+				.getBindingElements()) {
 			// TODO Attention of SOAP header
 			if (object instanceof AbstractSOAPBody) {
-				handleMsgParts(((AbstractSOAPBody) object).getMessageParts());
+				handleMsgParts(((AbstractSOAPBody) object).getParts());
 			}
 		}
 
@@ -103,20 +108,23 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private void createHeaders(BindingOperation bOp, Message msg) {
 		for (AbstractSOAPHeader header : bOp.getInput().getSOAPHeaders()) {
-			definitions.getElement(msg.getPart(header.getPart()).getElement()).create(this, new CompositeCreatorContext());
+			definitions.getElement(msg.getPart(header.getPart()).getElement())
+					.create(this, new CompositeCreatorContext());
 		}
 	}
 
 	private void handleMsgParts(List<Part> parts) {
 		for (Part part : parts) {
-			definitions.getElement(part.getElement()).create(this, new CompositeCreatorContext());
+			definitions.getElement(part.getElement()).create(this,
+					new CompositeCreatorContext());
 		}
 	}
 
 	@Override
-	public void createComplexType(ComplexType cType, Object oldContext) {
+	public void createComplexType(ComplexType cType,
+			CompositeCreatorContext oldContext) {
 
-		CompositeCreatorContext ctx = (CompositeCreatorContext) oldContext;
+		CompositeCreatorContext ctx = oldContext;
 
 		CompositeCreatorContext newCtx = ctx.cloneExCatched();
 		newCtx.setPath(ctx.getPath() + "/" + ctx.getDeclaration().getName());
@@ -134,7 +142,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	}
 
-	private void createAttributesAndCreateModel(ComplexType cType, CompositeCreatorContext newCtx) {
+	private void createAttributesAndCreateModel(ComplexType cType,
+			CompositeCreatorContext newCtx) {
 		createAttributes(cType, newCtx);
 		if (cType.getModel() != null) {
 			((SchemaComponent) cType.getModel()).create(this, newCtx);
@@ -143,16 +152,19 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 	private void createChildComposite(CompositeCreatorContext ctx) {
 
-		final Composite comp = new Composite(ancestors.peek(), SWT.BORDER | SWT.DOUBLE_BUFFERED);
+		final Composite comp = new Composite(ancestors.peek(), SWT.BORDER
+				| SWT.DOUBLE_BUFFERED);
 		comp.setLayout(layout);
 		comp.setLayoutData(LayoutUtil.createGridData(false, false));
 
 		Composite header = new Composite(comp, SWT.NONE);
 		header.setLayout(LayoutUtil.createGridlayout(4, 0));
 
-		new Label(header, SWT.NONE).setText(CreatorUtil.getComplexTypeCaption(ctx));
+		new Label(header, SWT.NONE).setText(CreatorUtil
+				.getComplexTypeCaption(ctx));
 
-		final ShrinkingComposite fieldsComp = new ShrinkingComposite(comp, SWT.NONE);
+		final ShrinkingComposite fieldsComp = new ShrinkingComposite(comp,
+				SWT.NONE);
 		fieldsComp.setLayout(layout);
 		fieldsComp.setLayoutData(LayoutUtil.createGridData(false, false));
 		fieldsComp.setData(SOAPConstants.PATH, ctx.getPath());
@@ -160,11 +172,13 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 		// here we got a problem, what happens by [0,unbounded) ?
 		if (ctx.isOptional()) {
-			Button bt = ControlUtil.createButton(header, CreatorUtil.REMOVE_IMAGE, 10, 10, 30);
+			Button bt = ControlUtil.createButton(header,
+					CreatorUtil.REMOVE_IMAGE, 10, 10, 30);
 			bt.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
-					CreatorUtil.updateButtonControlEnable(fieldsComp, (Button) e.getSource(), true);
+					CreatorUtil.updateButtonControlEnable(fieldsComp,
+							(Button) e.getSource(), true);
 					CreatorUtil.layoutScrolledComposites(scrollComp, root);
 				}
 			});
@@ -188,8 +202,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	}
 
 	@Override
-	public void createElement(Element element, Object ctx) {
-		CompositeCreatorContext context = (CompositeCreatorContext) ctx;
+	public void createElement(Element element, CompositeCreatorContext ctx) {
+		CompositeCreatorContext context = ctx;
 		if (getTypeDefinition(element) != null) {
 			createTypeDefinition(element, context, getTypeDefinition(element));
 			return;
@@ -207,13 +221,15 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		return element.getSchema().getType(element.getType());
 	}
 
-	private void createTypeDefinition(Element element, CompositeCreatorContext context, TypeDefinition typeDef) {
+	private void createTypeDefinition(Element element,
+			CompositeCreatorContext context, TypeDefinition typeDef) {
 		CompositeCreatorContext newCtx = context.cloneExCatched();
 		newCtx.setDeclaration(element);
 		typeDef.create(this, newCtx);
 	}
 
-	private void writeInputForBuildInType(Declaration item, CompositeCreatorContext ctx, BaseRestriction restr) {
+	private void writeInputForBuildInType(Declaration item,
+			CompositeCreatorContext ctx, BaseRestriction restr) {
 
 		String typename = getBuildInTypeName(item);
 		if (typename == null)
@@ -225,7 +241,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		createLowLevelWidgets(restr, clone);
 	}
 
-	private void createLowLevelWidgets(BaseRestriction restr, CompositeCreatorContext ctx) {
+	private void createLowLevelWidgets(BaseRestriction restr,
+			CompositeCreatorContext ctx) {
 		Composite placeHolder = createPlaceHolder();
 		CreatorUtil.createControls(placeHolder, restr, ctx);
 		placeHolder.setData(CompositeCreatorContext.CONTEXT_DATA, ctx);
@@ -238,9 +255,11 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		return comp;
 	}
 
-	private String getElementTypeNameFromEmbededSimpleRestriction(Element element) {
+	private String getElementTypeNameFromEmbededSimpleRestriction(
+			Element element) {
 		if (element.getEmbeddedType() instanceof SimpleType) {
-			return ((SimpleType) element.getEmbeddedType()).getRestriction().getBase().getLocalPart();
+			return ((SimpleType) element.getEmbeddedType()).getRestriction()
+					.getBase().getLocalPart();
 		}
 		return null;
 	}
@@ -252,7 +271,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 
 			TypeDefinition tDef = (item.getSchema().getType(item.getType()));
 			if (tDef instanceof SimpleType) {
-				return ((SimpleType) tDef).getRestriction().getBase().getLocalPart();
+				return ((SimpleType) tDef).getRestriction().getBase()
+						.getLocalPart();
 			}
 
 			throw new RuntimeException("Not supported yet: " + item);
@@ -266,12 +286,14 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			return getAttributeTypeNameFromSimpleRestriction(item);
 		}
 
-		throw new RuntimeException("Can not get build in type name for item: " + item);
+		throw new RuntimeException("Can not get build in type name for item: "
+				+ item);
 	}
 
 	private String getAttributeTypeNameFromSimpleRestriction(Declaration item) {
 		Attribute attribute = (Attribute) item;
-		BaseRestriction rest = ((SimpleType) attribute.getSimpleType()).getRestriction();
+		BaseRestriction rest = ((SimpleType) attribute.getSimpleType())
+				.getRestriction();
 		return rest.getBase().getLocalPart();
 	}
 
@@ -281,13 +303,15 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Button b = (Button) e.getSource();
-				Object data = child.getData(CompositeCreatorContext.CONTEXT_DATA);
+				Object data = child
+						.getData(CompositeCreatorContext.CONTEXT_DATA);
 				if (data instanceof CompositeCreatorContext) {
 					ancestors.push(b.getParent().getParent().getParent());
 					CompositeCreatorContext ctx = (CompositeCreatorContext) data;
 					ctx.incrementIndex();
 					ctx.cutElementNameFromPath();
-					createElement((Element) ctx.getDeclaration(), ctx.cloneExCatched());
+					createElement((Element) ctx.getDeclaration(),
+							ctx.cloneExCatched());
 					ancestors.pop();
 					CreatorUtil.layoutScrolledComposites(scrollComp, root);
 				}
@@ -323,8 +347,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	}
 
 	@Override
-	public void createExtension(Extension ext, Object ctx) {
-		CompositeCreatorContext context = (CompositeCreatorContext) ctx;
+	public void createExtension(Extension ext, CompositeCreatorContext ctx) {
+		CompositeCreatorContext context = ctx;
 
 		if (ext.getBase() != null) {
 			TypeDefinition def = ext.getSchema().getType(ext.getBase());
@@ -344,17 +368,19 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	}
 
 	@Override
-	public void createComplexContentRestriction(Restriction restriction, Object ctx) {
+	public void createComplexContentRestriction(Restriction restriction,
+			CompositeCreatorContext ctx) {
 		if (restriction.getModel() != null) {
 			((SchemaComponent) restriction.getModel()).create(this, ctx);
 		}
 
 		for (Attribute attribute : restriction.getAttributes()) {
-			writeInputForBuildInType(attribute, (CompositeCreatorContext) ctx, null);
+			writeInputForBuildInType(attribute, ctx, null);
 		}
 	}
 
-	private void createNonStringRestriction(BaseRestriction rest, CompositeCreatorContext ctx) {
+	private void createNonStringRestriction(BaseRestriction rest,
+			CompositeCreatorContext ctx) {
 		TypeDefinition type = (TypeDefinition) rest.getParent();
 
 		if (type.getParent() instanceof Element) {
@@ -374,7 +400,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		return false;
 	}
 
-	private void createStringRestriction(BaseRestriction rest, CompositeCreatorContext ctx) {
+	private void createStringRestriction(BaseRestriction rest,
+			CompositeCreatorContext ctx) {
 		if (containsEnumerationFacet(rest.getFacets())) {
 			CompositeCreatorContext clone = ctx.cloneExCatched();
 			clone.setLabel(clone.getDeclaration().getName().toString());
@@ -393,8 +420,9 @@ public class CompositeCreator extends AbstractSchemaCreator {
 	}
 
 	@Override
-	public void createSimpleRestriction(BaseRestriction rest, Object ctx) {
-		CompositeCreatorContext context = (CompositeCreatorContext) ctx;
+	public void createSimpleRestriction(BaseRestriction rest,
+			CompositeCreatorContext ctx) {
+		CompositeCreatorContext context = ctx;
 		if (rest instanceof StringRestriction) {
 			createStringRestriction(rest, context);
 			return;
@@ -410,7 +438,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 			return;
 		}
 
-		throw new RuntimeException("The base restriction of type: " + rest.getClass().getName() + " is not supported yet.");
+		throw new RuntimeException("The base restriction of type: "
+				+ rest.getClass().getName() + " is not supported yet.");
 	}
 
 	public Composite getRoot() {
@@ -445,11 +474,13 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		return getDataFromWidgets(control, formParams);
 	}
 
-	private Map<String, String> getDataFromWidgets(Control control, Map<String, String> formParams) {
+	private Map<String, String> getDataFromWidgets(Control control,
+			Map<String, String> formParams) {
 		if (!control.isEnabled() || control.getData(SOAPConstants.PATH) == null)
 			return formParams;
 
-		formParams.put(control.getData(SOAPConstants.PATH).toString(), getValue(control));
+		formParams.put(control.getData(SOAPConstants.PATH).toString(),
+				getValue(control));
 		return formParams;
 	}
 
@@ -463,7 +494,8 @@ public class CompositeCreator extends AbstractSchemaCreator {
 		}
 
 		if (control instanceof Combo) {
-			return ((Combo) control).getItem(((Combo) control).getSelectionIndex());
+			return ((Combo) control).getItem(((Combo) control)
+					.getSelectionIndex());
 		}
 		return null;
 	}

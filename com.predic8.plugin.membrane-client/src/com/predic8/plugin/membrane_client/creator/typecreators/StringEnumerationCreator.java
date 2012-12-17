@@ -1,5 +1,6 @@
 package com.predic8.plugin.membrane_client.creator.typecreators;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.swt.widgets.Combo;
@@ -25,7 +26,11 @@ public class StringEnumerationCreator extends TypeCreator {
 	
 	
 	private List<String> getValues(BaseRestriction rest) {
-		return ((EnumerationFacet)rest.getEnumerationFacet()).getValues();
+		List<String> result = new LinkedList<String>();
+		for (EnumerationFacet facet : rest.getEnumerationFacets()) {
+			result.add(facet.getValue());
+		}
+		return result;
 	}
 
 	private Combo createCombo(List<String> values, Composite descendent, CompositeCreatorContext ctx) {

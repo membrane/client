@@ -19,9 +19,9 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import com.predic8.membrane.client.core.SOAPConstants;
-import com.predic8.membrane.core.config.AbstractXMLElement;
+import com.predic8.membrane.core.config.AbstractXmlElement;
 
-public class Config extends AbstractXMLElement {
+public class Config extends AbstractXmlElement {
 
 	public static final String ELEMENT_NAME = "config";
 	
@@ -31,7 +31,7 @@ public class Config extends AbstractXMLElement {
 		return ELEMENT_NAME;
 	}
 	
-	protected void parseChildren(XMLStreamReader token, String child) throws XMLStreamException {
+	protected void parseChildren(XMLStreamReader token, String child) throws Exception {
 		if (WSDLs.ELEMENT_NAME.equals(child)) {
 			wsdls = (((WSDLs)new WSDLs().parse(token)));
 		}

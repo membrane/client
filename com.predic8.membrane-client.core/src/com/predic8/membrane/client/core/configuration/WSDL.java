@@ -18,9 +18,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import com.predic8.membrane.core.config.AbstractXMLElement;
+import com.predic8.membrane.core.config.AbstractXmlElement;
 
-public class WSDL extends AbstractXMLElement {
+public class WSDL extends AbstractXmlElement {
 
 	public static final String ELEMENT_NAME = "wsdl";
 
@@ -30,7 +30,7 @@ public class WSDL extends AbstractXMLElement {
 		return ELEMENT_NAME;
 	}
 	
-	protected void parseChildren(XMLStreamReader token, String child) throws XMLStreamException {
+	protected void parseChildren(XMLStreamReader token, String child) throws Exception {
 		if (URL.ELEMENT_NAME.equals(child)) {
 			url = (((URL)new URL().parse(token)));
 		}

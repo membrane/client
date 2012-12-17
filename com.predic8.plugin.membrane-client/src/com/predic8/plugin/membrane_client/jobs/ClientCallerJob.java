@@ -21,16 +21,15 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
-import com.predic8.membrane.core.exchange.HttpExchange;
+import com.predic8.membrane.core.exchange.Exchange;
 import com.predic8.membrane.core.http.Request;
 import com.predic8.membrane.core.transport.http.HttpClient;
-import com.predic8.plugin.membrane_client.preferences.PreferencesData;
 
 public class ClientCallerJob extends Job {
 
 	private boolean cancelStatus;
 	
-	private HttpExchange exc;
+	private Exchange exc;
 	
 	public ClientCallerJob(String address, Request request) {
 		super("Client Call Job");
@@ -57,12 +56,12 @@ public class ClientCallerJob extends Job {
 	}
 
 	private void createExchange(String address, Request request) {
-		exc = new HttpExchange();
+		exc = new Exchange(null);
 		exc.setRequest(request);
 		exc.getDestinations().add(address);
 	}
 
-	public HttpExchange getExchange() {
+	public Exchange getExchange() {
 		return exc;
 	}
 	
@@ -81,12 +80,13 @@ public class ClientCallerJob extends Job {
 	}
 	
 	private void initClient(HttpClient client) {
-		client.setUseProxy(PreferencesData.isUseProxy());
-		client.setUseProxyAuth(PreferencesData.isUseProxyAuth());
-		client.setProxyHost(PreferencesData.getProxyHost());
-		client.setProxyPort(PreferencesData.getProxyPort());
-		client.setProxyUser(PreferencesData.getProxyUserName());
-		client.setProxyPassword(PreferencesData.getProxyPassword());
+		//TODO: fix
+//		client.setUseProxy(PreferencesData.isUseProxy());
+//		client.setUseProxyAuth(PreferencesData.isUseProxyAuth());
+//		client.setProxyHost(PreferencesData.getProxyHost());
+//		client.setProxyPort(PreferencesData.getProxyPort());
+//		client.setProxyUser(PreferencesData.getProxyUserName());
+//		client.setProxyPassword(PreferencesData.getProxyPassword());
 	}
 	
 }

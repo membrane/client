@@ -19,9 +19,9 @@ import java.util.Map;
 import com.predic8.schema.Attribute;
 import com.predic8.schema.Declaration;
 import com.predic8.schema.Element;
-import com.predic8.soamodel.CreatorContext;
+import com.predic8.schema.creator.SchemaCreatorContext;
 
-public class CompositeCreatorContext extends CreatorContext {
+public class CompositeCreatorContext extends SchemaCreatorContext {
 
 	public static final String CONTEXT_DATA = "context data";
 
@@ -114,11 +114,7 @@ public class CompositeCreatorContext extends CreatorContext {
 	}
 
 	public CompositeCreatorContext cloneExCatched() {
-		try {
-			return (CompositeCreatorContext) clone();
-		} catch (CloneNotSupportedException e) {
-			throw new RuntimeException("Creator context supports clone operation.");
-		}
+		return (CompositeCreatorContext) clone();
 	}
 
 	public void setFormParams(Map<String, String> formParams) {

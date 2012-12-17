@@ -55,6 +55,8 @@ public class MessageTabManager {
 	private ErrorTabComposite errorTabComposite;
 
 	private BodyTabComposite currentBodyTab;
+	
+	private SecurityTabComposite securityTabComposite;
 
 	private List<BodyTabComposite> bodyTabs = new ArrayList<BodyTabComposite>();
 
@@ -91,6 +93,7 @@ public class MessageTabManager {
 	private void createFormComposite(final MessageComposite baseComp) {
 		if (baseComp instanceof RequestComposite)
 			formTabComposite = new FormTabComposite(folder);
+			securityTabComposite = new SecurityTabComposite(folder);
 	}
 
 	private void addSelectionListenerToFolder(final MessageComposite baseComp) {

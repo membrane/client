@@ -77,13 +77,11 @@ public class SOAModelUtil {
 		return uri;
 	}
 		
-	private static String createRequestBody(BindingOperation bOperation, AbstractSchemaCreator schemaCreator, Map<String, String> formParams) {
+	private static String createRequestBody(BindingOperation bOperation, @SuppressWarnings("rawtypes") AbstractSchemaCreator schemaCreator, Map<String, String> formParams) {
 		StringWriter writer = new StringWriter();
 		
-		SOARequestCreator creator = new SOARequestCreator();
-		creator.setBuilder(new MarkupBuilder(writer));
-		creator.setDefinitions(bOperation.getDefinitions());
-		creator.setCreator(schemaCreator);
+		SOARequestCreator creator = new SOARequestCreator(bOperation.getDefinitions(), schemaCreator, new MarkupBuilder(writer));
+
 		
 		if (formParams != null)
 			creator.setFormParams(formParams);

@@ -204,6 +204,7 @@ public class RequestView extends MessageView {
 
 		request.setBodyContent(body.getBytes());
 		
+		
 		callerJob = new ClientCallerJob(textAddress.getText().trim(), request);
 		callerJob.setPriority(Job.SHORT);
 
@@ -232,6 +233,7 @@ public class RequestView extends MessageView {
 	public void updateView(BindingOperation bindOp, ParamsMap paramsMap) {
 		this.bindingOperation = bindOp;
 		textAddress.setText(getEndpointAddress(bindOp));
+		
 		request = HttpUtil.getRequest(bindOp, textAddress.getText());
 		setMessage(request, bindOp, paramsMap);
 	}

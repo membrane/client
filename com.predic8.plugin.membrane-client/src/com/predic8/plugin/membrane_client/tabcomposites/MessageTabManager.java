@@ -55,7 +55,7 @@ public class MessageTabManager {
 	private ErrorTabComposite errorTabComposite;
 
 	private BodyTabComposite currentBodyTab;
-	
+
 	private SecurityTabComposite securityTabComposite;
 
 	private List<BodyTabComposite> bodyTabs = new ArrayList<BodyTabComposite>();
@@ -78,8 +78,8 @@ public class MessageTabManager {
 		nullBodyTabComposite = new NullBodyTabComposite(folder);
 
 		createFormComposite(baseComp);
-
 		createBodyTabs();
+		createSecurityTab(baseComp);
 
 		currentBodyTab = new NullBodyTabComposite(folder);
 
@@ -87,19 +87,26 @@ public class MessageTabManager {
 
 		hideAllContentTabs();
 		errorTabComposite.hide();
+	}
+
+	private void createSecurityTab(final MessageComposite baseComp) {
+		if (baseComp instanceof RequestComposite) {
+			securityTabComposite = new SecurityTabComposite(folder);
+		}
 
 	}
 
 	private void createFormComposite(final MessageComposite baseComp) {
-		if (baseComp instanceof RequestComposite)
+		if (baseComp instanceof RequestComposite) {
 			formTabComposite = new FormTabComposite(folder);
-			securityTabComposite = new SecurityTabComposite(folder);
+		}
 	}
 
 	private void addSelectionListenerToFolder(final MessageComposite baseComp) {
 		folder.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				if (currentSelection != null && currentSelection.equals(getCurrentBodyTabItem()))
+				if (currentSelection != null
+						&& currentSelection.equals(getCurrentBodyTabItem()))
 					onBodyTabDeselected();
 
 				currentSelection = folder.getSelection()[0];
@@ -118,8 +125,10 @@ public class MessageTabManager {
 					} else if (tabItem.equals(getCurrentBodyTabItem())) {
 						resetBodyTabContent();
 						setBodyModified(false);
-						baseComp.setFormatEnabled(currentBodyTab.isFormatSupported());
-						baseComp.setSaveEnabled(currentBodyTab.isSaveSupported());
+						baseComp.setFormatEnabled(currentBodyTab
+								.isFormatSupported());
+						baseComp.setSaveEnabled(currentBodyTab
+								.isSaveSupported());
 					}
 				}
 			}
@@ -221,7 +230,8 @@ public class MessageTabManager {
 		return headerTabComposite.getTabItem();
 	}
 
-	private void updateFormTabComposite(BindingOperation operation, Message msg, ParamsMap map) {
+	private void updateFormTabComposite(BindingOperation operation,
+			Message msg, ParamsMap map) {
 		if (formTabComposite == null || operation == null)
 			return;
 
@@ -237,17 +247,18 @@ public class MessageTabManager {
 			}
 		}
 		formTabComposite.show();
+		securityTabComposite.show();
 
 	}
 
 	private void onBodyTabDeselected() {
-		if (formTabComposite == null || formTabComposite.isDisposed() || !isBodyModified())
+		if (formTabComposite == null || formTabComposite.isDisposed()
+				|| !isBodyModified())
 			return;
-		
+
 		refreshFormTab(currentBodyTab.getBodyText());
 	}
 
-	
 	private void refreshFormTab(String xml) {
 		try {
 			formTabComposite.setFormParams(extractor.extract(xml));
@@ -255,10 +266,11 @@ public class MessageTabManager {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private BodyTabComposite getCurrentBodyTab(Message msg) {
 		if (msg instanceof Response) {
-			if (((Response) msg).isRedirect() || ((Response) msg).hasNoContent())
+			if (((Response) msg).isRedirect()
+					|| ((Response) msg).hasNoContent())
 				return nullBodyTabComposite;
 		}
 
@@ -291,7 +303,9 @@ public class MessageTabManager {
 		headerTabComposite.hide();
 
 		hideAllBodyTabs();
-
+		if (securityTabComposite != null) {
+			securityTabComposite.hide();
+		}
 		currentBodyTab = new NullBodyTabComposite(folder);
 	}
 
@@ -342,11 +356,17 @@ public class MessageTabManager {
 	}
 
 	private boolean isCurrentBodyTabAvailable() {
-		return currentBodyTab != null && !currentBodyTab.isDisposed() && currentBodyTab.getTabItem() != null && !currentBodyTab.getTabItem().isDisposed();
+		return currentBodyTab != null && !currentBodyTab.isDisposed()
+				&& currentBodyTab.getTabItem() != null
+				&& !currentBodyTab.getTabItem().isDisposed();
 	}
 
 	public FormTabComposite getFormTabComposite() {
 		return formTabComposite;
+	}
+
+	public SecurityTabComposite getSecurityTabComposite() {
+		return securityTabComposite;
 	}
 
 	public boolean isBodyTabSelected() {
@@ -362,8 +382,10 @@ public class MessageTabManager {
 			return;
 		}
 
-		RequestView view = (RequestView) PluginUtil.getView(RequestView.VIEW_ID);
-		String text = SOAModelUtil.getSOARequestBody(view.getBindingOperation(), formTabComposite.getFormParams());
+		RequestView view = (RequestView) PluginUtil
+				.getView(RequestView.VIEW_ID);
+		String text = SOAModelUtil.getSOARequestBody(
+				view.getBindingOperation(), formTabComposite.getFormParams());
 		currentBodyTab.setBodyText(text);
 	}
 }

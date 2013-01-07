@@ -57,8 +57,10 @@ public class ClientCallerJob extends Job {
 
 	private void createExchange(String address, Request request) {
 		exc = new Exchange(null);
+		
 		exc.setRequest(request);
 		exc.getDestinations().add(address);
+		
 	}
 
 	public Exchange getExchange() {
@@ -87,6 +89,8 @@ public class ClientCallerJob extends Job {
 //		client.setProxyPort(PreferencesData.getProxyPort());
 //		client.setProxyUser(PreferencesData.getProxyUserName());
 //		client.setProxyPassword(PreferencesData.getProxyPassword());
+		
+		
 	}
 	
 }

@@ -149,7 +149,7 @@ public class CompositeCreator extends
 			CompositeCreatorContext newCtx) {
 		createAttributes(cType, newCtx);
 		if (cType.getModel() != null) {
-			((SchemaComponent) cType.getModel()).create(this, newCtx);
+			cType.getModel().create(this, newCtx);
 		}
 	}
 
@@ -357,7 +357,7 @@ public class CompositeCreator extends
 			TypeDefinition def = ext.getSchema().getType(ext.getBase());
 			if (def instanceof ComplexType) {
 				ComplexType type = (ComplexType) def;
-				SchemaComponent model = (SchemaComponent) type.getModel();
+				SchemaComponent model =  type.getModel();
 				model.create(this, context);
 				createAttributes(type, context);
 			}

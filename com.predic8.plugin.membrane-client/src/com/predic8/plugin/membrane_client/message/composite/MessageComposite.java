@@ -31,6 +31,10 @@ public abstract class MessageComposite extends Composite {
 
 	protected MessageTabManager tabManager;
 
+	public MessageTabManager getTabManager() {
+		return tabManager;
+	}
+
 	protected IBaseCompositeHost compositeHost;
 	
 	public MessageComposite(Composite parent, int style, IBaseCompositeHost host) {

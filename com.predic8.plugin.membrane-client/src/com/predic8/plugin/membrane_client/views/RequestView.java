@@ -14,10 +14,12 @@
 
 package com.predic8.plugin.membrane_client.views;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.http.auth.UsernamePasswordCredentials;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -48,6 +50,7 @@ import com.predic8.plugin.membrane_client.ImageKeys;
 import com.predic8.plugin.membrane_client.MembraneClientUIPlugin;
 import com.predic8.plugin.membrane_client.jobs.ClientCallerJob;
 import com.predic8.plugin.membrane_client.message.composite.RequestComposite;
+import com.predic8.plugin.membrane_client.tabcomposites.SecurityTabComposite;
 import com.predic8.plugin.membrane_client.ui.PluginUtil;
 import com.predic8.wsdl.BindingOperation;
 import com.predic8.wsdl.Port;
@@ -68,6 +71,8 @@ public class RequestView extends MessageView {
 
 	private Request request;
 
+	private UsernamePasswordCredentials credentials;
+
 	private BindingOperation bindingOperation;
 
 	private FormParamsExtractor extractor = new FormParamsExtractor();
@@ -79,24 +84,30 @@ public class RequestView extends MessageView {
 
 	private boolean canPerformClientCall() {
 		if ("".equals(textAddress.getText().trim()) && request == null) {
-			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Client Call Error", "Request and destination address is missing.");
+			MessageDialog.openWarning(Display.getCurrent().getActiveShell(),
+					"Client Call Error",
+					"Request and destination address is missing.");
 			return false;
 		}
 
 		if ("".equals(textAddress.getText().trim())) {
-			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Client Call Error", "Destination address is missing.");
+			MessageDialog.openWarning(Display.getCurrent().getActiveShell(),
+					"Client Call Error", "Destination address is missing.");
 			return false;
 		}
 
 		try {
 			new URL(textAddress.getText().trim());
 		} catch (Exception ex) {
-			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Client Call Error", "Destination address is not valid URL.");
+			MessageDialog.openWarning(Display.getCurrent().getActiveShell(),
+					"Client Call Error",
+					"Destination address is not valid URL.");
 			return false;
 		}
 
 		if (request == null) {
-			MessageDialog.openWarning(Display.getCurrent().getActiveShell(), "Client Call Error", "Request is missing.");
+			MessageDialog.openWarning(Display.getCurrent().getActiveShell(),
+					"Client Call Error", "Request is missing.");
 			return false;
 		}
 		return true;
@@ -136,7 +147,8 @@ public class RequestView extends MessageView {
 	}
 
 	private void createProgressBar(Composite firstRowControls) {
-		progressBar = new ProgressBar(firstRowControls, SWT.SMOOTH | SWT.INDETERMINATE);
+		progressBar = new ProgressBar(firstRowControls, SWT.SMOOTH
+				| SWT.INDETERMINATE);
 		progressBar.setVisible(false);
 
 		RowData rd = new RowData();
@@ -147,7 +159,9 @@ public class RequestView extends MessageView {
 
 	private void createStopItem(ToolBar toolBar) {
 		itemStop = new ToolItem(toolBar, SWT.PUSH);
-		itemStop.setImage(MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CONTROL_STOP).createImage());
+		itemStop.setImage(MembraneClientUIPlugin.getDefault()
+				.getImageRegistry().getDescriptor(ImageKeys.IMAGE_CONTROL_STOP)
+				.createImage());
 		itemStop.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -160,7 +174,9 @@ public class RequestView extends MessageView {
 
 	private void createSendItem(ToolBar toolBar) {
 		itemSend = new ToolItem(toolBar, SWT.PUSH);
-		itemSend.setImage(MembraneClientUIPlugin.getDefault().getImageRegistry().getDescriptor(ImageKeys.IMAGE_CONTROL_PLAY).createImage());
+		itemSend.setImage(MembraneClientUIPlugin.getDefault()
+				.getImageRegistry().getDescriptor(ImageKeys.IMAGE_CONTROL_PLAY)
+				.createImage());
 		itemSend.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -182,7 +198,8 @@ public class RequestView extends MessageView {
 		if (getRequestComposite().isBodyTabSelected())
 			return getRequestComposite().getBodyText();
 		else
-			return SOAModelUtil.getSOARequestBody(bindingOperation, getRequestComposite().getFormParams());
+			return SOAModelUtil.getSOARequestBody(bindingOperation,
+					getRequestComposite().getFormParams());
 	}
 
 	private void updateControlButtons(final boolean status, final Job job) {
@@ -203,17 +220,31 @@ public class RequestView extends MessageView {
 			return;
 
 		request.setBodyContent(body.getBytes());
-		
-		
+
+		SecurityTabComposite secTab = this.getRequestComposite()
+				.getTabManager().getSecurityTabComposite();
+		if (secTab.getBasicHttpAuthCheckbox().getSelection()) {
+			this.credentials = new UsernamePasswordCredentials(secTab
+					.getUserText().getText(), secTab.getPasswordText().getText());
+			try {
+				this.request.getHeader().setAuthorization(
+						this.credentials.getUserName(),
+						this.credentials.getPassword());
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
 		callerJob = new ClientCallerJob(textAddress.getText().trim(), request);
 		callerJob.setPriority(Job.SHORT);
 
 		callerJob.addJobChangeListener(new JobChangeAdapter() {
 			public void done(IJobChangeEvent event) {
 				if (event.getResult().isOK() && !callerJob.isCancelStatus()) {
-					showMessageInResponseView(callerJob.getExchange().getResponse());
+					showMessageInResponseView(callerJob.getExchange()
+							.getResponse());
 					Exchange exc = callerJob.getExchange();
-					ServiceParamsManager.getInstance().newExchangeArrived(bindingOperation, createExchangeNode(exc));
+					ServiceParamsManager.getInstance().newExchangeArrived(
+							bindingOperation, createExchangeNode(exc));
 				}
 				updateControlButtons(false, event.getJob());
 			}
@@ -226,22 +257,23 @@ public class RequestView extends MessageView {
 		byte[] content = exc.getRequest().getBody().getContent();
 		if (content == null || content.length == 0)
 			return null;
-		
+
 		return extractor.extract(new String(content));
 	}
 
 	public void updateView(BindingOperation bindOp, ParamsMap paramsMap) {
 		this.bindingOperation = bindOp;
 		textAddress.setText(getEndpointAddress(bindOp));
-		
 		request = HttpUtil.getRequest(bindOp, textAddress.getText());
 		setMessage(request, bindOp, paramsMap);
 	}
 
 	private String getEndpointAddress(BindingOperation bindOp) {
-		List<Port> ports = bindOp.getDefinitions().getServices().get(0).getPorts();
+		List<Port> ports = bindOp.getDefinitions().getServices().get(0)
+				.getPorts();
 		for (Port port : ports) {
-			if (port.getBinding().getName().equals(bindOp.getBinding().getName()))
+			if (port.getBinding().getName()
+					.equals(bindOp.getBinding().getName()))
 				return port.getAddress().getLocation();
 		}
 		throw new RuntimeException("No corresponding endpoint address found.");
@@ -258,7 +290,8 @@ public class RequestView extends MessageView {
 
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				ResponseView view = (ResponseView) PluginUtil.showView(ResponseView.VIEW_ID);
+				ResponseView view = (ResponseView) PluginUtil
+						.showView(ResponseView.VIEW_ID);
 				view.setMessage(response, bindingOperation, null);
 			}
 		});

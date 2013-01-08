@@ -1,6 +1,9 @@
 package com.predic8.plugin.membrane_client.dialogs;
 
+import java.io.FileNotFoundException;
+
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -63,7 +66,7 @@ public class NewWSDLDialog extends Dialog {
 
 		btFile = new Button(bComposite, SWT.RADIO);
 		btFile.addSelectionListener(sListener);
-		PluginUtil.createLabel(bComposite, 70).setText("File path: ");
+		PluginUtil.createLabel(bComposite, 70).setText("File Path: ");
 
 		textFilePath = PluginUtil.createText(bComposite, 320);
 		textFilePath.setEnabled(false);
@@ -95,11 +98,15 @@ public class NewWSDLDialog extends Dialog {
 
 	@Override
 	protected void okPressed() {
+		
 		try {
 			ServiceParamsManager.getInstance().addNewServiceParams(getServiceParams(), true);
 		} catch (Exception e) {
+			if (e instanceof FileNotFoundException){
+				MessageDialog.openError(new Shell(), "File not found", "Invalid URL or WSDL file location ");
+			}else
 			e.printStackTrace();
-		}
+		} 
 		super.okPressed();
 	}
 

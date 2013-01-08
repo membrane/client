@@ -28,7 +28,7 @@ public class RemoveServiceParamsAction extends Action {
 	private TreeViewer treeViewer;
 	
 	public RemoveServiceParamsAction(TreeViewer viewer) {
-		setText("remove");
+		setText("Remove");
 		setId(ID);
 		this.treeViewer = viewer;
 	}

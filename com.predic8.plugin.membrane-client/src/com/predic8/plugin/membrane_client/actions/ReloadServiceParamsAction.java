@@ -27,7 +27,7 @@ public class ReloadServiceParamsAction extends Action {
 	private TreeViewer treeViewer;
 
 	public ReloadServiceParamsAction(TreeViewer viewer) {
-		setText("reload");
+		setText("Reload");
 		setId(ID);
 		this.treeViewer = viewer;
 	}

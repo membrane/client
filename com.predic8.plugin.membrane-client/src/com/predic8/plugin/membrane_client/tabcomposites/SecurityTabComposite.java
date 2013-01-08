@@ -50,8 +50,8 @@ public class SecurityTabComposite extends AbstractTabComposite {
 
 			}
 		});
-		this.basicHttpAuthCheckbox.setText("Use basic HTTP authentication");
-		this.group.setText("Authentication settings");
+		this.basicHttpAuthCheckbox.setText("Use Basic HTTP Authentication");
+		this.group.setText("Authentication Settings");
 
 		layout.numColumns = 2;
 		mainLayout.numColumns = 1;

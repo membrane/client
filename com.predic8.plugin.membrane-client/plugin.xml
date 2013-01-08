@@ -19,7 +19,7 @@
             <command
                   commandId="newWSDL"
                   icon="icons/add_element.png"
-                  label="import"
+                  label="Import"
                   style="push">
             </command>
          </menu>

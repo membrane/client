@@ -27,7 +27,7 @@ public class CreateFormAction extends Action {
 	BindingOperation operation;
 	
 	public CreateFormAction() {
-		setText("create form");
+		setText("Create form");
 		setId(ID);
 	}
 	

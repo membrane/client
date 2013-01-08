@@ -23,7 +23,7 @@ public class AddNewWSDLActiion extends Action {
 
 
 	public AddNewWSDLActiion() {
-		setText("add new WSDL");
+		setText("Add New WSDL");
 		setId("add WSDL action");
 	}
 	

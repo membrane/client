@@ -44,8 +44,7 @@ public class HttpUtil {
 	private static Header getHeader(BindingOperation bindingOperation, String url) {
 		Header header = new Header();
 		
-		header.add(Header.CONTENT_TYPE, ((AbstractSOAPBinding)bindingOperation.getBinding().getBinding()).getContentType());
-		header.add(Header.CONTENT_ENCODING, "UTF-8");
+		header.add(Header.CONTENT_TYPE, ((AbstractSOAPBinding)bindingOperation.getBinding().getBinding()).getContentType() + "; charset=utf-8");
 		
 		String action = bindingOperation.getOperation().getSoapAction();
 		if (action == null)
